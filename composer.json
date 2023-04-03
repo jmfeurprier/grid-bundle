@@ -5,6 +5,8 @@
     "type": "library",
     "require": {
         "php": ">=7.4",
+        "symfony/framework-bundle": "^5.4",
+        "symfony/property-access": "^5.4",
         "twig/twig": "^3.0"
     },
     "require-dev": {
