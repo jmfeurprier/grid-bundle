@@ -17,7 +17,7 @@ class Configuration implements ConfigurationInterface
                 ->arrayNode('grids')
                     ->info('Grid definitions.')
                     ->useAttributeAsKey('class')
-                    ->variablePrototype()
+                    ->variablePrototype()->end()
                 ->end()
                 ->scalarNode('template_path')
                     ->info('Grid template path.')
