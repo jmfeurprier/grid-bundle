@@ -7,12 +7,12 @@ services:
     Jmf\Grid\:
         resource: '../../'
 
-#    Jmf\Grid\GridDefinitionLoader:
+#    Jmf\Grid\Grid\GridDefinitionLoader:
 #        arguments:
 #            $gridDefinitions:        '%grids%'
 #            $entityRenderingPresets: '%entity_rendering_presets%'
 #
-#    Jmf\Grid\GridFooterGenerator:
+#    Jmf\Grid\Grid\GridFooterGenerator:
 #        arguments:
 #            $entityRenderingPresets: '%entity_rendering_presets%'
 #

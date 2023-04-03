@@ -1,6 +1,6 @@
 <?php
 
-namespace src;
+namespace Jmf\Grid;
 
 use Symfony\Component\HttpKernel\Bundle\Bundle;
 

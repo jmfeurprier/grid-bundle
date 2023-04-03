@@ -1,10 +1,8 @@
 <?php
 
-namespace Jmf\CrudEngine\DependencyInjection;
+namespace Jmf\Grid\DependencyInjection;
 
-use App\Grid\GridGenerator;
-use App\Twig\GridExtension;
-use Jmf\CrudEngine\Loading\RouteLoader;
+use Jmf\Grid\Twig\GridExtension;
 use Symfony\Component\Config\FileLocator;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Extension\Extension;
@@ -29,10 +27,6 @@ class JmfGridExtension extends Extension
         );
 
         $loader->load('services.yaml');
-
-        $containerBuilder->autowire(GridGenerator::class)
-            ->setArgument('$', $config['template_path'])
-        ;
 
         $containerBuilder->autowire(GridExtension::class)
             ->setArgument('$templatePath', $config['template_path'])

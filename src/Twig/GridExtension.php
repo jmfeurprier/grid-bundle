@@ -1,8 +1,8 @@
 <?php
 
-namespace App\Twig;
+namespace Jmf\Grid\Twig;
 
-use App\Grid\GridGenerator;
+use Jmf\Grid\Grid\GridGenerator;
 use Twig\Environment as TwigEnvironment;
 use Twig\Extension\AbstractExtension;
 use Twig\TwigFunction;

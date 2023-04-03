@@ -1,6 +1,6 @@
 <?php
 
-namespace Jmf\Grid;
+namespace Jmf\Grid\Grid;
 
 use Exception;
 use RuntimeException;

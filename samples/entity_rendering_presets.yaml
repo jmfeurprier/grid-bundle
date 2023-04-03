@@ -1,0 +1,27 @@
+parameters:
+
+    entity_rendering_presets:
+
+        buttonEdit:
+            align:    'right'
+            template: '<a href="{{ path(entityType ~ ".edit", {"id": entityId} ) }}">Edit</a>'
+
+        buttonShow:
+            align:    'right'
+            template: '<a href="{{ path(entityType ~ ".show", {"id": entityId} ) }}">Show</a>'
+
+        date:
+            align:    'center'
+            template: '{% if (_value is not null) %}{{ _value.format("Y-m-d") }}{% endif %}'
+
+        dateTime:
+            align:    'center'
+            template: '{% if (_value is not null) %}{{ _value.format("Y-m-d H:i:s") }}{% endif %}'
+
+        gender:
+            align:  'center'
+            label:  'Gender'
+            source: 'gender'
+
+        text:
+            align: 'left'

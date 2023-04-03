@@ -1,6 +1,6 @@
 <?php
 
-namespace Jmf\CrudEngine\DependencyInjection;
+namespace Jmf\Grid\DependencyInjection;
 
 use Symfony\Component\Config\Definition\Builder\TreeBuilder;
 use Symfony\Component\Config\Definition\ConfigurationInterface;
@@ -12,6 +12,7 @@ class Configuration implements ConfigurationInterface
         $treeBuilder = new TreeBuilder('jmf_grid');
 
         $treeBuilder->getRootNode()
+            ->fixXmlConfig('macro')
             ->children()
                 ->arrayNode('grids')
                     ->info('Grid definitions.')
@@ -21,6 +22,11 @@ class Configuration implements ConfigurationInterface
                 ->scalarNode('template_path')
                     ->info('Grid template path.')
                     ->defaultValue('@JmfGrid/grid.html.twig')
+                ->end()
+                ->arrayNode('macros')
+                    ->scalarPrototype()->end()
+                    ->info('Grid macros to import.')
+                    ->defaultValue([])
                 ->end()
             ->end()
         ;

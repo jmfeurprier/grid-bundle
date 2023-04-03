@@ -1,6 +1,6 @@
 <?php
 
-namespace Jmf\Grid;
+namespace Jmf\Grid\Grid;
 
 class GridDefinition
 {
