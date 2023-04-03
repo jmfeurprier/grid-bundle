@@ -1,0 +1,21 @@
+services:
+
+    _defaults:
+        autoconfigure: true
+        autowire:      true
+
+    Jmf\Grid\:
+        resource: '../../'
+
+#    Jmf\Grid\GridDefinitionLoader:
+#        arguments:
+#            $gridDefinitions:        '%grids%'
+#            $entityRenderingPresets: '%entity_rendering_presets%'
+#
+#    Jmf\Grid\GridFooterGenerator:
+#        arguments:
+#            $entityRenderingPresets: '%entity_rendering_presets%'
+#
+#    Jmf\Twig\GridExtension:
+#        arguments:
+#            $templatePath: '_block/grid.html.twig'
