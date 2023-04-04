@@ -12,15 +12,13 @@ use Twig\TemplateWrapper;
 
 class GridRowCellGenerator
 {
-    private const MACROS_MAPPING = [
-        'macro_entity' => '_macro/entity.html.twig',
-    ];
+    private TwigEnvironment $twigEnvironment;
 
     private PropertyAccessor $propertyAccessor;
 
-    private array $columnDefinition;
+    private array $macros;
 
-    private TwigEnvironment $twigEnvironment;
+    private array $columnDefinition;
 
     private $item;
 
@@ -28,10 +26,12 @@ class GridRowCellGenerator
 
     public function __construct(
         TwigEnvironment $twigEnvironment,
-        PropertyAccessor $propertyAccessor
+        PropertyAccessor $propertyAccessor,
+        array $macros = []
     ) {
         $this->twigEnvironment  = $twigEnvironment;
         $this->propertyAccessor = $propertyAccessor;
+        $this->macros           = $macros;
     }
 
     /**
@@ -129,7 +129,7 @@ class GridRowCellGenerator
         if (!array_key_exists($cacheKey, $cache)) {
             $templateChunks = [];
 
-            foreach (self::MACROS_MAPPING as $macroAlias => $macroPath) {
+            foreach ($this->macros as $macroAlias => $macroPath) {
                 $templateChunks[] = "{% import '{$macroPath}' as {$macroAlias} %}";
             }
 

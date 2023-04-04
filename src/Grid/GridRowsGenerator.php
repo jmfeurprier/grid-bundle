@@ -4,7 +4,6 @@ namespace Jmf\Grid\Grid;
 
 use Exception;
 use RuntimeException;
-use function Jmf\Grid\count;
 
 class GridRowsGenerator
 {

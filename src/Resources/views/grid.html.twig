@@ -1,0 +1,34 @@
+<table class="table table-bordered table-sm table-striped table-hover _dt">
+    <thead>
+        <tr>
+            {% for columnId, column in grid.columns %}
+                {% set classes = [] %}
+                {% if (column.align is defined) %}
+                    {% set classes = classes|array_push('text-' ~ column.align) %}
+                {% endif %}
+                <th{% if (classes is not empty) %} class="{{ classes|join(' ') }}"{% endif %}>
+                    {% if (column.label is defined) %}{{ column.label }}{% endif %}
+                </th>
+            {% endfor %}
+        </tr>
+    </thead>
+    <tbody>
+        {% for row in grid.rows %}
+            {% if (row.link is null) %}
+                <tr>
+            {% else %}
+                <tr class="clickable" data-link="{{ row.link }}">
+            {% endif %}
+            {% for cell in row.cells %}
+                {% set classes = [] %}
+                {% if (cell.parameters.align is defined) %}
+                    {% set classes = classes|array_push('text-' ~ cell.parameters.align) %}
+                {% endif %}
+                <td{% if (classes is not empty) %} class="{{ classes|join(' ') }}"{% endif %}>
+                    {{ cell.value|raw }}
+                </td>
+            {% endfor %}
+            </tr>
+        {% endfor %}
+    </tbody>
+</table>

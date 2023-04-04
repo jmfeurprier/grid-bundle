@@ -2,6 +2,11 @@
 
 namespace Jmf\Grid\DependencyInjection;
 
+use Jmf\Grid\Grid\GridDefinitionLoader;
+use Jmf\Grid\Grid\GridFooterGenerator;
+use Jmf\Grid\Grid\GridRowCellGenerator;
+use Jmf\Grid\Grid\GridRowGenerator;
+use Jmf\Grid\Grid\GridRowsGenerator;
 use Jmf\Grid\Twig\GridExtension;
 use Symfony\Component\Config\FileLocator;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
@@ -28,8 +33,26 @@ class JmfGridExtension extends Extension
 
         $loader->load('services.yaml');
 
+        $containerBuilder->autowire(GridDefinitionLoader::class)
+            ->setArgument('$gridDefinitions', $config['grids'])
+            ->setArgument('$entityRenderingPresets', $config['presets'])
+        ;
+
         $containerBuilder->autowire(GridExtension::class)
             ->setArgument('$templatePath', $config['template_path'])
+            ->addTag('twig.extension')
+        ;
+
+        $containerBuilder->autowire(GridFooterGenerator::class)
+            ->setArgument('$entityRenderingPresets', $config['presets'])
+        ;
+
+        $containerBuilder->autowire(GridRowGenerator::class)
+            ->setArgument('$macros', $config['macros'])
+        ;
+
+        $containerBuilder->autowire(GridRowCellGenerator::class)
+            ->setArgument('$macros', $config['macros'])
         ;
     }
 

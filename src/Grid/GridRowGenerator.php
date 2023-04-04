@@ -11,15 +11,13 @@ use Twig\TemplateWrapper;
 
 class GridRowGenerator
 {
-    private const MACROS_MAPPING = [
-        'macro_entity' => '_macro/entity.html.twig',
-    ];
-
     private TwigEnvironment $twigEnvironment;
 
     private GridRowCellGenerator $gridRowCellGenerator;
 
     private GridRowLinkGenerator $gridRowLinkGenerator;
+
+    private array $macros;
 
     private GridDefinition $gridDefinition;
 
@@ -36,11 +34,13 @@ class GridRowGenerator
     public function __construct(
         TwigEnvironment $twigEnvironment,
         GridRowCellGenerator $gridRowCellGenerator,
-        GridRowLinkGenerator $gridRowLinkGenerator
+        GridRowLinkGenerator $gridRowLinkGenerator,
+        array $macros = []
     ) {
         $this->twigEnvironment      = $twigEnvironment;
         $this->gridRowCellGenerator = $gridRowCellGenerator;
         $this->gridRowLinkGenerator = $gridRowLinkGenerator;
+        $this->macros               = $macros;
     }
 
     /**
@@ -100,9 +100,14 @@ class GridRowGenerator
         $rowVariables['_item'] = $this->item;
         $rowVariables['_loop'] = $loopVariables;
 
+        $macroChunks = [];
+        foreach ($this->macros as $macroAlias => $macroPath) {
+            $macroChunks[] = "{% import '{$macroPath}' as {$macroAlias} %}";
+        }
+
         foreach ($this->gridDefinition->getRowsVariables() as $key => $value) {
             $rowVariables[$key] = $this->renderTemplateFromString(
-                '{% import "_macro/entity.html.twig" as macro_entity %}' . $value,
+                implode($macroChunks) . $value,
                 $rowVariables
             );
         }
