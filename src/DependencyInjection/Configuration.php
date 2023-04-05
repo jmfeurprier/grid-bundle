@@ -19,6 +19,7 @@ class Configuration implements ConfigurationInterface
                     ->info('Grid definitions.')
                     ->useAttributeAsKey('key')
                     ->variablePrototype()->end()
+                    ->defaultValue([])
                 ->end()
                 ->scalarNode('template_path')
                     ->info('Grid template path.')
