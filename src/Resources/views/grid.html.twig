@@ -36,7 +36,9 @@
             {% for footerRow in grid.footer %}
                 <tr>
                     {% for footerColumn in footerRow %}
-                        <td{{ attributes(footerColumn.attributes|default({})) }}>{{ footerColumn.value|default('')|raw }}</td>
+                        <td{% for key, value in (footerColumn.attributes|default({})) %} {{ key }}="{{ value }}"{% endfor %}>
+                            {{ footerColumn.value|default('')|raw }}
+                        </td>
                     {% endfor %}
                 </tr>
             {% endfor %}
