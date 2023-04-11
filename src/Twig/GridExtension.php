@@ -54,7 +54,7 @@ class GridExtension extends AbstractExtension
 
     public function grid(
         string $gridId,
-        array $items,
+        iterable $items,
         array $arguments = [],
         array $parameters = []
     ): string {
