@@ -9,8 +9,10 @@ use Twig\TwigFunction;
 
 class GridExtension extends AbstractExtension
 {
+    public const PREFIX_DEFAULT = 'jmf_';
+
     private const FUNCTIONS = [
-        'jmf_grid' => 'grid',
+        'grid' => 'grid',
     ];
 
     private GridGenerator $gridGenerator;
@@ -19,14 +21,18 @@ class GridExtension extends AbstractExtension
 
     private string $templatePath;
 
+    private string $prefix;
+
     public function __construct(
         GridGenerator $gridGenerator,
         TwigEnvironment $twigEnvironment,
-        string $templatePath
+        string $templatePath,
+        string $prefix = self::PREFIX_DEFAULT
     ) {
         $this->gridGenerator   = $gridGenerator;
         $this->twigEnvironment = $twigEnvironment;
         $this->templatePath    = $templatePath;
+        $this->prefix          = $prefix;
     }
 
     /**
@@ -38,7 +44,7 @@ class GridExtension extends AbstractExtension
 
         foreach (self::FUNCTIONS as $function => $method) {
             $functions[] = new TwigFunction(
-                $function,
+                ($this->prefix . $function),
                 [
                     $this,
                     $method,

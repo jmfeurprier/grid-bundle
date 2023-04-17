@@ -38,7 +38,7 @@
                     <tr>
                         {% for footerColumn in footerRow %}
                             <td{% for key, value in (footerColumn.attributes|default({})) %} {{ key }}="{{ value }}"{% endfor %}>
-                            {{ footerColumn.value|default('')|raw }}
+                                {{ footerColumn.value|default('')|raw }}
                             </td>
                         {% endfor %}
                     </tr>

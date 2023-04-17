@@ -40,6 +40,7 @@ class JmfGridExtension extends Extension
 
         $containerBuilder->autowire(GridExtension::class)
             ->setArgument('$templatePath', $config['template_path'])
+            ->setArgument('$prefix', $config['twig_functions_prefix'])
             ->addTag('twig.extension')
         ;
 

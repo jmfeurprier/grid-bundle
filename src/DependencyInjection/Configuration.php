@@ -2,6 +2,7 @@
 
 namespace Jmf\Grid\DependencyInjection;
 
+use Jmf\Grid\Twig\GridExtension;
 use Symfony\Component\Config\Definition\Builder\TreeBuilder;
 use Symfony\Component\Config\Definition\ConfigurationInterface;
 
@@ -29,6 +30,10 @@ class Configuration implements ConfigurationInterface
                     ->scalarPrototype()->end()
                     ->info('Grid macros to import.')
                     ->defaultValue([])
+                ->end()
+                ->scalarNode('twig_functions_prefix')
+                    ->info('Twig functions prefix.')
+                    ->defaultValue(GridExtension::PREFIX_DEFAULT)
                 ->end()
                 ->arrayNode('presets')
                     ->variablePrototype()->end()
