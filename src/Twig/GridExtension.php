@@ -2,8 +2,12 @@
 
 namespace Jmf\Grid\Twig;
 
+use Exception;
 use Jmf\Grid\Grid\GridGenerator;
 use Twig\Environment as TwigEnvironment;
+use Twig\Error\LoaderError;
+use Twig\Error\RuntimeError;
+use Twig\Error\SyntaxError;
 use Twig\Extension\AbstractExtension;
 use Twig\TwigFunction;
 
@@ -27,7 +31,7 @@ class GridExtension extends AbstractExtension
         GridGenerator $gridGenerator,
         TwigEnvironment $twigEnvironment,
         string $templatePath,
-        string $prefix = self::PREFIX_DEFAULT
+        string $prefix = self::PREFIX_DEFAULT,
     ) {
         $this->gridGenerator   = $gridGenerator;
         $this->twigEnvironment = $twigEnvironment;
@@ -36,9 +40,9 @@ class GridExtension extends AbstractExtension
     }
 
     /**
-     * {@inheritDoc}
+     * @return TwigFunction[]
      */
-    public function getFunctions(): array
+    public function getFunctions(): iterable
     {
         $functions = [];
 
@@ -58,6 +62,13 @@ class GridExtension extends AbstractExtension
         return $functions;
     }
 
+    /**
+     * @param iterable<array<string, mixed>|object> $items
+     * @param array<string, mixed>                  $arguments
+     * @param array<string, mixed>                  $parameters
+     *
+     * @throws Exception
+     */
     public function grid(
         string $gridId,
         iterable $items,
@@ -72,6 +83,13 @@ class GridExtension extends AbstractExtension
         );
     }
 
+    /**
+     * @param array<string, mixed> $parameters
+     *
+     * @throws LoaderError
+     * @throws RuntimeError
+     * @throws SyntaxError
+     */
     private function renderView(
         string $view,
         array $parameters

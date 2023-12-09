@@ -18,8 +18,14 @@ class GridGenerator
 
     private string $gridId;
 
+    /**
+     * @var iterable<array<string, mixed>|object>
+     */
     private iterable $items;
 
+    /**
+     * @var array<string, mixed>
+     */
     private array $arguments;
 
     private GridDefinition $gridDefinition;
@@ -37,10 +43,10 @@ class GridGenerator
     }
 
     /**
-     * @param object[] $items
+     * @param iterable<array<string, mixed>|object> $items
+     * @param array<string, mixed>                  $arguments
      *
      * @throws Exception
-     * @throws RuntimeException
      */
     public function generate(
         string $gridId,
@@ -55,6 +61,10 @@ class GridGenerator
         return $this->buildGrid();
     }
 
+    /**
+     * @param iterable<array<string, mixed>|object> $items
+     * @param array<string, mixed>                  $arguments
+     */
     private function init(
         string $gridId,
         iterable $items,
@@ -73,9 +83,6 @@ class GridGenerator
         $this->gridDefinition = $this->gridDefinitionLoader->load($this->gridId);
     }
 
-    /**
-     * @throws RuntimeException
-     */
     private function validateArguments(): void
     {
         foreach ($this->gridDefinition->getArguments() as $argument) {
@@ -85,6 +92,11 @@ class GridGenerator
         }
     }
 
+    /**
+     * @return array<string, mixed>
+     *
+     * @throws Exception
+     */
     private function buildGrid(): array
     {
         return [
@@ -101,7 +113,12 @@ class GridGenerator
         );
     }
 
-    private function buildRows(): array
+    /**
+     * @return iterable<array<string, mixed>>
+     *
+     * @throws Exception
+     */
+    private function buildRows(): iterable
     {
         return $this->gridRowsGenerator->generate(
             $this->gridDefinition,

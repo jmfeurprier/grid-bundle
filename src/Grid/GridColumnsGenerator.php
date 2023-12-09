@@ -8,7 +8,7 @@ class GridColumnsGenerator
     {
         $columns = [];
 
-        foreach ($gridDefinition->getColumns() as $columnDefinition) {
+        foreach ($gridDefinition->getColumnDefinitions() as $columnDefinition) {
             $columns[] = $this->generateColumn($columnDefinition);
         }
 

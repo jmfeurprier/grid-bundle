@@ -16,14 +16,29 @@ class GridRowCellGenerator
 
     private PropertyAccessor $propertyAccessor;
 
+    /**
+     * @var array<string, string>
+     */
     private array $macros;
 
+    /**
+     * @var array<string, mixed>
+     */
     private array $columnDefinition;
 
-    private $item;
+    /**
+     * @var array<string, mixed>|object
+     */
+    private array | object $item;
 
+    /**
+     * @var array<string, mixed>
+     */
     private array $rowVariables;
 
+    /**
+     * @param array<string, string> $macros
+     */
     public function __construct(
         TwigEnvironment $twigEnvironment,
         PropertyAccessor $propertyAccessor,
@@ -35,14 +50,17 @@ class GridRowCellGenerator
     }
 
     /**
-     * @param object|array $item
+     * @param array<string, mixed>        $columnDefinition
+     * @param array<string, mixed>|object $item
+     * @param array<string, mixed>        $rowVariables
+     *
+     * @return array<string, mixed>
      *
      * @throws Exception
-     * @throws RuntimeException
      */
     public function generate(
         array $columnDefinition,
-        $item,
+        array | object $item,
         array $rowVariables
     ): array {
         $this->init(
@@ -55,11 +73,13 @@ class GridRowCellGenerator
     }
 
     /**
-     * @param object|array $item
+     * @param array<string, mixed>        $columnDefinition
+     * @param array<string, mixed>|object $item
+     * @param array<string, mixed>        $rowVariables
      */
     private function init(
         array $columnDefinition,
-        $item,
+        array | object $item,
         array $rowVariables
     ): void {
         $this->columnDefinition = $columnDefinition;
@@ -67,6 +87,9 @@ class GridRowCellGenerator
         $this->rowVariables     = $rowVariables;
     }
 
+    /**
+     * @return array<string, mixed>
+     */
     private function buildCell(): array
     {
         return [
@@ -75,9 +98,6 @@ class GridRowCellGenerator
         ];
     }
 
-    /**
-     * @throws RuntimeException
-     */
     private function getCellValue(): string
     {
         $value = '';
@@ -105,6 +125,9 @@ class GridRowCellGenerator
         return trim($value);
     }
 
+    /**
+     * @return array<string, mixed>
+     */
     private function getCellParameters(): array
     {
         $parameters = [];

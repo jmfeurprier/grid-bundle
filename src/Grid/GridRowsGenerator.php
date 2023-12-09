@@ -3,7 +3,6 @@
 namespace Jmf\Grid\Grid;
 
 use Exception;
-use RuntimeException;
 
 class GridRowsGenerator
 {
@@ -15,16 +14,18 @@ class GridRowsGenerator
     }
 
     /**
-     * @param array[]|object[] $items
+     * @param iterable<array<string, mixed>|object> $items
+     * @param array<string, mixed>                  $arguments
+     *
+     * @return iterable<array<string, mixed>>
      *
      * @throws Exception
-     * @throws RuntimeException
      */
     public function generate(
         GridDefinition $gridDefinition,
         iterable $items,
         array $arguments
-    ): array {
+    ): iterable {
         $rowCount = count($items);
         $rowIndex = 1;
         $rows     = [];

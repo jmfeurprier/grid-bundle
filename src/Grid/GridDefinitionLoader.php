@@ -23,9 +23,6 @@ class GridDefinitionLoader
         $this->entityRenderingPresets = $entityRenderingPresets;
     }
 
-    /**
-     * @throws RuntimeException
-     */
     public function load(string $gridId): GridDefinition
     {
         $this->init($gridId);
@@ -60,9 +57,6 @@ class GridDefinitionLoader
         }
     }
 
-    /**
-     * @throws RuntimeException
-     */
     private function applyPresetToColumnDefinition(array $columnDefinition): array
     {
         if (empty($columnDefinition['preset'])) {
@@ -80,9 +74,6 @@ class GridDefinitionLoader
         return $this->applyPresetToColumnDefinition($newColumnParameters);
     }
 
-    /**
-     * @throws RuntimeException
-     */
     private function getPreset(string $presetId): array
     {
         if (isset($this->entityRenderingPresets[$presetId])) {

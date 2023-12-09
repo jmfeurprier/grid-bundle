@@ -18,21 +18,22 @@ class GridRowLinkGenerator
 
     public function __construct(
         TwigEnvironment $twigEnvironment,
-        UrlGeneratorInterface $urlGenerator
+        UrlGeneratorInterface $urlGenerator,
     ) {
         $this->twigEnvironment = $twigEnvironment;
         $this->urlGenerator    = $urlGenerator;
     }
 
     /**
-     * @param object|array $item
+     * @param array<string, mixed>|object $item
+     * @param array<string, mixed>        $rowVariables
+     * @param array<string, mixed>        $arguments
      *
      * @throws Exception
-     * @throws RuntimeException
      */
     public function generate(
         GridDefinition $gridDefinition,
-        $item,
+        array | object $item,
         array $rowVariables,
         array $arguments
     ): ?string {
@@ -78,6 +79,12 @@ class GridRowLinkGenerator
         throw new RuntimeException('Invalid link definition.');
     }
 
+    /**
+     * @param array<string, mixed> $context
+     *
+     * @throws LoaderError
+     * @throws SyntaxError
+     */
     private function renderTemplateFromString(
         string $template,
         array $context = []

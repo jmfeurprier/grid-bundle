@@ -6,7 +6,6 @@ use Jmf\Grid\Grid\GridDefinitionLoader;
 use Jmf\Grid\Grid\GridFooterGenerator;
 use Jmf\Grid\Grid\GridRowCellGenerator;
 use Jmf\Grid\Grid\GridRowGenerator;
-use Jmf\Grid\Grid\GridRowsGenerator;
 use Jmf\Grid\Twig\GridExtension;
 use Symfony\Component\Config\FileLocator;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
@@ -15,9 +14,6 @@ use Symfony\Component\DependencyInjection\Loader\YamlFileLoader;
 
 class JmfGridExtension extends Extension
 {
-    /**
-     * {@inheritDoc}
-     */
     public function load(
         array $configs,
         ContainerBuilder $containerBuilder

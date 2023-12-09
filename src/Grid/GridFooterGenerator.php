@@ -30,10 +30,10 @@ class GridFooterGenerator
     }
 
     /**
-     * @param object[] $items
+     * @param iterable<array<string, mixed>|object> $items
+     * @param array<string, mixed>                  $arguments
      *
      * @throws Exception
-     * @throws RuntimeException
      */
     public function generate(
         GridDefinition $gridDefinition,
@@ -47,12 +47,16 @@ class GridFooterGenerator
         return $this->buildFooter();
     }
 
+    /**
+     * @param iterable<array<string, mixed>|object> $items
+     * @param array<string, mixed>                  $arguments
+     */
     private function init(
         GridDefinition $gridDefinition,
         iterable $items,
         array $arguments
     ): void {
-        $this->footerDefinition = $gridDefinition->getFooter();
+        $this->footerDefinition = $gridDefinition->getFooterDefinition();
         $this->items            = $items;
         $this->arguments        = $arguments;
     }
@@ -68,9 +72,6 @@ class GridFooterGenerator
         }
     }
 
-    /**
-     * @throws RuntimeException
-     */
     private function applyPresetToColumnDefinition(array $footerColumnDefinition): array
     {
         if (empty($footerColumnDefinition['preset'])) {
@@ -88,9 +89,6 @@ class GridFooterGenerator
         return $this->applyPresetToColumnDefinition($newColumnDefinition);
     }
 
-    /**
-     * @throws RuntimeException
-     */
     private function getPreset(string $presetId): array
     {
         if (isset($this->entityRenderingPresets[$presetId])) {

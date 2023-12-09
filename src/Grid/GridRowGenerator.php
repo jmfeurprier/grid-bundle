@@ -3,7 +3,6 @@
 namespace Jmf\Grid\Grid;
 
 use Exception;
-use RuntimeException;
 use Twig\Environment as TwigEnvironment;
 use Twig\Error\LoaderError;
 use Twig\Error\SyntaxError;
@@ -17,20 +16,35 @@ class GridRowGenerator
 
     private GridRowLinkGenerator $gridRowLinkGenerator;
 
+    /**
+     * @var array<string, string>
+     */
     private array $macros;
 
     private GridDefinition $gridDefinition;
 
-    private $item;
+    /**
+     * @var array<string, mixed>|object
+     */
+    private array | object $item;
 
     private int $rowIndex;
 
     private int $rowCount;
 
+    /**
+     * @var array<string, mixed>
+     */
     private array $arguments;
 
+    /**
+     * @var array<string, mixed>
+     */
     private array $rowVariables;
 
+    /**
+     * @param array<string, string> $macros
+     */
     public function __construct(
         TwigEnvironment $twigEnvironment,
         GridRowCellGenerator $gridRowCellGenerator,
@@ -44,14 +58,16 @@ class GridRowGenerator
     }
 
     /**
-     * @param object|array $item
+     * @param array<string, mixed>|object $item
+     * @param array<string, mixed>        $arguments
+     *
+     * @return array<string, mixed>
      *
      * @throws Exception
-     * @throws RuntimeException
      */
     public function generate(
         GridDefinition $gridDefinition,
-        $item,
+        array | object $item,
         int $rowIndex,
         int $rowCount,
         array $arguments
@@ -64,11 +80,12 @@ class GridRowGenerator
     }
 
     /**
-     * @param object|array $item
+     * @param array<string, mixed>|object $item
+     * @param array<string, mixed>        $arguments
      */
     private function init(
         GridDefinition $gridDefinition,
-        $item,
+        array | object $item,
         int $rowIndex,
         int $rowCount,
         array $arguments
@@ -81,6 +98,8 @@ class GridRowGenerator
     }
 
     /**
+     * @return array<string, mixed>
+     *
      * @throws Exception
      */
     private function buildRow(): array
@@ -119,6 +138,9 @@ class GridRowGenerator
         $this->rowVariables = $rowVariables;
     }
 
+    /**
+     * @return array<string, mixed>
+     */
     private function buildLoopVariable(): array
     {
         return [
@@ -133,17 +155,29 @@ class GridRowGenerator
         ];
     }
 
-    private function buildRowCells(): array
+    /**
+     * @return iterable<array<string, mixed>>
+     *
+     * @throws Exception
+     */
+    private function buildRowCells(): iterable
     {
         $cells = [];
 
-        foreach ($this->gridDefinition->getColumns() as $columnDefinition) {
+        foreach ($this->gridDefinition->getColumnDefinitions() as $columnDefinition) {
             $cells[] = $this->buildCell($columnDefinition);
         }
 
         return $cells;
     }
 
+    /**
+     * @param array<string, mixed> $columnDefinition
+     *
+     * @return array<string, mixed>
+     *
+     * @throws Exception
+     */
     private function buildCell(array $columnDefinition): array
     {
         return $this->gridRowCellGenerator->generate(
@@ -153,6 +187,9 @@ class GridRowGenerator
         );
     }
 
+    /**
+     * @throws Exception
+     */
     private function buildRowLink(): ?string
     {
         return $this->gridRowLinkGenerator->generate(
@@ -163,6 +200,12 @@ class GridRowGenerator
         );
     }
 
+    /**
+     * @param array<string, mixed> $context
+     *
+     * @throws LoaderError
+     * @throws SyntaxError
+     */
     private function renderTemplateFromString(
         string $template,
         array $context = []
