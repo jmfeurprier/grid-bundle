@@ -3,50 +3,54 @@
 namespace Jmf\Grid\Grid;
 
 use Exception;
+use Jmf\Grid\Configuration\ColumnConfiguration;
 use RuntimeException;
 use Symfony\Component\PropertyAccess\PropertyAccessor;
 use Twig\Environment as TwigEnvironment;
 use Twig\Error\LoaderError;
 use Twig\Error\SyntaxError;
 use Twig\TemplateWrapper;
+use Webmozart\Assert\Assert;
 
 class GridRowCellGenerator
 {
-    private TwigEnvironment $twigEnvironment;
+    private ColumnConfiguration $columnConfiguration;
 
-    private PropertyAccessor $propertyAccessor;
+    /**
+     * @var array<string, mixed>|object
+     */
+    private array | object $item;
 
-    private array $macros;
-
-    private array $columnDefinition;
-
-    private $item;
-
+    /**
+     * @var array<string, mixed>
+     */
     private array $rowVariables;
 
+    /**
+     * @param array<string, string> $macros
+     */
     public function __construct(
-        TwigEnvironment $twigEnvironment,
-        PropertyAccessor $propertyAccessor,
-        array $macros = []
+        private readonly TwigEnvironment $twigEnvironment,
+        private readonly PropertyAccessor $propertyAccessor,
+        private readonly array $macros = [],
     ) {
-        $this->twigEnvironment  = $twigEnvironment;
-        $this->propertyAccessor = $propertyAccessor;
-        $this->macros           = $macros;
+        Assert::isMap($this->macros);
+        Assert::allString($this->macros);
     }
 
     /**
-     * @param object|array $item
+     * @param array<string, mixed>|object $item
+     * @param array<string, mixed>        $rowVariables
      *
      * @throws Exception
-     * @throws RuntimeException
      */
     public function generate(
-        array $columnDefinition,
-        $item,
-        array $rowVariables
-    ): array {
+        ColumnConfiguration $columnConfiguration,
+        array | object $item,
+        array $rowVariables,
+    ): GridRowCell {
         $this->init(
-            $columnDefinition,
+            $columnConfiguration,
             $item,
             $rowVariables
         );
@@ -55,35 +59,33 @@ class GridRowCellGenerator
     }
 
     /**
-     * @param object|array $item
+     * @param array<string, mixed>|object $item
+     * @param array<string, mixed>        $rowVariables
      */
     private function init(
-        array $columnDefinition,
-        $item,
+        ColumnConfiguration $columnConfiguration,
+        array | object $item,
         array $rowVariables
     ): void {
-        $this->columnDefinition = $columnDefinition;
-        $this->item             = $item;
-        $this->rowVariables     = $rowVariables;
+        $this->columnConfiguration = $columnConfiguration;
+        $this->item                = $item;
+        $this->rowVariables        = $rowVariables;
     }
 
-    private function buildCell(): array
+    private function buildCell(): GridRowCell
     {
-        return [
-            'value'      => $this->getCellValue(),
-            'parameters' => $this->getCellParameters(),
-        ];
+        return new GridRowCell(
+            $this->getCellValue(),
+            $this->getCellParameters(),
+        );
     }
 
-    /**
-     * @throws RuntimeException
-     */
     private function getCellValue(): string
     {
         $value = '';
 
-        if (!empty($this->columnDefinition['source'])) {
-            $source = $this->columnDefinition['source'];
+        if (null !== $this->columnConfiguration->getSource()) {
+            $source = $this->columnConfiguration->getSource();
 
             if (is_array($this->item)) {
                 $value = $this->item[$source] ?? '';
@@ -94,7 +96,7 @@ class GridRowCellGenerator
             }
         }
 
-        if (!empty($this->columnDefinition['template'])) {
+        if (null !== $this->columnConfiguration->getTemplate()) {
             $context = $this->rowVariables + [
                     '_value' => $value,
                 ];
@@ -102,15 +104,20 @@ class GridRowCellGenerator
             $value = $this->getColumnTemplate()->render($context);
         }
 
+        Assert::string($value);
+
         return trim($value);
     }
 
+    /**
+     * @return array<string, mixed>
+     */
     private function getCellParameters(): array
     {
         $parameters = [];
 
-        if (array_key_exists('align', $this->columnDefinition)) {
-            $parameters['align'] = $this->columnDefinition['align'];
+        if (null !== $this->columnConfiguration->getAlign()) {
+            $parameters['align'] = $this->columnConfiguration->getAlign();
         }
 
         return $parameters;
@@ -120,11 +127,13 @@ class GridRowCellGenerator
     {
         static $cache = [];
 
-        if (!array_key_exists('template', $this->columnDefinition)) {
+        $template = $this->columnConfiguration->getTemplate();
+
+        if (null === $template) {
             throw new RuntimeException();
         }
 
-        $cacheKey = serialize($this->columnDefinition['template']);
+        $cacheKey = serialize($template);
 
         if (!array_key_exists($cacheKey, $cache)) {
             $templateChunks = [];
@@ -133,11 +142,14 @@ class GridRowCellGenerator
                 $templateChunks[] = "{% import '{$macroPath}' as {$macroAlias} %}";
             }
 
-            $templateChunks[] = $this->columnDefinition['template'];
+            $templateChunks[] = $template;
 
-            $template = implode("\n", $templateChunks);
-
-            $templateWrapper = $this->createTemplate($template);
+            $templateWrapper = $this->createTemplate(
+                implode(
+                    "\n",
+                    $templateChunks,
+                )
+            );
 
             $cache[$cacheKey] = $templateWrapper;
         }

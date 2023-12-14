@@ -4,60 +4,60 @@ namespace Jmf\Grid\Grid;
 
 use DomainException;
 use Exception;
+use Jmf\Grid\Configuration\GridConfiguration;
+use Jmf\Grid\Configuration\GridConfigurationLoaderInterface;
 use RuntimeException;
 
 class GridGenerator
 {
-    private GridDefinitionLoader $gridDefinitionLoader;
-
-    private GridColumnsGenerator $gridColumnsGenerator;
-
-    private GridRowsGenerator $gridRowsGenerator;
-
-    private GridFooterGenerator $gridFooterGenerator;
-
     private string $gridId;
 
-    private iterable $items;
+    /**
+     * @var list<array<string, mixed>|object>
+     */
+    private array $items;
 
+    /**
+     * @var array<string, mixed>
+     */
     private array $arguments;
 
-    private GridDefinition $gridDefinition;
+    private GridConfiguration $gridConfiguration;
 
     public function __construct(
-        GridDefinitionLoader $gridDefinitionLoader,
-        GridColumnsGenerator $gridColumnsGenerator,
-        GridRowsGenerator $gridRowsGenerator,
-        GridFooterGenerator $gridFooterGenerator
+        private readonly GridConfigurationLoaderInterface $gridConfigurationLoader,
+        private readonly GridColumnsGenerator $gridColumnsGenerator,
+        private readonly GridRowsGenerator $gridRowsGenerator,
+        private readonly GridFooterGenerator $gridFooterGenerator,
     ) {
-        $this->gridDefinitionLoader = $gridDefinitionLoader;
-        $this->gridColumnsGenerator = $gridColumnsGenerator;
-        $this->gridRowsGenerator    = $gridRowsGenerator;
-        $this->gridFooterGenerator  = $gridFooterGenerator;
     }
 
     /**
-     * @param object[] $items
+     * @param list<array<string, mixed>|object> $items
+     * @param array<string, mixed>              $arguments
      *
      * @throws Exception
-     * @throws RuntimeException
      */
     public function generate(
         string $gridId,
-        iterable $items,
+        array $items,
         array $arguments
-    ): array {
+    ): Grid {
         $this->init($gridId, $items, $arguments);
 
-        $this->loadGridDefinition();
+        $this->loadGridConfiguration();
         $this->validateArguments();
 
         return $this->buildGrid();
     }
 
+    /**
+     * @param list<array<string, mixed>|object> $items
+     * @param array<string, mixed>              $arguments
+     */
     private function init(
         string $gridId,
-        iterable $items,
+        array $items,
         array $arguments
     ): void {
         $this->gridId    = $gridId;
@@ -68,52 +68,63 @@ class GridGenerator
     /**
      * @throws DomainException
      */
-    private function loadGridDefinition(): void
+    private function loadGridConfiguration(): void
     {
-        $this->gridDefinition = $this->gridDefinitionLoader->load($this->gridId);
+        $this->gridConfiguration = $this->gridConfigurationLoader->load($this->gridId);
     }
 
-    /**
-     * @throws RuntimeException
-     */
     private function validateArguments(): void
     {
-        foreach ($this->gridDefinition->getArguments() as $argument) {
+        foreach ($this->gridConfiguration->getArguments() as $argument) {
             if (!array_key_exists($argument, $this->arguments)) {
                 throw new RuntimeException("Missing grid argument '{$argument}' for grid '{$this->gridId}'.");
             }
         }
     }
 
-    private function buildGrid(): array
+    /**
+     * @throws Exception
+     */
+    private function buildGrid(): Grid
     {
-        return [
-            'columns' => $this->buildColumns(),
-            'rows'    => $this->buildRows(),
-            'footer'  => $this->buildFooter(),
-        ];
-    }
-
-    private function buildColumns(): array
-    {
-        return $this->gridColumnsGenerator->generate(
-            $this->gridDefinition
+        return new Grid(
+            $this->buildColumns(),
+            $this->buildRows(),
+            $this->buildFooter(),
         );
     }
 
-    private function buildRows(): array
+    /**
+     * @return GridColumn[]
+     */
+    private function buildColumns(): iterable
+    {
+        return $this->gridColumnsGenerator->generate(
+            $this->gridConfiguration
+        );
+    }
+
+    /**
+     * @return GridRow[]
+     *
+     * @throws Exception
+     */
+    private function buildRows(): iterable
     {
         return $this->gridRowsGenerator->generate(
-            $this->gridDefinition,
+            $this->gridConfiguration,
             $this->items,
             $this->arguments
         );
     }
 
-    private function buildFooter(): array
+    /**
+     * @throws Exception
+     */
+    private function buildFooter(): GridFooter
     {
         return $this->gridFooterGenerator->generate(
-            $this->gridDefinition,
+            $this->gridConfiguration,
             $this->items,
             $this->arguments
         );

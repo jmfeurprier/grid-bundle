@@ -3,60 +3,62 @@
 namespace Jmf\Grid\Grid;
 
 use Exception;
-use RuntimeException;
-use Twig\Environment as TwigEnvironment;
-use Twig\Error\LoaderError;
-use Twig\Error\SyntaxError;
-use Twig\TemplateWrapper;
+use Jmf\Grid\Configuration\ColumnConfiguration;
+use Jmf\Grid\Configuration\GridConfiguration;
+use Jmf\Grid\Exception\TemplateRenderingException;
+use Jmf\Grid\TemplateRendering\TemplateRenderer;
+use Webmozart\Assert\Assert;
 
 class GridRowGenerator
 {
-    private TwigEnvironment $twigEnvironment;
+    private GridConfiguration $gridConfiguration;
 
-    private GridRowCellGenerator $gridRowCellGenerator;
-
-    private GridRowLinkGenerator $gridRowLinkGenerator;
-
-    private array $macros;
-
-    private GridDefinition $gridDefinition;
-
-    private $item;
+    /**
+     * @var array<string, mixed>|object
+     */
+    private array | object $item;
 
     private int $rowIndex;
 
     private int $rowCount;
 
+    /**
+     * @var array<string, mixed>
+     */
     private array $arguments;
 
+    /**
+     * @var array<string, mixed>
+     */
     private array $rowVariables;
 
+    /**
+     * @param array<string, string> $macros
+     */
     public function __construct(
-        TwigEnvironment $twigEnvironment,
-        GridRowCellGenerator $gridRowCellGenerator,
-        GridRowLinkGenerator $gridRowLinkGenerator,
-        array $macros = []
+        private readonly TemplateRenderer $templateRenderer,
+        private readonly GridRowCellGenerator $gridRowCellGenerator,
+        private readonly GridRowLinkGenerator $gridRowLinkGenerator,
+        private readonly array $macros = [],
     ) {
-        $this->twigEnvironment      = $twigEnvironment;
-        $this->gridRowCellGenerator = $gridRowCellGenerator;
-        $this->gridRowLinkGenerator = $gridRowLinkGenerator;
-        $this->macros               = $macros;
+        Assert::isMap($this->macros);
+        Assert::allString($this->macros);
     }
 
     /**
-     * @param object|array $item
+     * @param array<string, mixed>|object $item
+     * @param array<string, mixed>        $arguments
      *
      * @throws Exception
-     * @throws RuntimeException
      */
     public function generate(
-        GridDefinition $gridDefinition,
-        $item,
+        GridConfiguration $gridConfiguration,
+        array | object $item,
         int $rowIndex,
         int $rowCount,
         array $arguments
-    ): array {
-        $this->init($gridDefinition, $item, $rowIndex, $rowCount, $arguments);
+    ): GridRow {
+        $this->init($gridConfiguration, $item, $rowIndex, $rowCount, $arguments);
 
         $this->buildRowVariables();
 
@@ -64,39 +66,42 @@ class GridRowGenerator
     }
 
     /**
-     * @param object|array $item
+     * @param array<string, mixed>|object $item
+     * @param array<string, mixed>        $arguments
      */
     private function init(
-        GridDefinition $gridDefinition,
-        $item,
+        GridConfiguration $gridConfiguration,
+        array | object $item,
         int $rowIndex,
         int $rowCount,
         array $arguments
     ): void {
-        $this->gridDefinition = $gridDefinition;
-        $this->item           = $item;
-        $this->rowIndex       = $rowIndex;
-        $this->rowCount       = $rowCount;
-        $this->arguments      = $arguments;
+        $this->gridConfiguration = $gridConfiguration;
+        $this->item              = $item;
+        $this->rowIndex          = $rowIndex;
+        $this->rowCount          = $rowCount;
+        $this->arguments         = $arguments;
     }
 
     /**
      * @throws Exception
+     * @throws TemplateRenderingException
      */
-    private function buildRow(): array
+    private function buildRow(): GridRow
     {
-        $this->buildRowVariables();
-
-        return [
-            'cells' => $this->buildRowCells(),
-            'link'  => $this->buildRowLink(),
-        ];
+        return new GridRow(
+            $this->buildRowCells(),
+            $this->buildRowLink(),
+        );
     }
 
+    /**
+     * @throws TemplateRenderingException
+     */
     private function buildRowVariables(): void
     {
         $loopVariables         = $this->buildLoopVariable();
-        $rowVariables          = $this->gridDefinition->getGridVariables() + $this->arguments;
+        $rowVariables          = $this->gridConfiguration->getGridVariables()->all() + $this->arguments;
         $rowVariables['_item'] = $this->item;
         $rowVariables['_loop'] = $loopVariables;
 
@@ -105,9 +110,9 @@ class GridRowGenerator
             $macroChunks[] = "{% import '{$macroPath}' as {$macroAlias} %}";
         }
 
-        foreach ($this->gridDefinition->getRowsVariables() as $key => $value) {
+        foreach ($this->gridConfiguration->getRowConfiguration()->getVariables()->all() as $key => $value) {
             $rowVariables[$key] = $this->renderTemplateFromString(
-                implode($macroChunks) . $value,
+                implode('', $macroChunks) . $value,
                 $rowVariables
             );
         }
@@ -119,6 +124,9 @@ class GridRowGenerator
         $this->rowVariables = $rowVariables;
     }
 
+    /**
+     * @return array<string, mixed>
+     */
     private function buildLoopVariable(): array
     {
         return [
@@ -133,21 +141,29 @@ class GridRowGenerator
         ];
     }
 
-    private function buildRowCells(): array
+    /**
+     * @return GridRowCell[]
+     *
+     * @throws Exception
+     */
+    private function buildRowCells(): iterable
     {
         $cells = [];
 
-        foreach ($this->gridDefinition->getColumns() as $columnDefinition) {
-            $cells[] = $this->buildCell($columnDefinition);
+        foreach ($this->gridConfiguration->getColumnConfigurations() as $columnConfiguration) {
+            $cells[] = $this->buildCell($columnConfiguration);
         }
 
         return $cells;
     }
 
-    private function buildCell(array $columnDefinition): array
+    /**
+     * @throws Exception
+     */
+    private function buildCell(ColumnConfiguration $columnConfiguration): GridRowCell
     {
         return $this->gridRowCellGenerator->generate(
-            $columnDefinition,
+            $columnConfiguration,
             $this->item,
             $this->rowVariables
         );
@@ -156,26 +172,22 @@ class GridRowGenerator
     private function buildRowLink(): ?string
     {
         return $this->gridRowLinkGenerator->generate(
-            $this->gridDefinition,
+            $this->gridConfiguration,
             $this->item,
             $this->rowVariables,
             $this->arguments
         );
     }
 
+    /**
+     * @param array<string, mixed> $context
+     *
+     * @throws TemplateRenderingException
+     */
     private function renderTemplateFromString(
         string $template,
-        array $context = []
+        array $context,
     ): string {
-        return $this->createTemplate($template)->render($context);
-    }
-
-    /**
-     * @throws LoaderError
-     * @throws SyntaxError
-     */
-    protected function createTemplate(string $template): TemplateWrapper
-    {
-        return $this->twigEnvironment->createTemplate($template);
+        return $this->templateRenderer->renderFromString($template, $context);
     }
 }

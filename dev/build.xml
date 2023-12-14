@@ -24,12 +24,13 @@
 
 	<target name="phpunit" description="Runs unit tests with PHPUnit">
 		<exec executable="${bindir}phpunit" passthru="true">
-			<arg line="-c ${rootdir}" />
+			<arg line="-c ${rootdir}dev/" />
 		</exec>
 	</target>
 
 	<target name="phpcs" description="Finds coding standard violations using PHP_CodeSniffer and print human readable output. Intended for usage on the command line before committing.">
 		<exec executable="${bindir}phpcs" passthru="true">
+			<arg line="--standard=${rootdir}dev/phpcs.xml" />
 			<arg line="-p" />
 			<arg line="--report=full" />
 		</exec>
@@ -39,7 +40,7 @@
 		<exec executable="${bindir}phpmd" passthru="true">
 			<arg line="${srcdir}" />
 			<arg line="text" />
-			<arg line="${rootdir}phpmd.xml" />
+			<arg line="${rootdir}dev/phpmd.xml" />
 		</exec>
 	</target>
 
@@ -48,7 +49,7 @@
 	<target name="coverage" description="Runs code coverage with PHPUnit">
 		<exec executable="${bindir}phpunit" passthru="true">
 			<arg line="--coverage-html ${rootdir}build/coverage/" />
-			<arg line="-c ${rootdir}phpunit.xml" />
+			<arg line="-c ${rootdir}dev/phpunit.xml" />
 		</exec>
 	</target>
 

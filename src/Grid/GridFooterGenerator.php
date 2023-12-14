@@ -3,143 +3,104 @@
 namespace Jmf\Grid\Grid;
 
 use Exception;
-use RuntimeException;
-use Twig\Environment as TwigEnvironment;
-use Twig\Error\LoaderError;
-use Twig\Error\SyntaxError;
-use Twig\TemplateWrapper;
+use Jmf\Grid\Configuration\FooterConfiguration;
+use Jmf\Grid\Configuration\GridConfiguration;
+use Jmf\Grid\Exception\TemplateRenderingException;
+use Jmf\Grid\TemplateRendering\TemplateRenderer;
 
 class GridFooterGenerator
 {
-    private TwigEnvironment $twigEnvironment;
+    /**
+     * @var FooterConfiguration[][]
+     */
+    private iterable $footerConfigurations;
 
-    private array $entityRenderingPresets;
-
-    private array $footerDefinition;
-
+    /**
+     * @var iterable<array<string, mixed>|object>
+     */
     private iterable $items;
 
+    /**
+     * @var array<string, mixed>
+     */
     private array $arguments;
 
     public function __construct(
-        TwigEnvironment $twigEnvironment,
-        array $entityRenderingPresets
+        private readonly TemplateRenderer $templateRenderer,
     ) {
-        $this->twigEnvironment        = $twigEnvironment;
-        $this->entityRenderingPresets = $entityRenderingPresets;
     }
 
     /**
-     * @param object[] $items
+     * @param iterable<array<string, mixed>|object> $items
+     * @param array<string, mixed>                  $arguments
      *
      * @throws Exception
-     * @throws RuntimeException
      */
     public function generate(
-        GridDefinition $gridDefinition,
+        GridConfiguration $gridConfiguration,
         iterable $items,
         array $arguments
-    ): array {
-        $this->init($gridDefinition, $items, $arguments);
-
-        $this->applyPresets();
+    ): GridFooter {
+        $this->init($gridConfiguration, $items, $arguments);
 
         return $this->buildFooter();
     }
 
+    /**
+     * @param iterable<array<string, mixed>|object> $items
+     * @param array<string, mixed>                  $arguments
+     */
     private function init(
-        GridDefinition $gridDefinition,
+        GridConfiguration $gridConfiguration,
         iterable $items,
         array $arguments
     ): void {
-        $this->footerDefinition = $gridDefinition->getFooter();
-        $this->items            = $items;
-        $this->arguments        = $arguments;
+        $this->footerConfigurations = $gridConfiguration->getFooterConfigurations();
+        $this->items                = $items;
+        $this->arguments            = $arguments;
     }
 
-    private function applyPresets(): void
+    /**
+     * @throws TemplateRenderingException
+     */
+    private function buildFooter(): GridFooter
     {
-        foreach ($this->footerDefinition as $rowKey => $footerRowDefinition) {
-            foreach ($footerRowDefinition as $columnKey => $footerColumnDefinition) {
-                $this->footerDefinition[$rowKey][$columnKey] = $this->applyPresetToColumnDefinition(
-                    $footerColumnDefinition
+        $rows = [];
+
+        foreach ($this->footerConfigurations as $footerRowConfiguration) {
+            $cells = [];
+
+            foreach ($footerRowConfiguration as $footerColumnConfiguration) {
+                $cells[] = new GridFooterCell(
+                    $this->buildValue($footerColumnConfiguration),
+                    $this->buildAttributes($footerColumnConfiguration),
                 );
             }
+
+            $rows[] = new GridFooterRow($cells);
         }
+
+        return new GridFooter($rows);
     }
 
     /**
-     * @throws RuntimeException
+     * @return array<string, mixed>
      */
-    private function applyPresetToColumnDefinition(array $footerColumnDefinition): array
-    {
-        if (empty($footerColumnDefinition['preset'])) {
-            return $footerColumnDefinition;
-        }
-
-        $presetId = $footerColumnDefinition['preset'];
-        unset($footerColumnDefinition['preset']);
-
-        $newColumnDefinition = array_merge(
-            $this->getPreset($presetId),
-            $footerColumnDefinition
-        );
-
-        return $this->applyPresetToColumnDefinition($newColumnDefinition);
-    }
-
-    /**
-     * @throws RuntimeException
-     */
-    private function getPreset(string $presetId): array
-    {
-        if (isset($this->entityRenderingPresets[$presetId])) {
-            return $this->entityRenderingPresets[$presetId];
-        }
-
-        throw new RuntimeException("Table footer column preset '{$presetId}' not defined.");
-    }
-
-    private function buildFooter(): array
-    {
-        $output = [];
-
-        foreach ($this->footerDefinition as $footerRowDefinition) {
-            $outputRow = [];
-
-            foreach ($footerRowDefinition as $footerColumnDefinition) {
-                $outputColumn = [
-                    'value' => $this->buildValue($footerColumnDefinition),
-                ];
-
-                $attributes = $this->buildAttributes($footerColumnDefinition);
-                if (!empty($attributes)) {
-                    $outputColumn['attributes'] = $attributes;
-                }
-
-                $outputRow[] = $outputColumn;
-            }
-
-            $output[] = $outputRow;
-        }
-
-        return $output;
-    }
-
-    private function buildAttributes(array $footerColumnDefinition): array
+    private function buildAttributes(FooterConfiguration $footerConfiguration): array
     {
         $attributes = [];
+        $classes    = [];
 
-        $classes = [];
-        if (array_key_exists('align', $footerColumnDefinition)) {
-            $classes[] = "text-{$footerColumnDefinition['align']}";
+        if (null !== $footerConfiguration->getAlign()) {
+            $classes[] = "text-{$footerConfiguration->getAlign()}";
         }
 
-        if (!empty($classes)) {
-            $attributes['class'] = join(' ', $classes);
+        if (count($classes) > 0) {
+            $attributes['class'] = implode(' ', $classes);
         }
 
-        $merge = $footerColumnDefinition['merge'] ?? 1;
+        $merge = $footerConfiguration->getMerge() ?? 1;
+
         if ($merge > 1) {
             $attributes['colspan'] = $merge;
         }
@@ -148,36 +109,25 @@ class GridFooterGenerator
     }
 
     /**
-     * @throws SyntaxError
-     * @throws LoaderError
+     * @throws TemplateRenderingException
      */
-    private function buildValue(array $footerColumnDefinition): string
+    private function buildValue(FooterConfiguration $footerConfiguration): string
     {
         $value = '';
 
-        if (!empty($footerColumnDefinition['value'])) {
-            $value = $footerColumnDefinition['value'];
-        } elseif (!empty($footerColumnDefinition['template'])) {
-            $template = $this->createTemplate($footerColumnDefinition['template']);
-
+        if (null !== $footerConfiguration->getValue()) {
+            $value = $footerConfiguration->getValue();
+        } elseif (null !== $footerConfiguration->getTemplate()) {
             $context = $this->arguments + [
                     '_items' => $this->items,
                 ];
 
-            $value = $template->render($context);
+            $value = $this->templateRenderer->renderFromString(
+                $footerConfiguration->getTemplate(),
+                $context,
+            );
         }
 
         return trim($value);
-    }
-
-    /**
-     * @throws LoaderError
-     * @throws SyntaxError
-     */
-    protected function createTemplate(
-        string $template,
-        ?string $name = null
-    ): TemplateWrapper {
-        return $this->twigEnvironment->createTemplate($template, $name);
     }
 }

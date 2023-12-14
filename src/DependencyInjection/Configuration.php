@@ -8,7 +8,7 @@ use Symfony\Component\Config\Definition\ConfigurationInterface;
 
 class Configuration implements ConfigurationInterface
 {
-    public function getConfigTreeBuilder()
+    public function getConfigTreeBuilder(): TreeBuilder
     {
         $treeBuilder = new TreeBuilder('jmf_grid');
 
@@ -18,9 +18,30 @@ class Configuration implements ConfigurationInterface
             ->children()
                 ->arrayNode('grids')
                     ->info('Grid definitions.')
-                    ->useAttributeAsKey('key')
-                    ->variablePrototype()->end()
-                    ->defaultValue([])
+                    ->useAttributeAsKey('gridId')
+                    ->arrayPrototype()
+                        ->children()
+                            ->arrayNode('grid')
+                                ->children()
+                                    ->arrayNode('variables')
+                                        ->useAttributeAsKey('key')
+                                        ->variablePrototype()->end()
+                                    ->end()
+                                ->end()
+                            ->end()
+                            ->arrayNode('rows')
+                                ->variablePrototype()->end()
+                            ->end()
+                            ->arrayNode('columns')
+                                ->isRequired()
+                                ->variablePrototype()->end()
+                            ->end()
+                            ->arrayNode('footer')
+                                ->variablePrototype()->end()
+                            ->end()
+                        ->end()
+                    ->end()
+//                    ->defaultValue([])
                 ->end()
                 ->scalarNode('template_path')
                     ->info('Grid template path.')

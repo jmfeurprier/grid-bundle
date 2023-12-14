@@ -2,43 +2,38 @@
 
 namespace Jmf\Grid\Twig;
 
+use Exception;
+use Jmf\Grid\Exception\TemplateRenderingException;
 use Jmf\Grid\Grid\GridGenerator;
-use Twig\Environment as TwigEnvironment;
+use Jmf\Grid\TemplateRendering\TemplateRenderer;
+use Override;
 use Twig\Extension\AbstractExtension;
 use Twig\TwigFunction;
 
 class GridExtension extends AbstractExtension
 {
-    public const PREFIX_DEFAULT = 'jmf_';
+    public final const string PREFIX_DEFAULT = 'jmf_';
 
-    private const FUNCTIONS = [
+    /**
+     * @var array<string, string>
+     */
+    private const array FUNCTIONS = [
         'grid' => 'grid',
     ];
 
-    private GridGenerator $gridGenerator;
-
-    private TwigEnvironment $twigEnvironment;
-
-    private string $templatePath;
-
-    private string $prefix;
-
     public function __construct(
-        GridGenerator $gridGenerator,
-        TwigEnvironment $twigEnvironment,
-        string $templatePath,
-        string $prefix = self::PREFIX_DEFAULT
+        private readonly GridGenerator $gridGenerator,
+        private readonly TemplateRenderer $templateRenderer,
+        private readonly string $templatePath,
+        private readonly string $prefix = self::PREFIX_DEFAULT,
     ) {
-        $this->gridGenerator   = $gridGenerator;
-        $this->twigEnvironment = $twigEnvironment;
-        $this->templatePath    = $templatePath;
-        $this->prefix          = $prefix;
     }
 
     /**
-     * {@inheritDoc}
+     * @return TwigFunction[]
      */
-    public function getFunctions(): array
+    #[Override]
+    public function getFunctions(): iterable
     {
         $functions = [];
 
@@ -58,24 +53,25 @@ class GridExtension extends AbstractExtension
         return $functions;
     }
 
+    /**
+     * @param list<array<string, mixed>|object> $items
+     * @param array<string, mixed>              $arguments
+     * @param array<string, mixed>              $parameters
+     *
+     * @throws Exception
+     * @throws TemplateRenderingException
+     */
     public function grid(
         string $gridId,
-        iterable $items,
+        array $items,
         array $arguments = [],
         array $parameters = []
     ): string {
-        return $this->renderView(
+        return $this->templateRenderer->renderFromFile(
             $this->templatePath,
             $parameters + [
                 'grid' => $this->gridGenerator->generate($gridId, $items, $arguments),
             ]
         );
-    }
-
-    private function renderView(
-        string $view,
-        array $parameters
-    ): string {
-        return $this->twigEnvironment->render($view, $parameters);
     }
 }

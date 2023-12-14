@@ -3,35 +3,35 @@
 namespace Jmf\Grid\Grid;
 
 use Exception;
-use RuntimeException;
+use Jmf\Grid\Configuration\GridConfiguration;
 
-class GridRowsGenerator
+readonly class GridRowsGenerator
 {
-    private GridRowGenerator $gridRowGenerator;
-
-    public function __construct(GridRowGenerator $gridRowGenerator)
-    {
-        $this->gridRowGenerator = $gridRowGenerator;
+    public function __construct(
+        private GridRowGenerator $gridRowGenerator,
+    ) {
     }
 
     /**
-     * @param array[]|object[] $items
+     * @param list<array<string, mixed>|object> $items
+     * @param array<string, mixed>              $arguments
+     *
+     * @return GridRow[]
      *
      * @throws Exception
-     * @throws RuntimeException
      */
     public function generate(
-        GridDefinition $gridDefinition,
-        iterable $items,
+        GridConfiguration $gridConfiguration,
+        array $items,
         array $arguments
-    ): array {
+    ): iterable {
         $rowCount = count($items);
         $rowIndex = 1;
         $rows     = [];
 
         foreach ($items as $item) {
             $rows[] = $this->gridRowGenerator->generate(
-                $gridDefinition,
+                $gridConfiguration,
                 $item,
                 $rowIndex,
                 $rowCount,

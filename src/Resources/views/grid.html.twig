@@ -32,13 +32,13 @@
                 </tr>
             {% endfor %}
         </tbody>
-        {% if (grid.footer is not empty) %}
+        {% if (grid.footer.rows is not empty) %}
             <tfoot>
-                {% for footerRow in grid.footer %}
+                {% for footerRow in grid.footer.rows %}
                     <tr>
-                        {% for footerColumn in footerRow %}
-                            <td{% for key, value in (footerColumn.attributes|default({})) %} {{ key }}="{{ value }}"{% endfor %}>
-                                {{ footerColumn.value|default('')|raw }}
+                        {% for footerCell in footerRow.cells %}
+                            <td{% for key, value in (footerCell.attributes) %} {{ key }}="{{ value }}"{% endfor %}>
+                                {{ footerCell.value|default('')|raw }}
                             </td>
                         {% endfor %}
                     </tr>

@@ -1,0 +1,69 @@
+jmf_grid:
+
+    #template_path:         '@JmfGrid/grid.html.twig'
+    #twig_functions_prefix: 'jmf_'
+    macros:
+        macro_buttons: '_macro/buttons.html.twig'
+
+    presets:
+        buttonEdit:
+            align:    'right'
+            template: '<a href="{{ path(entityType ~ ".edit", {"id": entityId} ) }}">Edit</a>'
+        buttonShow:
+            align:    'right'
+            template: '<a href="{{ path(entityType ~ ".show", {"id": entityId} ) }}">Show</a>'
+        date:
+            align:    'center'
+            template: '{% if (_value is not null) %}{{ _value.format("Y-m-d") }}{% endif %}'
+        dateTime:
+            align:    'center'
+            template: '{% if (_value is not null) %}{{ _value.format("Y-m-d H:i:s") }}{% endif %}'
+        gender:
+            align:  'center'
+            label:  'Gender'
+            source: 'gender'
+        text:
+            align: 'left'
+
+    grids:
+        articles:
+            grid:
+                variables:
+                    entityType: 'article'
+            rows:
+                link: '{{ path("article.read", {"id": _item.id} ) }}'
+                variables:
+                    entityId: '{{ _item.id }}'
+            columns:
+                -
+                    label:  'title'
+                    source: 'title'
+                -
+                    preset: 'date'
+                    source: 'date'
+                -
+                    preset: 'buttonsShow'
+        users:
+            grid:
+                variables:
+                    entityType: 'user'
+            rows:
+                link: '{{ path("user.read", {"id": _item.id} ) }}'
+                variables:
+                    entityId: '{{ _item.id }}'
+            columns:
+                -
+                    label:  'Last name'
+                    source: 'lastName'
+                -
+                    label:  'First name'
+                    source: 'firstName'
+                -
+                    preset:  'gender'
+                -
+                    label:  'Birth date'
+                    source: 'startDate'
+                -
+                    preset: 'buttonShow'
+                -
+                    preset: 'buttonEdit'

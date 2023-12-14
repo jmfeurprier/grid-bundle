@@ -2,31 +2,31 @@
 
 namespace Jmf\Grid\Grid;
 
-class GridColumnsGenerator
+use Jmf\Grid\Configuration\ColumnConfiguration;
+use Jmf\Grid\Configuration\GridConfiguration;
+
+readonly class GridColumnsGenerator
 {
-    public function generate(GridDefinition $gridDefinition): array
+    /**
+     * @return GridColumn[]
+     */
+    public function generate(GridConfiguration $gridConfiguration): iterable
     {
         $columns = [];
 
-        foreach ($gridDefinition->getColumns() as $columnDefinition) {
-            $columns[] = $this->generateColumn($columnDefinition);
+        foreach ($gridConfiguration->getColumnConfigurations() as $columnConfiguration) {
+            $columns[] = $this->generateColumn($columnConfiguration);
         }
 
         return $columns;
     }
 
-    private function generateColumn(array $columnDefinition): array
-    {
-        $column = [];
-
-        if (array_key_exists('align', $columnDefinition)) {
-            $column['align'] = $columnDefinition['align'];
-        }
-
-        if (array_key_exists('label', $columnDefinition)) {
-            $column['label'] = $columnDefinition['label'];
-        }
-
-        return $column;
+    private function generateColumn(
+        ColumnConfiguration $columnConfiguration,
+    ): GridColumn {
+        return new GridColumn(
+            $columnConfiguration->getLabel(),
+            $columnConfiguration->getAlign(),
+        );
     }
 }

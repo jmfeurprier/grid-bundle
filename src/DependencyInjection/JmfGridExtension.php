@@ -2,26 +2,38 @@
 
 namespace Jmf\Grid\DependencyInjection;
 
+use Jmf\Grid\Configuration\CacheableGridConfigurationLoader;
+use Jmf\Grid\Configuration\ColumnConfigurationLoader;
+use Jmf\Grid\Configuration\GridConfiguration;
+use Jmf\Grid\Configuration\GridConfigurationLoader;
+use Jmf\Grid\Configuration\GridConfigurationLoaderInterface;
+use Jmf\Grid\Configuration\KeyObjectCollection;
+use Jmf\Grid\Configuration\KeyValueCollection;
 use Jmf\Grid\Grid\GridDefinitionLoader;
 use Jmf\Grid\Grid\GridFooterGenerator;
+use Jmf\Grid\Grid\GridGenerator;
 use Jmf\Grid\Grid\GridRowCellGenerator;
 use Jmf\Grid\Grid\GridRowGenerator;
 use Jmf\Grid\Grid\GridRowsGenerator;
+use Jmf\Grid\RenderingPreset\CacheableRenderingPresetRepository;
+use Jmf\Grid\RenderingPreset\RenderingPresetRepository;
+use Jmf\Grid\RenderingPreset\RenderingPresetRepositoryInterface;
 use Jmf\Grid\Twig\GridExtension;
+use Override;
 use Symfony\Component\Config\FileLocator;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Extension\Extension;
 use Symfony\Component\DependencyInjection\Loader\YamlFileLoader;
+use Symfony\Component\DependencyInjection\Reference;
+use Symfony\Contracts\Cache\CacheInterface;
 
 class JmfGridExtension extends Extension
 {
-    /**
-     * {@inheritDoc}
-     */
+    #[Override]
     public function load(
         array $configs,
         ContainerBuilder $containerBuilder
-    ) {
+    ): void {
         $configuration = new Configuration();
 
         $config = $this->processConfiguration($configuration, $configs);
@@ -33,10 +45,37 @@ class JmfGridExtension extends Extension
 
         $loader->load('services.yaml');
 
-        $containerBuilder->autowire(GridDefinitionLoader::class)
-            ->setArgument('$gridDefinitions', $config['grids'])
-            ->setArgument('$entityRenderingPresets', $config['presets'])
-        ;
+        if (interface_exists(CacheInterface::class)) {
+            $containerBuilder->autowire(GridConfigurationLoader::class)
+                ->setArgument('$gridsConfig', $config['grids'])
+            ;
+
+            $containerBuilder->autowire(GridConfigurationLoaderInterface::class)
+                ->setClass(CacheableGridConfigurationLoader::class)
+                ->setArgument('$gridConfigurationLoader', new Reference(GridConfigurationLoader::class))
+            ;
+        } else {
+            $containerBuilder->autowire(GridConfigurationLoaderInterface::class)
+                ->setClass(GridConfigurationLoader::class)
+                ->setArgument('$gridsConfig', $config['grids'])
+            ;
+        }
+
+        if (interface_exists(CacheInterface::class)) {
+            $containerBuilder->autowire(RenderingPresetRepository::class)
+                ->setArgument('$renderingPresetConfigs', $config['presets'])
+            ;
+
+            $containerBuilder->autowire(RenderingPresetRepositoryInterface::class)
+                ->setClass(CacheableRenderingPresetRepository::class)
+                ->setArgument('$renderingPresetRepository', new Reference(RenderingPresetRepository::class))
+            ;
+        } else {
+            $containerBuilder->autowire(RenderingPresetRepositoryInterface::class)
+                ->setClass(RenderingPresetRepository::class)
+                ->setArgument('$renderingPresetConfigs', $config['presets'])
+            ;
+        }
 
         $containerBuilder->autowire(GridExtension::class)
             ->setArgument('$templatePath', $config['template_path'])
@@ -44,29 +83,28 @@ class JmfGridExtension extends Extension
             ->addTag('twig.extension')
         ;
 
-        $containerBuilder->autowire(GridFooterGenerator::class)
-            ->setArgument('$entityRenderingPresets', $config['presets'])
+        $containerBuilder->autowire(GridRowCellGenerator::class)
+            ->setArgument('$macros', $config['macros'])
         ;
 
         $containerBuilder->autowire(GridRowGenerator::class)
             ->setArgument('$macros', $config['macros'])
         ;
-
-        $containerBuilder->autowire(GridRowCellGenerator::class)
-            ->setArgument('$macros', $config['macros'])
-        ;
     }
 
+    #[Override]
     public function getNamespace(): string
     {
         return '';
     }
 
+    #[Override]
     public function getXsdValidationBasePath(): bool
     {
         return false;
     }
 
+    #[Override]
     public function getAlias(): string
     {
         return 'jmf_grid';
