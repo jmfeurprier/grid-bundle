@@ -4,11 +4,11 @@
             <tr>
                 {% for column in grid.columns %}
                     {% set classes = [] %}
-                    {% if (column.align is defined) %}
+                    {% if (column.align is not null) %}
                         {% set classes = classes|array_push('text-' ~ column.align) %}
                     {% endif %}
                     <th{% if (classes is not empty) %} class="{{ classes|join(' ') }}"{% endif %}>
-                        {% if (column.label is defined) %}{{ column.label }}{% endif %}
+                        {% if (column.label is not null) %}{{ column.label }}{% endif %}
                     </th>
                 {% endfor %}
             </tr>
@@ -22,7 +22,7 @@
                 {% endif %}
                 {% for cell in row.cells %}
                     {% set classes = [] %}
-                    {% if (cell.parameters.align is defined) %}
+                    {% if (cell.parameters.align is not null) %}
                         {% set classes = classes|array_push('text-' ~ cell.parameters.align) %}
                     {% endif %}
                     <td{% if (classes is not empty) %} class="{{ classes|join(' ') }}"{% endif %}>
