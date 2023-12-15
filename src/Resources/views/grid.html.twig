@@ -2,7 +2,7 @@
     <table class="table table-bordered table-sm table-striped table-hover _dt">
         <thead>
             <tr>
-                {% for columnId, column in grid.columns %}
+                {% for column in grid.columns %}
                     {% set classes = [] %}
                     {% if (column.align is defined) %}
                         {% set classes = classes|array_push('text-' ~ column.align) %}
@@ -18,7 +18,7 @@
                 {% if (row.link is null) %}
                     <tr>
                 {% else %}
-                    <tr class="clickable" data-link="{{ row.link }}">
+                    <tr onclick="window.location='{{ row.link }}'" style="cursor:pointer">
                 {% endif %}
                 {% for cell in row.cells %}
                     {% set classes = [] %}
