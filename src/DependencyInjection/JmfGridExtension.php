@@ -3,18 +3,10 @@
 namespace Jmf\Grid\DependencyInjection;
 
 use Jmf\Grid\Configuration\CacheableGridConfigurationLoader;
-use Jmf\Grid\Configuration\ColumnConfigurationLoader;
-use Jmf\Grid\Configuration\GridConfiguration;
 use Jmf\Grid\Configuration\GridConfigurationLoader;
 use Jmf\Grid\Configuration\GridConfigurationLoaderInterface;
-use Jmf\Grid\Configuration\KeyObjectCollection;
-use Jmf\Grid\Configuration\KeyValueCollection;
-use Jmf\Grid\Grid\GridDefinitionLoader;
-use Jmf\Grid\Grid\GridFooterGenerator;
-use Jmf\Grid\Grid\GridGenerator;
 use Jmf\Grid\Grid\GridRowCellGenerator;
 use Jmf\Grid\Grid\GridRowGenerator;
-use Jmf\Grid\Grid\GridRowsGenerator;
 use Jmf\Grid\RenderingPreset\CacheableRenderingPresetRepository;
 use Jmf\Grid\RenderingPreset\RenderingPresetRepository;
 use Jmf\Grid\RenderingPreset\RenderingPresetRepositoryInterface;
@@ -32,7 +24,7 @@ class JmfGridExtension extends Extension
     #[Override]
     public function load(
         array $configs,
-        ContainerBuilder $containerBuilder
+        ContainerBuilder $containerBuilder,
     ): void {
         $configuration = new Configuration();
 
