@@ -2,13 +2,9 @@
 
 namespace Jmf\Grid\TemplateRendering;
 
-use Exception;
 use Jmf\Grid\Exception\TemplateRenderingException;
 use Throwable;
 use Twig\Environment as TwigEnvironment;
-use Twig\Error\LoaderError;
-use Twig\Error\SyntaxError;
-use Twig\TemplateWrapper;
 
 readonly class TemplateRenderer
 {

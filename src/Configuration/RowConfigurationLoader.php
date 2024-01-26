@@ -42,7 +42,7 @@ readonly class RowConfigurationLoader
 
         $variablesConfig = $rowConfig['variables'];
 
-        Assert::isMap($variablesConfig);
+        Assert::isArray($variablesConfig);
 
         return new KeyValueCollection($variablesConfig);
     }
