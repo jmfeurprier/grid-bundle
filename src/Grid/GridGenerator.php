@@ -41,7 +41,7 @@ class GridGenerator
     public function generate(
         string $gridId,
         array $items,
-        array $arguments
+        array $arguments,
     ): Grid {
         $this->init($gridId, $items, $arguments);
 
@@ -58,7 +58,7 @@ class GridGenerator
     private function init(
         string $gridId,
         array $items,
-        array $arguments
+        array $arguments,
     ): void {
         $this->gridId    = $gridId;
         $this->items     = $items;

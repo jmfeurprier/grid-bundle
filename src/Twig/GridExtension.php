@@ -35,22 +35,15 @@ class GridExtension extends AbstractExtension
     #[Override]
     public function getFunctions(): iterable
     {
-        $functions = [];
-
-        foreach (self::FUNCTIONS as $function => $method) {
-            $functions[] = new TwigFunction(
-                ($this->prefix . $function),
-                [
-                    $this,
-                    $method,
-                ],
+        return [
+            new TwigFunction(
+                "{$this->prefix}grid}",
+                $this->grid(...),
                 [
                     'is_safe' => ['html'],
                 ]
-            );
-        }
-
-        return $functions;
+            )
+        ];
     }
 
     /**

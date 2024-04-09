@@ -23,7 +23,7 @@ readonly class GridRowsGenerator
     public function generate(
         GridConfiguration $gridConfiguration,
         array $items,
-        array $arguments
+        array $arguments,
     ): iterable {
         $rowCount = count($items);
         $rowIndex = 1;
