@@ -2,10 +2,10 @@
 
 namespace Jmf\Grid\RenderingPreset;
 
-class RenderingPresetApplier
+readonly class RenderingPresetApplier
 {
     public function __construct(
-        private readonly RenderingPresetRepositoryInterface $renderingPresetRepository,
+        private RenderingPresetRepositoryInterface $renderingPresetRepository,
     ) {
     }
 

@@ -46,11 +46,11 @@ readonly class ColumnConfiguration implements WithRenderingPresetInterface
     public function applyPreset(RenderingPreset $renderingPreset): static
     {
         return new static(
-            $renderingPreset->getAlign() ?? $this->align,
-            $renderingPreset->getLabel() ?? $this->label,
-            $renderingPreset->getSource() ?? $this->source,
-            $renderingPreset->getTemplate() ?? $this->template,
-            $renderingPreset->getPreset() ?? null,
+            $this->align ?? $renderingPreset->getAlign(),
+            $this->label ?? $renderingPreset->getLabel(),
+            $this->source ?? $renderingPreset->getSource(),
+            $this->template ?? $renderingPreset->getTemplate(),
+            $renderingPreset->getPreset(),
         );
     }
 }
