@@ -2,7 +2,7 @@
     "name": "jmf/grid-bundle",
     "description" : "Grid bundle for Symfony",
     "license": "mit",
-    "type": "library",
+    "type": "symfony-bundle",
     "require": {
         "php": ">=8.3",
         "symfony/framework-bundle": "^7.0",

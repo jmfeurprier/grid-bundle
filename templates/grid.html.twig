@@ -22,7 +22,7 @@
                 {% endif %}
                 {% for cell in row.cells %}
                     {% set classes = [] %}
-                    {% if (cell.parameters.align is not null) %}
+                    {% if (cell.parameters.align is defined) %}
                         {% set classes = classes|array_push('text-' ~ cell.parameters.align) %}
                     {% endif %}
                     <td{% if (classes is not empty) %} class="{{ classes|join(' ') }}"{% endif %}>
