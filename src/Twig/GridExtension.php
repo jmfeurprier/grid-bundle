@@ -37,7 +37,7 @@ class GridExtension extends AbstractExtension
     {
         return [
             new TwigFunction(
-                "{$this->prefix}grid}",
+                "{$this->prefix}grid",
                 $this->grid(...),
                 [
                     'is_safe' => ['html'],
