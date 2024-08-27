@@ -5,6 +5,7 @@ namespace Jmf\Grid\Grid;
 use Exception;
 use Jmf\Grid\Configuration\ColumnConfiguration;
 use RuntimeException;
+use Stringable;
 use Symfony\Component\PropertyAccess\PropertyAccessor;
 use Twig\Environment as TwigEnvironment;
 use Twig\Error\LoaderError;
@@ -82,13 +83,13 @@ class GridRowCellGenerator
 
     private function getCellValue(): string
     {
-        $value = '';
+        $value = null;
 
         if (null !== $this->columnConfiguration->getSource()) {
             $source = $this->columnConfiguration->getSource();
 
             if (is_array($this->item)) {
-                $value = $this->item[$source] ?? '';
+                $value = $this->item[$source] ?? null;
             } elseif (is_object($this->item)) {
                 $value = $this->propertyAccessor->getValue($this->item, $source);
             } else {
@@ -102,6 +103,12 @@ class GridRowCellGenerator
                 ];
 
             $value = $this->getColumnTemplate()->render($context);
+        }
+
+        if (null === $value) {
+            $value = '';
+        } elseif ($value instanceof Stringable) {
+            $value = (string) $value;
         }
 
         Assert::string($value);
