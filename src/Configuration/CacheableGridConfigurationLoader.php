@@ -2,7 +2,8 @@
 
 namespace Jmf\Grid\Configuration;
 
-use DomainException;
+use Override;
+use Psr\Cache\InvalidArgumentException;
 use Symfony\Contracts\Cache\CacheInterface;
 use Symfony\Contracts\Cache\ItemInterface;
 
@@ -15,8 +16,9 @@ readonly class CacheableGridConfigurationLoader implements GridConfigurationLoad
     }
 
     /**
-     * @throws DomainException
+     * @throws InvalidArgumentException
      */
+    #[Override]
     public function load(string $gridId): GridConfiguration
     {
         return $this->cache->get(

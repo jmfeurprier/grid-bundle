@@ -2,7 +2,7 @@
 
 namespace Jmf\Grid\Configuration;
 
-use DomainException;
+use Jmf\Grid\Exception\GridException;
 use Webmozart\Assert\Assert;
 
 /**
@@ -27,6 +27,6 @@ readonly class KeyObjectCollection
      */
     public function get(string $key): object
     {
-        return $this->values[$key] ?? throw new DomainException();
+        return $this->values[$key] ?? throw new GridException();
     }
 }

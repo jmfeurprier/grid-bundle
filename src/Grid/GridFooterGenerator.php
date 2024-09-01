@@ -2,7 +2,6 @@
 
 namespace Jmf\Grid\Grid;
 
-use Exception;
 use Jmf\Grid\Configuration\FooterConfiguration;
 use Jmf\Grid\Configuration\GridConfiguration;
 use Jmf\Grid\Exception\TemplateRenderingException;
@@ -34,7 +33,7 @@ class GridFooterGenerator
      * @param iterable<array<string, mixed>|object> $items
      * @param array<string, mixed>                  $arguments
      *
-     * @throws Exception
+     * @throws TemplateRenderingException
      */
     public function generate(
         GridConfiguration $gridConfiguration,

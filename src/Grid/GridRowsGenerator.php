@@ -2,8 +2,8 @@
 
 namespace Jmf\Grid\Grid;
 
-use Exception;
 use Jmf\Grid\Configuration\GridConfiguration;
+use Jmf\Grid\Exception\GridException;
 
 readonly class GridRowsGenerator
 {
@@ -18,7 +18,7 @@ readonly class GridRowsGenerator
      *
      * @return GridRow[]
      *
-     * @throws Exception
+     * @throws GridException
      */
     public function generate(
         GridConfiguration $gridConfiguration,

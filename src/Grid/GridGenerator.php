@@ -2,11 +2,10 @@
 
 namespace Jmf\Grid\Grid;
 
-use DomainException;
-use Exception;
 use Jmf\Grid\Configuration\GridConfiguration;
 use Jmf\Grid\Configuration\GridConfigurationLoaderInterface;
-use RuntimeException;
+use Jmf\Grid\Exception\GridException;
+use Jmf\Grid\Exception\TemplateRenderingException;
 
 class GridGenerator
 {
@@ -36,7 +35,7 @@ class GridGenerator
      * @param list<array<string, mixed>|object> $items
      * @param array<string, mixed>              $arguments
      *
-     * @throws Exception
+     * @throws GridException
      */
     public function generate(
         string $gridId,
@@ -66,24 +65,28 @@ class GridGenerator
     }
 
     /**
-     * @throws DomainException
+     * @throws GridException
      */
     private function loadGridConfiguration(): void
     {
         $this->gridConfiguration = $this->gridConfigurationLoader->load($this->gridId);
     }
 
+    /**
+     * @throws GridException
+     */
     private function validateArguments(): void
     {
         foreach ($this->gridConfiguration->getArguments() as $argument) {
             if (!array_key_exists($argument, $this->arguments)) {
-                throw new RuntimeException("Missing grid argument '{$argument}' for grid '{$this->gridId}'.");
+                throw new GridException("Missing grid argument '{$argument}' for grid '{$this->gridId}'.");
             }
         }
     }
 
     /**
-     * @throws Exception
+     * @throws GridException
+     * @throws TemplateRenderingException
      */
     private function buildGrid(): Grid
     {
@@ -107,7 +110,7 @@ class GridGenerator
     /**
      * @return GridRow[]
      *
-     * @throws Exception
+     * @throws GridException
      */
     private function buildRows(): iterable
     {
@@ -119,7 +122,7 @@ class GridGenerator
     }
 
     /**
-     * @throws Exception
+     * @throws TemplateRenderingException
      */
     private function buildFooter(): GridFooter
     {

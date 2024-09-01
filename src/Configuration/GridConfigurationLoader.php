@@ -2,8 +2,7 @@
 
 namespace Jmf\Grid\Configuration;
 
-use DomainException;
-use InvalidArgumentException;
+use Jmf\Grid\Exception\GridException;
 use Webmozart\Assert\Assert;
 
 readonly class GridConfigurationLoader implements GridConfigurationLoaderInterface
@@ -20,12 +19,12 @@ readonly class GridConfigurationLoader implements GridConfigurationLoaderInterfa
     }
 
     /**
-     * @throws DomainException
+     * @throws GridException
      */
     public function load(string $gridId): GridConfiguration
     {
         if (!isset($this->gridsConfig[$gridId])) {
-            throw new DomainException("Grid with Id '{$gridId}' is not defined.");
+            throw new GridException("Grid with Id '{$gridId}' is not defined.");
         }
 
         $gridConfig = $this->gridsConfig[$gridId];
@@ -89,7 +88,7 @@ readonly class GridConfigurationLoader implements GridConfigurationLoaderInterfa
     private function buildColumnConfigurations(array $gridConfig): iterable
     {
         if (!isset($gridConfig['columns'])) {
-            throw new InvalidArgumentException();
+            throw new GridException();
         }
 
         $columnsConfig = $gridConfig['columns'];
@@ -131,7 +130,7 @@ readonly class GridConfigurationLoader implements GridConfigurationLoaderInterfa
     private function buildFooterConfigurations(array $gridConfig): iterable
     {
         if (!isset($gridConfig['footer'])) {
-            throw new InvalidArgumentException();
+            throw new GridException();
         }
 
         $footerRowConfigs = $gridConfig['footer'];

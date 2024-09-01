@@ -2,12 +2,12 @@
 
 namespace Jmf\Grid\Configuration;
 
-use DomainException;
+use Jmf\Grid\Exception\GridException;
 
 interface GridConfigurationLoaderInterface
 {
     /**
-     * @throws DomainException
+     * @throws GridException
      */
     public function load(string $gridId): GridConfiguration;
 }

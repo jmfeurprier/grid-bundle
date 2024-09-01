@@ -2,12 +2,12 @@
 
 namespace Jmf\Grid\RenderingPreset;
 
-use DomainException;
+use Jmf\Grid\Exception\GridException;
 
 interface RenderingPresetRepositoryInterface
 {
     /**
-     * @throws DomainException
+     * @throws GridException
      */
     public function get(string $presetId): RenderingPreset;
 }

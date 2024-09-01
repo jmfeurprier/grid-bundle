@@ -2,10 +2,9 @@
 
 namespace Jmf\Grid\Exception;
 
-use Exception;
 use Throwable;
 
-class TemplateRenderingException extends Exception
+class TemplateRenderingException extends GridException
 {
     /**
      * @param array<string, mixed> $context

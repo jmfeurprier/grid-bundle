@@ -2,7 +2,7 @@
 
 namespace Jmf\Grid\RenderingPreset;
 
-use DomainException;
+use Jmf\Grid\Exception\GridException;
 use Override;
 
 readonly class RenderingPresetRepository implements RenderingPresetRepositoryInterface
@@ -17,7 +17,7 @@ readonly class RenderingPresetRepository implements RenderingPresetRepositoryInt
     }
 
     /**
-     * @throws DomainException
+     * @throws GridException
      */
     #[Override]
     public function get(string $presetId): RenderingPreset

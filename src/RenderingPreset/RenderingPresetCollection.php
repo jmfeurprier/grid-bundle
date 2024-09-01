@@ -2,7 +2,7 @@
 
 namespace Jmf\Grid\RenderingPreset;
 
-use DomainException;
+use Jmf\Grid\Exception\GridException;
 use Webmozart\Assert\Assert;
 
 readonly class RenderingPresetCollection
@@ -20,6 +20,6 @@ readonly class RenderingPresetCollection
     public function get(string $id): RenderingPreset
     {
         return $this->renderingPresets[$id]
-            ?? throw new DomainException("Rendering preset '{$id}' is not defined.");
+            ?? throw new GridException("Rendering preset '{$id}' is not defined.");
     }
 }

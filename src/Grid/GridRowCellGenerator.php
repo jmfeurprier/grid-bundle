@@ -2,9 +2,8 @@
 
 namespace Jmf\Grid\Grid;
 
-use Exception;
 use Jmf\Grid\Configuration\ColumnConfiguration;
-use RuntimeException;
+use Jmf\Grid\Exception\GridException;
 use Stringable;
 use Symfony\Component\PropertyAccess\PropertyAccessor;
 use Twig\Environment as TwigEnvironment;
@@ -43,7 +42,7 @@ class GridRowCellGenerator
      * @param array<string, mixed>|object $item
      * @param array<string, mixed>        $rowVariables
      *
-     * @throws Exception
+     * @throws GridException
      */
     public function generate(
         ColumnConfiguration $columnConfiguration,
@@ -73,6 +72,9 @@ class GridRowCellGenerator
         $this->rowVariables        = $rowVariables;
     }
 
+    /**
+     * @throws GridException
+     */
     private function buildCell(): GridRowCell
     {
         return new GridRowCell(
@@ -81,6 +83,9 @@ class GridRowCellGenerator
         );
     }
 
+    /**
+     * @throws GridException
+     */
     private function getCellValue(): string
     {
         $value = null;
@@ -93,7 +98,7 @@ class GridRowCellGenerator
             } elseif (is_object($this->item)) {
                 $value = $this->propertyAccessor->getValue($this->item, $source);
             } else {
-                throw new RuntimeException('Unexpected item type.');
+                throw new GridException('Unexpected item type.');
             }
         }
 
@@ -105,15 +110,31 @@ class GridRowCellGenerator
             $value = $this->getColumnTemplate()->render($context);
         }
 
-        if (null === $value) {
-            $value = '';
-        } elseif ($value instanceof Stringable) {
-            $value = (string) $value;
+        return trim($this->getStringValue($value));
+    }
+
+    /**
+     * @throws GridException
+     */
+    private function getStringValue(mixed $value): string
+    {
+        if (is_string($value)) {
+            return $value;
         }
 
-        Assert::string($value);
+        if (null === $value) {
+            return '';
+        }
 
-        return trim($value);
+        if (is_scalar($value)) {
+            return (string) $value;
+        }
+
+        if ($value instanceof Stringable) {
+            return (string) $value;
+        }
+
+        throw new GridException('Unexpected cell value type.');
     }
 
     /**
@@ -130,6 +151,11 @@ class GridRowCellGenerator
         return $parameters;
     }
 
+    /**
+     * @throws GridException
+     * @throws LoaderError
+     * @throws SyntaxError
+     */
     private function getColumnTemplate(): TemplateWrapper
     {
         static $cache = [];
@@ -137,7 +163,7 @@ class GridRowCellGenerator
         $template = $this->columnConfiguration->getTemplate();
 
         if (null === $template) {
-            throw new RuntimeException();
+            throw new GridException();
         }
 
         $cacheKey = serialize($template);

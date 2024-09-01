@@ -2,9 +2,9 @@
 
 namespace Jmf\Grid\Grid;
 
-use Exception;
 use Jmf\Grid\Configuration\ColumnConfiguration;
 use Jmf\Grid\Configuration\GridConfiguration;
+use Jmf\Grid\Exception\GridException;
 use Jmf\Grid\Exception\TemplateRenderingException;
 use Jmf\Grid\TemplateRendering\TemplateRenderer;
 use Webmozart\Assert\Assert;
@@ -49,7 +49,7 @@ class GridRowGenerator
      * @param array<string, mixed>|object $item
      * @param array<string, mixed>        $arguments
      *
-     * @throws Exception
+     * @throws GridException
      */
     public function generate(
         GridConfiguration $gridConfiguration,
@@ -84,8 +84,7 @@ class GridRowGenerator
     }
 
     /**
-     * @throws Exception
-     * @throws TemplateRenderingException
+     * @throws GridException
      */
     private function buildRow(): GridRow
     {
@@ -144,7 +143,7 @@ class GridRowGenerator
     /**
      * @return GridRowCell[]
      *
-     * @throws Exception
+     * @throws GridException
      */
     private function buildRowCells(): iterable
     {
@@ -158,7 +157,7 @@ class GridRowGenerator
     }
 
     /**
-     * @throws Exception
+     * @throws GridException
      */
     private function buildCell(ColumnConfiguration $columnConfiguration): GridRowCell
     {

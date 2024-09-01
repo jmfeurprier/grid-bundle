@@ -42,7 +42,7 @@ class GridExtension extends AbstractExtension
                 [
                     'is_safe' => ['html'],
                 ]
-            )
+            ),
         ];
     }
 

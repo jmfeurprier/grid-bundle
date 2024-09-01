@@ -2,7 +2,6 @@
 
 namespace Jmf\Grid\RenderingPreset;
 
-use DomainException;
 use Psr\Cache\InvalidArgumentException;
 use Symfony\Contracts\Cache\CacheInterface;
 use Symfony\Contracts\Cache\ItemInterface;
@@ -16,7 +15,6 @@ readonly class CacheableRenderingPresetRepository implements RenderingPresetRepo
     }
 
     /**
-     * @throws DomainException
      * @throws InvalidArgumentException
      */
     public function get(string $presetId): RenderingPreset
