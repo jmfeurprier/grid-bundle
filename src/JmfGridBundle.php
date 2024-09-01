@@ -100,7 +100,7 @@ class JmfGridBundle extends AbstractBundle
             $container->services()
                 ->set(GridConfigurationLoaderInterface::class)
                 ->class(CacheableGridConfigurationLoader::class)
-                ->autowire(GridConfigurationLoaderInterface::class)
+                ->autowire()
                 ->arg('$gridConfigurationLoader', new Reference(GridConfigurationLoader::class))
             ;
         } else {

@@ -3,6 +3,7 @@
 namespace Jmf\Grid\Configuration;
 
 use Jmf\Grid\Exception\GridException;
+use Override;
 use Webmozart\Assert\Assert;
 
 readonly class GridConfigurationLoader implements GridConfigurationLoaderInterface
@@ -21,6 +22,7 @@ readonly class GridConfigurationLoader implements GridConfigurationLoaderInterfa
     /**
      * @throws GridException
      */
+    #[Override]
     public function load(string $gridId): GridConfiguration
     {
         if (!isset($this->gridsConfig[$gridId])) {

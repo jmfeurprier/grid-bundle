@@ -14,13 +14,6 @@ class GridExtension extends AbstractExtension
 {
     public final const string PREFIX_DEFAULT = 'jmf_';
 
-    /**
-     * @var array<string, string>
-     */
-    private const array FUNCTIONS = [
-        'grid' => 'grid',
-    ];
-
     public function __construct(
         private readonly GridGenerator $gridGenerator,
         private readonly TemplateRenderer $templateRenderer,

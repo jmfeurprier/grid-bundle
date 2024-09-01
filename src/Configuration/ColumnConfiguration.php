@@ -17,26 +17,31 @@ readonly class ColumnConfiguration implements WithRenderingPresetInterface
     ) {
     }
 
+    #[Override]
     public function getAlign(): ?string
     {
         return $this->align;
     }
 
+    #[Override]
     public function getLabel(): ?string
     {
         return $this->label;
     }
 
+    #[Override]
     public function getSource(): ?string
     {
         return $this->source;
     }
 
+    #[Override]
     public function getTemplate(): ?string
     {
         return $this->template;
     }
 
+    #[Override]
     public function getPreset(): ?string
     {
         return $this->preset;

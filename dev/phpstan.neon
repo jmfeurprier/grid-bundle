@@ -7,4 +7,4 @@ parameters:
 		-
 			message: "|^Call to an undefined method.+fixXmlConfig|"
 			count: 1
-			path: ../src/DependencyInjection/Configuration.php
+			path: ../src/JmfGridBundle.php
