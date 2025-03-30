@@ -5,7 +5,7 @@ namespace Jmf\Grid\Grid;
 use Jmf\Grid\Configuration\ColumnConfiguration;
 use Jmf\Grid\Exception\GridException;
 use Stringable;
-use Symfony\Component\PropertyAccess\PropertyAccessor;
+use Symfony\Component\PropertyAccess\PropertyAccessorInterface;
 use Twig\Environment as TwigEnvironment;
 use Twig\Error\LoaderError;
 use Twig\Error\SyntaxError;
@@ -31,7 +31,7 @@ class GridRowCellGenerator
      */
     public function __construct(
         private readonly TwigEnvironment $twigEnvironment,
-        private readonly PropertyAccessor $propertyAccessor,
+        private readonly PropertyAccessorInterface $propertyAccessor,
         private readonly array $macros = [],
     ) {
         Assert::isMap($this->macros);
