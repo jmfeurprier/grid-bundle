@@ -4,7 +4,7 @@ namespace Jmf\Grid\Grid;
 
 use Exception;
 use RuntimeException;
-use Symfony\Component\PropertyAccess\PropertyAccessor;
+use Symfony\Component\PropertyAccess\PropertyAccessorInterface;
 use Twig\Environment as TwigEnvironment;
 use Twig\Error\LoaderError;
 use Twig\Error\SyntaxError;
@@ -14,7 +14,7 @@ class GridRowCellGenerator
 {
     private TwigEnvironment $twigEnvironment;
 
-    private PropertyAccessor $propertyAccessor;
+    private PropertyAccessorInterface $propertyAccessor;
 
     /**
      * @var array<string, string>
@@ -41,7 +41,7 @@ class GridRowCellGenerator
      */
     public function __construct(
         TwigEnvironment $twigEnvironment,
-        PropertyAccessor $propertyAccessor,
+        PropertyAccessorInterface $propertyAccessor,
         array $macros = []
     ) {
         $this->twigEnvironment  = $twigEnvironment;
