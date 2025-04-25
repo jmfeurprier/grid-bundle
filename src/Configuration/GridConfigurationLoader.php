@@ -19,9 +19,6 @@ readonly class GridConfigurationLoader implements GridConfigurationLoaderInterfa
     ) {
     }
 
-    /**
-     * @throws GridException
-     */
     #[Override]
     public function load(string $gridId): GridConfiguration
     {
@@ -29,53 +26,55 @@ readonly class GridConfigurationLoader implements GridConfigurationLoaderInterfa
             throw new GridException("Grid with Id '{$gridId}' is not defined.");
         }
 
-        $gridConfig = $this->gridsConfig[$gridId];
+        $config = $this->gridsConfig[$gridId];
 
-        Assert::isArray($gridConfig);
+        Assert::isArray($config);
 
         return new GridConfiguration(
-            $this->buildGridArguments($gridConfig),
-            $this->buildGridVariables($gridConfig),
-            $this->buildColumnConfigurations($gridConfig),
-            $this->buildRowConfiguration($gridConfig),
-            $this->buildFooterConfigurations($gridConfig),
+            $this->buildGridArguments($config),
+            $this->buildGridVariables($config),
+            $this->buildColumnConfigurations($config),
+            $this->buildRowConfiguration($config),
+            $this->buildFooterConfigurations($config),
         );
     }
 
     /**
-     * @param array<string, mixed> $gridConfig
+     * @param array<string, mixed> $config
      *
      * @return string[]
      */
-    private function buildGridArguments(array $gridConfig): iterable
+    private function buildGridArguments(array $config): iterable
     {
-        if (!isset($gridConfig['arguments'])) {
+        $gridConfig = $config['grid'] ?? [];
+
+        Assert::isMap($gridConfig);
+
+        $argumentsConfig = $gridConfig['arguments'] ?? [];
+
+        if ([] === $argumentsConfig) {
             return [];
         }
 
-        $argumentsConfig = $gridConfig['arguments'];
-
-        Assert::allString($argumentsConfig);
+        Assert::allStringNotEmpty($argumentsConfig);
 
         return $argumentsConfig;
     }
 
     /**
-     * @param array<string, mixed> $gridConfig
+     * @param array<string, mixed> $config
      */
-    private function buildGridVariables(array $gridConfig): KeyValueCollection
+    private function buildGridVariables(array $config): KeyValueCollection
     {
-        if (!array_key_exists('grid', $gridConfig)) {
+        $gridConfig = $config['grid'] ?? [];
+
+        Assert::isMap($gridConfig);
+
+        $variablesConfig = $gridConfig['variables'] ?? [];
+
+        if ([] === $variablesConfig) {
             return KeyValueCollection::createEmpty();
         }
-
-        Assert::isMap($gridConfig['grid']);
-
-        if (!array_key_exists('variables', $gridConfig['grid'])) {
-            return KeyValueCollection::createEmpty();
-        }
-
-        $variablesConfig = $gridConfig['grid']['variables'];
 
         Assert::isMap($variablesConfig);
 
@@ -83,17 +82,19 @@ readonly class GridConfigurationLoader implements GridConfigurationLoaderInterfa
     }
 
     /**
-     * @param array<string, mixed> $gridConfig
+     * @param array<string, mixed> $config
      *
      * @return ColumnConfiguration[]
+     *
+     * @throws GridException
      */
-    private function buildColumnConfigurations(array $gridConfig): iterable
+    private function buildColumnConfigurations(array $config): iterable
     {
-        if (!isset($gridConfig['columns'])) {
-            throw new GridException();
-        }
+        $columnsConfig = $config['columns'] ?? [];
 
-        $columnsConfig = $gridConfig['columns'];
+        if ([] === $columnsConfig) {
+            throw new GridException('Grid had no column defined.');
+        }
 
         Assert::isIterable($columnsConfig);
 
@@ -109,15 +110,15 @@ readonly class GridConfigurationLoader implements GridConfigurationLoaderInterfa
     }
 
     /**
-     * @param array<string, mixed> $gridConfig
+     * @param array<string, mixed> $config
      */
-    private function buildRowConfiguration(array $gridConfig): RowConfiguration
+    private function buildRowConfiguration(array $config): RowConfiguration
     {
-        if (!isset($gridConfig['rows'])) {
+        $rowsConfig = $config['rows'] ?? [];
+
+        if ([] === $rowsConfig) {
             return RowConfiguration::createEmpty();
         }
-
-        $rowsConfig = $gridConfig['rows'];
 
         Assert::isArray($rowsConfig);
 
@@ -125,23 +126,25 @@ readonly class GridConfigurationLoader implements GridConfigurationLoaderInterfa
     }
 
     /**
-     * @param array<string, mixed> $gridConfig
+     * @param array<string, mixed> $config
      *
      * @return FooterConfiguration[][]
      */
-    private function buildFooterConfigurations(array $gridConfig): iterable
+    private function buildFooterConfigurations(array $config): iterable
     {
-        if (!isset($gridConfig['footer'])) {
-            throw new GridException();
+        $footerRowConfigs = $config['footer'];
+
+        if ([] === $footerRowConfigs) {
+            return [];
         }
 
-        $footerRowConfigs = $gridConfig['footer'];
-
-        Assert::allIsIterable($footerRowConfigs);
+        Assert::isIterable($footerRowConfigs);
 
         $footerRowConfigurations = [];
 
         foreach ($footerRowConfigs as $footerColumnConfigs) {
+            Assert::isIterable($footerColumnConfigs);
+
             $footerColumnConfigurations = [];
 
             foreach ($footerColumnConfigs as $footerColumnConfig) {
