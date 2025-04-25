@@ -13,7 +13,6 @@ use Jmf\Grid\RenderingPreset\RenderingPresetRepositoryInterface;
 use Jmf\Grid\Twig\GridExtension;
 use Override;
 use Symfony\Component\Config\Definition\Configurator\DefinitionConfigurator;
-use Symfony\Component\Config\FileLocator;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Loader\Configurator\ContainerConfigurator;
 use Symfony\Component\DependencyInjection\Reference;

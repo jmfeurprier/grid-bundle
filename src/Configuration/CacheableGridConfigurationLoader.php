@@ -6,6 +6,7 @@ use Override;
 use Psr\Cache\InvalidArgumentException;
 use Symfony\Contracts\Cache\CacheInterface;
 use Symfony\Contracts\Cache\ItemInterface;
+use Webmozart\Assert\Assert;
 
 readonly class CacheableGridConfigurationLoader implements GridConfigurationLoaderInterface
 {
@@ -21,10 +22,14 @@ readonly class CacheableGridConfigurationLoader implements GridConfigurationLoad
     #[Override]
     public function load(string $gridId): GridConfiguration
     {
-        return $this->cache->get(
+        $gridConfiguration = $this->cache->get(
             $this->getCacheKey($gridId),
             $this->getCallback($gridId),
         );
+
+        Assert::isInstanceOf($gridConfiguration, GridConfiguration::class);
+
+        return $gridConfiguration;
     }
 
     private function getCacheKey(string $gridId): string
@@ -34,8 +39,8 @@ readonly class CacheableGridConfigurationLoader implements GridConfigurationLoad
                 [
                     self::class,
                     $gridId,
-                ]
-            )
+                ],
+            ),
         );
     }
 

@@ -3,9 +3,8 @@
 namespace Jmf\Grid\Grid;
 
 use Jmf\Grid\Configuration\GridConfiguration;
+use Jmf\Grid\Exception\TemplateRenderingException;
 use Jmf\Grid\TemplateRendering\TemplateRenderer;
-use Twig\Error\LoaderError;
-use Twig\Error\SyntaxError;
 
 readonly class GridRowLinkGenerator
 {
@@ -18,12 +17,14 @@ readonly class GridRowLinkGenerator
      * @param array<string, mixed>|object $item
      * @param array<string, mixed>        $rowVariables
      * @param array<string, mixed>        $arguments
+     *
+     * @throws TemplateRenderingException
      */
     public function generate(
         GridConfiguration $gridConfiguration,
         array | object $item,
         array $rowVariables,
-        array $arguments
+        array $arguments,
     ): ?string {
         $link = $gridConfiguration->getRowConfiguration()->getLink();
 
@@ -44,8 +45,7 @@ readonly class GridRowLinkGenerator
     /**
      * @param array<string, mixed> $context
      *
-     * @throws LoaderError
-     * @throws SyntaxError
+     * @throws TemplateRenderingException
      */
     private function renderTemplateFromString(
         string $template,

@@ -12,7 +12,7 @@ use Twig\TwigFunction;
 
 class GridExtension extends AbstractExtension
 {
-    public final const string PREFIX_DEFAULT = 'jmf_';
+    public final const string PREFIX_DEFAULT = '';
 
     public function __construct(
         private readonly GridGenerator $gridGenerator,
@@ -26,7 +26,7 @@ class GridExtension extends AbstractExtension
      * @return TwigFunction[]
      */
     #[Override]
-    public function getFunctions(): iterable
+    public function getFunctions(): array
     {
         return [
             new TwigFunction(

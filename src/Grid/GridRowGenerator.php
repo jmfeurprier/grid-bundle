@@ -56,7 +56,7 @@ class GridRowGenerator
         array | object $item,
         int $rowIndex,
         int $rowCount,
-        array $arguments
+        array $arguments,
     ): GridRow {
         $this->init($gridConfiguration, $item, $rowIndex, $rowCount, $arguments);
 
@@ -74,7 +74,7 @@ class GridRowGenerator
         array | object $item,
         int $rowIndex,
         int $rowCount,
-        array $arguments
+        array $arguments,
     ): void {
         $this->gridConfiguration = $gridConfiguration;
         $this->item              = $item;
@@ -110,9 +110,11 @@ class GridRowGenerator
         }
 
         foreach ($this->gridConfiguration->getRowConfiguration()->getVariables()->all() as $key => $value) {
+            Assert::nullOrScalar($value);
+
             $rowVariables[$key] = $this->renderTemplateFromString(
                 implode('', $macroChunks) . $value,
-                $rowVariables
+                $rowVariables,
             );
         }
 
@@ -164,7 +166,7 @@ class GridRowGenerator
         return $this->gridRowCellGenerator->generate(
             $columnConfiguration,
             $this->item,
-            $this->rowVariables
+            $this->rowVariables,
         );
     }
 
@@ -174,7 +176,7 @@ class GridRowGenerator
             $this->gridConfiguration,
             $this->item,
             $this->rowVariables,
-            $this->arguments
+            $this->arguments,
         );
     }
 
