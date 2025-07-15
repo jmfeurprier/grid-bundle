@@ -7,6 +7,7 @@ namespace Jmf\Grid\RenderingPreset;
 readonly class RenderingPreset
 {
     /**
+     * @param null|non-empty-string $source
      * @param null|non-empty-string $presetId
      */
     public function __construct(
@@ -28,6 +29,9 @@ readonly class RenderingPreset
         return $this->label;
     }
 
+    /**
+     * @return null|non-empty-string
+     */
     public function getSource(): ?string
     {
         return $this->source;

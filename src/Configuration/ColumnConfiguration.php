@@ -12,6 +12,7 @@ readonly class ColumnConfiguration implements WithRenderingPresetInterface
 {
     /**
      * @param null|non-empty-string $presetId
+     * @param null|non-empty-string $source
      */
     final public function __construct(
         private ?string $align,
@@ -32,6 +33,9 @@ readonly class ColumnConfiguration implements WithRenderingPresetInterface
         return $this->label;
     }
 
+    /**
+     * @return null|non-empty-string
+     */
     public function getSource(): ?string
     {
         return $this->source;

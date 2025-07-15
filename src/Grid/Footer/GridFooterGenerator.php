@@ -53,6 +53,7 @@ readonly class GridFooterGenerator
         $attributes = [];
         $classes    = [];
 
+        // @todo Too "bootstrapy". Move to dedicated field in GridFooterCell.
         if (null !== $footerConfiguration->getAlign()) {
             $classes[] = "text-{$footerConfiguration->getAlign()}";
         }

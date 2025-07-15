@@ -60,11 +60,14 @@ class ColumnConfigurationLoader
         return $label;
     }
 
+    /**
+     * @return null|non-empty-string
+     */
     private function getSource(): ?string
     {
         $source = $this->columnConfig['source'] ?? null;
 
-        Assert::nullOrString($source);
+        Assert::nullOrStringNotEmpty($source);
 
         return $source;
     }

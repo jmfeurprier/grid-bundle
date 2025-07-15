@@ -16,11 +16,11 @@ readonly class RenderingPresetLoader
         Assert::isMap($presetConfig);
 
         return new RenderingPreset(
-            $this->getAlign($presetConfig),
-            $this->getLabel($presetConfig),
-            $this->getSource($presetConfig),
-            $this->getTemplate($presetConfig),
-            $this->getPresetId($presetConfig),
+            align:    $this->getAlign($presetConfig),
+            label:    $this->getLabel($presetConfig),
+            source:   $this->getSource($presetConfig),
+            template: $this->getTemplate($presetConfig),
+            presetId: $this->getPresetId($presetConfig),
         );
     }
 
@@ -50,12 +50,14 @@ readonly class RenderingPresetLoader
 
     /**
      * @param array<string, mixed> $presetConfig
+     *
+     * @return null|non-empty-string
      */
     private function getSource(array $presetConfig): ?string
     {
         $source = $presetConfig['source'] ?? null;
 
-        Assert::nullOrString($source);
+        Assert::nullOrStringNotEmpty($source);
 
         return $source;
     }

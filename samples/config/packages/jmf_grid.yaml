@@ -7,10 +7,10 @@ jmf_grid:
 
     presets:
         buttonEdit:
-            align:    'right'
+            align:    'end'
             template: '<a href="{{ path(entityType ~ ".edit", {"id": entityId} ) }}">Edit</a>'
         buttonShow:
-            align:    'right'
+            align:    'end'
             template: '<a href="{{ path(entityType ~ ".show", {"id": entityId} ) }}">Show</a>'
         date:
             align:    'center'
@@ -23,7 +23,7 @@ jmf_grid:
             label:  'Gender'
             source: 'gender'
         text:
-            align: 'left'
+            align: 'start'
 
     grids:
         articles:
@@ -59,7 +59,7 @@ jmf_grid:
                     label:  'First name'
                     source: 'firstName'
                 -
-                    preset:  'gender'
+                    preset: 'gender'
                 -
                     label:  'Birth date'
                     source: 'startDate'

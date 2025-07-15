@@ -26,7 +26,9 @@ readonly class CacheableGridConfigurationLoader implements GridConfigurationLoad
     {
         $gridConfiguration = $this->cache->get(
             $this->getCacheKey($gridId),
-            $this->getCallback($gridId),
+            fn(
+                ItemInterface $item,
+            ): GridConfiguration => $this->gridConfigurationLoader->load($gridId),
         );
 
         Assert::isInstanceOf($gridConfiguration, GridConfiguration::class);
@@ -49,15 +51,5 @@ readonly class CacheableGridConfigurationLoader implements GridConfigurationLoad
                 ],
             ),
         );
-    }
-
-    /**
-     * @param non-empty-string $gridId
-     */
-    private function getCallback(string $gridId): callable
-    {
-        return fn(
-            ItemInterface $item,
-        ): GridConfiguration => $this->gridConfigurationLoader->load($gridId);
     }
 }
