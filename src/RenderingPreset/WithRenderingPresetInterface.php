@@ -1,18 +1,15 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Jmf\Grid\RenderingPreset;
 
 interface WithRenderingPresetInterface
 {
-    public function getAlign(): ?string;
-
-    public function getLabel(): ?string;
-
-    public function getSource(): ?string;
-
-    public function getTemplate(): ?string;
-
-    public function getPreset(): ?string;
+    /**
+     * @return null|non-empty-string
+     */
+    public function getPresetId(): ?string;
 
     public function applyPreset(RenderingPreset $renderingPreset): static;
 }

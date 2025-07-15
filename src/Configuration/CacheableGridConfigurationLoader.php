@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Jmf\Grid\Configuration;
 
 use Override;
@@ -32,6 +34,11 @@ readonly class CacheableGridConfigurationLoader implements GridConfigurationLoad
         return $gridConfiguration;
     }
 
+    /**
+     * @param non-empty-string $gridId
+     *
+     * @return non-empty-string
+     */
     private function getCacheKey(string $gridId): string
     {
         return md5(
@@ -44,10 +51,13 @@ readonly class CacheableGridConfigurationLoader implements GridConfigurationLoad
         );
     }
 
+    /**
+     * @param non-empty-string $gridId
+     */
     private function getCallback(string $gridId): callable
     {
         return fn(
             ItemInterface $item,
-        ) => $this->gridConfigurationLoader->load($gridId);
+        ): GridConfiguration => $this->gridConfigurationLoader->load($gridId);
     }
 }

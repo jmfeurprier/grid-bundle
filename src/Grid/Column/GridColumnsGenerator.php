@@ -1,16 +1,15 @@
 <?php
 
-namespace Jmf\Grid\Grid;
+declare(strict_types=1);
+
+namespace Jmf\Grid\Grid\Column;
 
 use Jmf\Grid\Configuration\ColumnConfiguration;
 use Jmf\Grid\Configuration\GridConfiguration;
 
 readonly class GridColumnsGenerator
 {
-    /**
-     * @return GridColumn[]
-     */
-    public function generate(GridConfiguration $gridConfiguration): iterable
+    public function generate(GridConfiguration $gridConfiguration): GridColumnCollection
     {
         $columns = [];
 
@@ -18,7 +17,9 @@ readonly class GridColumnsGenerator
             $columns[] = $this->generateColumn($columnConfiguration);
         }
 
-        return $columns;
+        return new GridColumnCollection(
+            $columns,
+        );
     }
 
     private function generateColumn(

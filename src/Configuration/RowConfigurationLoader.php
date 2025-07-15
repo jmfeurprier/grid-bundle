@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Jmf\Grid\Configuration;
 
 use Webmozart\Assert\Assert;
@@ -42,7 +44,7 @@ readonly class RowConfigurationLoader
 
         $variablesConfig = $rowConfig['variables'];
 
-        Assert::isArray($variablesConfig);
+        Assert::isMap($variablesConfig);
 
         return new KeyValueCollection($variablesConfig);
     }

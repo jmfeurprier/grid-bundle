@@ -1,15 +1,20 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Jmf\Grid\RenderingPreset;
 
 readonly class RenderingPreset
 {
+    /**
+     * @param null|non-empty-string $presetId
+     */
     public function __construct(
         private ?string $align,
         private ?string $label,
         private ?string $source,
         private ?string $template,
-        private ?string $preset,
+        private ?string $presetId,
     ) {
     }
 
@@ -33,8 +38,11 @@ readonly class RenderingPreset
         return $this->template;
     }
 
-    public function getPreset(): ?string
+    /**
+     * @return null|non-empty-string
+     */
+    public function getPresetId(): ?string
     {
-        return $this->preset;
+        return $this->presetId;
     }
 }

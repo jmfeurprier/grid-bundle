@@ -1,6 +1,20 @@
 parameters:
+    exceptions:
+        check:
+            missingCheckedExceptionInThrows: true
+            tooWideThrowType: true
+        uncheckedExceptionClasses:
+            - 'Error'
+            - 'LogicException'
+            - 'RuntimeException'
+        uncheckedExceptionRegexes:
+            - '|^PHPUnit\\|'
+    excludePaths:
+        - ../src/JmfGridBundle.php
     level: 10
     paths:
-        - ../src
-        - ../tests
+        - ../bin/
+        - ../src/
+        - ../tests/
+    tmpDir: ../var/cache/phpstan
     treatPhpDocTypesAsCertain: false

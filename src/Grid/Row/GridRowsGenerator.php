@@ -1,9 +1,12 @@
 <?php
 
-namespace Jmf\Grid\Grid;
+declare(strict_types=1);
+
+namespace Jmf\Grid\Grid\Row;
 
 use Jmf\Grid\Configuration\GridConfiguration;
 use Jmf\Grid\Exception\GridException;
+use Jmf\TemplateRendering\Exception\TemplateRenderingException;
 
 readonly class GridRowsGenerator
 {
@@ -16,15 +19,14 @@ readonly class GridRowsGenerator
      * @param list<array<string, mixed>|object> $items
      * @param array<string, mixed>              $arguments
      *
-     * @return GridRow[]
-     *
      * @throws GridException
+     * @throws TemplateRenderingException
      */
     public function generate(
         GridConfiguration $gridConfiguration,
         array $items,
         array $arguments,
-    ): iterable {
+    ): GridRowCollection {
         $rowCount = count($items);
         $rowIndex = 1;
         $rows     = [];
@@ -41,6 +43,6 @@ readonly class GridRowsGenerator
             ++$rowIndex;
         }
 
-        return $rows;
+        return new GridRowCollection($rows);
     }
 }

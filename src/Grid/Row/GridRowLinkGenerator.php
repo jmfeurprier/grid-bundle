@@ -1,15 +1,17 @@
 <?php
 
-namespace Jmf\Grid\Grid;
+declare(strict_types=1);
+
+namespace Jmf\Grid\Grid\Row;
 
 use Jmf\Grid\Configuration\GridConfiguration;
-use Jmf\Grid\Exception\TemplateRenderingException;
-use Jmf\Grid\TemplateRendering\TemplateRenderer;
+use Jmf\TemplateRendering\Exception\TemplateRenderingException;
+use Jmf\TemplateRendering\TemplateRendererInterface;
 
 readonly class GridRowLinkGenerator
 {
     public function __construct(
-        private TemplateRenderer $templateRenderer,
+        private TemplateRendererInterface $templateRenderer,
     ) {
     }
 

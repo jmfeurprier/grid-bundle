@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Jmf\Grid\RenderingPreset;
 
 use Webmozart\Assert\Assert;
@@ -12,7 +14,7 @@ readonly class RenderingPresetCollectionLoader
     }
 
     /**
-     * @param array<string, mixed> $presetConfigs
+     * @param array<non-empty-string, mixed> $presetConfigs
      */
     public function load(array $presetConfigs): RenderingPresetCollection
     {
@@ -21,7 +23,8 @@ readonly class RenderingPresetCollectionLoader
         $renderingPresets = [];
 
         foreach ($presetConfigs as $presetId => $presetConfig) {
-            Assert::isArray($presetConfig);
+            Assert::stringNotEmpty($presetId);
+            Assert::isMap($presetConfig);
 
             $renderingPresets[$presetId] = $this->renderingPresetLoader->load($presetConfig);
         }

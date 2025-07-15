@@ -1,11 +1,13 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Jmf\Grid\Twig;
 
 use Exception;
-use Jmf\Grid\Exception\TemplateRenderingException;
 use Jmf\Grid\Grid\GridGenerator;
-use Jmf\Grid\TemplateRendering\TemplateRenderer;
+use Jmf\TemplateRendering\Exception\TemplateRenderingException;
+use Jmf\TemplateRendering\TemplateRendererInterface;
 use Override;
 use Twig\Extension\AbstractExtension;
 use Twig\TwigFunction;
@@ -16,7 +18,7 @@ class GridExtension extends AbstractExtension
 
     public function __construct(
         private readonly GridGenerator $gridGenerator,
-        private readonly TemplateRenderer $templateRenderer,
+        private readonly TemplateRendererInterface $templateRenderer,
         private readonly string $templatePath,
         private readonly string $prefix = self::PREFIX_DEFAULT,
     ) {
@@ -34,12 +36,13 @@ class GridExtension extends AbstractExtension
                 $this->grid(...),
                 [
                     'is_safe' => ['html'],
-                ]
+                ],
             ),
         ];
     }
 
     /**
+     * @param non-empty-string                  $gridId
      * @param list<array<string, mixed>|object> $items
      * @param array<string, mixed>              $arguments
      * @param array<string, mixed>              $parameters
@@ -51,13 +54,13 @@ class GridExtension extends AbstractExtension
         string $gridId,
         array $items,
         array $arguments = [],
-        array $parameters = []
+        array $parameters = [],
     ): string {
         return $this->templateRenderer->renderFromFile(
             $this->templatePath,
             $parameters + [
                 'grid' => $this->gridGenerator->generate($gridId, $items, $arguments),
-            ]
+            ],
         );
     }
 }

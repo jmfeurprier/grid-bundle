@@ -1,31 +1,18 @@
 <?php
 
-namespace Jmf\Grid\Grid;
+declare(strict_types=1);
+
+namespace Jmf\Grid\Grid\Footer;
 
 use Jmf\Grid\Configuration\FooterConfiguration;
 use Jmf\Grid\Configuration\GridConfiguration;
-use Jmf\Grid\Exception\TemplateRenderingException;
-use Jmf\Grid\TemplateRendering\TemplateRenderer;
+use Jmf\TemplateRendering\Exception\TemplateRenderingException;
+use Jmf\TemplateRendering\TemplateRendererInterface;
 
-class GridFooterGenerator
+readonly class GridFooterGenerator
 {
-    /**
-     * @var FooterConfiguration[][]
-     */
-    private iterable $footerConfigurations;
-
-    /**
-     * @var iterable<array<string, mixed>|object>
-     */
-    private iterable $items;
-
-    /**
-     * @var array<string, mixed>
-     */
-    private array $arguments;
-
     public function __construct(
-        private readonly TemplateRenderer $templateRenderer,
+        private TemplateRendererInterface $templateRenderer,
     ) {
     }
 
@@ -38,40 +25,16 @@ class GridFooterGenerator
     public function generate(
         GridConfiguration $gridConfiguration,
         iterable $items,
-        array $arguments
+        array $arguments,
     ): GridFooter {
-        $this->init($gridConfiguration, $items, $arguments);
-
-        return $this->buildFooter();
-    }
-
-    /**
-     * @param iterable<array<string, mixed>|object> $items
-     * @param array<string, mixed>                  $arguments
-     */
-    private function init(
-        GridConfiguration $gridConfiguration,
-        iterable $items,
-        array $arguments
-    ): void {
-        $this->footerConfigurations = $gridConfiguration->getFooterConfigurations();
-        $this->items                = $items;
-        $this->arguments            = $arguments;
-    }
-
-    /**
-     * @throws TemplateRenderingException
-     */
-    private function buildFooter(): GridFooter
-    {
         $rows = [];
 
-        foreach ($this->footerConfigurations as $footerRowConfiguration) {
+        foreach ($gridConfiguration->getFooterConfigurations() as $footerRowConfiguration) {
             $cells = [];
 
             foreach ($footerRowConfiguration as $footerColumnConfiguration) {
                 $cells[] = new GridFooterCell(
-                    $this->buildValue($footerColumnConfiguration),
+                    $this->buildValue($footerColumnConfiguration, $items, $arguments),
                     $this->buildAttributes($footerColumnConfiguration),
                 );
             }
@@ -94,7 +57,7 @@ class GridFooterGenerator
             $classes[] = "text-{$footerConfiguration->getAlign()}";
         }
 
-        if (count($classes) > 0) {
+        if ([] !== $classes) {
             $attributes['class'] = implode(' ', $classes);
         }
 
@@ -108,18 +71,27 @@ class GridFooterGenerator
     }
 
     /**
+     * @param iterable<array<string, mixed>|object> $items
+     * @param array<string, mixed>                  $arguments
+     *
      * @throws TemplateRenderingException
      */
-    private function buildValue(FooterConfiguration $footerConfiguration): string
-    {
+    private function buildValue(
+        FooterConfiguration $footerConfiguration,
+        iterable $items,
+        array $arguments,
+    ): string {
         $value = '';
 
         if (null !== $footerConfiguration->getValue()) {
             $value = $footerConfiguration->getValue();
         } elseif (null !== $footerConfiguration->getTemplate()) {
-            $context = $this->arguments + [
-                    '_items' => $this->items,
-                ];
+            $context = array_merge(
+                $arguments,
+                [
+                    '_items' => $items,
+                ],
+            );
 
             $value = $this->templateRenderer->renderFromString(
                 $footerConfiguration->getTemplate(),

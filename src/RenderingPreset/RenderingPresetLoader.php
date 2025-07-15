@@ -1,17 +1,13 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Jmf\Grid\RenderingPreset;
 
-use RuntimeException;
 use Webmozart\Assert\Assert;
 
-class RenderingPresetLoader
+readonly class RenderingPresetLoader
 {
-    /**
-     * @var array<string, mixed>
-     */
-    private array $presetConfig;
-
     /**
      * @param array<string, mixed> $presetConfig
      */
@@ -19,59 +15,74 @@ class RenderingPresetLoader
     {
         Assert::isMap($presetConfig);
 
-        $this->presetConfig = $presetConfig;
-
         return new RenderingPreset(
-            $this->getAlign(),
-            $this->getLabel(),
-            $this->getSource(),
-            $this->getTemplate(),
-            $this->getPreset(),
+            $this->getAlign($presetConfig),
+            $this->getLabel($presetConfig),
+            $this->getSource($presetConfig),
+            $this->getTemplate($presetConfig),
+            $this->getPresetId($presetConfig),
         );
     }
 
-    private function getAlign(): ?string
+    /**
+     * @param array<string, mixed> $presetConfig
+     */
+    private function getAlign(array $presetConfig): ?string
     {
-        $align = $this->presetConfig['align'] ?? null;
+        $align = $presetConfig['align'] ?? null;
 
         Assert::nullOrString($align);
 
         return $align;
     }
 
-    private function getLabel(): ?string
+    /**
+     * @param array<string, mixed> $presetConfig
+     */
+    private function getLabel(array $presetConfig): ?string
     {
-        $label = $this->presetConfig['label'] ?? null;
+        $label = $presetConfig['label'] ?? null;
 
         Assert::nullOrString($label);
 
         return $label;
     }
 
-    private function getSource(): ?string
+    /**
+     * @param array<string, mixed> $presetConfig
+     */
+    private function getSource(array $presetConfig): ?string
     {
-        $source = $this->presetConfig['source'] ?? null;
+        $source = $presetConfig['source'] ?? null;
 
         Assert::nullOrString($source);
 
         return $source;
     }
 
-    private function getTemplate(): ?string
+    /**
+     * @param array<string, mixed> $presetConfig
+     */
+    private function getTemplate(array $presetConfig): ?string
     {
-        $template = $this->presetConfig['template'] ?? null;
+        $template = $presetConfig['template'] ?? null;
 
         Assert::nullOrString($template);
 
         return $template;
     }
 
-    private function getPreset(): ?string
+    /**
+     * @param array<string, mixed> $presetConfig
+     *
+     * @return null|non-empty-string
+     */
+    private function getPresetId(array $presetConfig): ?string
     {
-        $preset = $this->presetConfig['preset'] ?? null;
+        $presetId = $presetConfig['preset'] ?? null;
 
-        Assert::nullOrString($preset);
+        Assert::nullOrStringNotEmpty($presetId);
 
-        return $preset;
+        return $presetId;
     }
 }

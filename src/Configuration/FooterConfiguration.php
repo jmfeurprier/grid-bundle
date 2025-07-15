@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Jmf\Grid\Configuration;
 
 use Jmf\Grid\RenderingPreset\RenderingPreset;
@@ -8,22 +10,23 @@ use Override;
 
 readonly class FooterConfiguration implements WithRenderingPresetInterface
 {
+    /**
+     * @param null|non-empty-string $presetId
+     */
     final public function __construct(
         private ?string $align,
         private ?string $template,
         private ?int $merge,
         private ?string $value,
-        private ?string $preset,
+        private ?string $presetId,
     ) {
     }
 
-    #[Override]
     public function getAlign(): ?string
     {
         return $this->align;
     }
 
-    #[Override]
     public function getTemplate(): ?string
     {
         return $this->template;
@@ -39,22 +42,20 @@ readonly class FooterConfiguration implements WithRenderingPresetInterface
         return $this->value;
     }
 
-    #[Override]
     public function getLabel(): ?string
     {
         return null;
     }
 
-    #[Override]
     public function getSource(): ?string
     {
         return null;
     }
 
     #[Override]
-    public function getPreset(): ?string
+    public function getPresetId(): ?string
     {
-        return $this->preset;
+        return $this->presetId;
     }
 
     #[Override]
@@ -65,7 +66,7 @@ readonly class FooterConfiguration implements WithRenderingPresetInterface
             $this->getTemplate() ?? $renderingPreset->getTemplate(),
             $this->getMerge(),
             $this->getValue(),
-            $renderingPreset->getPreset(),
+            $renderingPreset->getPresetId(),
         );
     }
 }

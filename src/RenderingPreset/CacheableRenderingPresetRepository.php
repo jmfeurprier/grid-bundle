@@ -1,11 +1,14 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Jmf\Grid\RenderingPreset;
 
 use Override;
 use Psr\Cache\InvalidArgumentException;
 use Symfony\Contracts\Cache\CacheInterface;
 use Symfony\Contracts\Cache\ItemInterface;
+use Webmozart\Assert\Assert;
 
 readonly class CacheableRenderingPresetRepository implements RenderingPresetRepositoryInterface
 {
@@ -21,12 +24,19 @@ readonly class CacheableRenderingPresetRepository implements RenderingPresetRepo
     #[Override]
     public function get(string $presetId): RenderingPreset
     {
-        return $this->cache->get(
+        $renderingPreset = $this->cache->get(
             $this->getCacheKey($presetId),
             $this->getCallback($presetId),
         );
+
+        Assert::isInstanceOf($renderingPreset, RenderingPreset::class);
+
+        return $renderingPreset;
     }
 
+    /**
+     * @param non-empty-string $presetId
+     */
     private function getCacheKey(string $presetId): string
     {
         return md5(
@@ -34,15 +44,20 @@ readonly class CacheableRenderingPresetRepository implements RenderingPresetRepo
                 [
                     self::class,
                     $presetId,
-                ]
-            )
+                ],
+            ),
         );
     }
 
+    /**
+     * @param non-empty-string $presetId
+     *
+     * @return callable
+     */
     private function getCallback(string $presetId): callable
     {
         return fn(
             ItemInterface $item,
-        ) => $this->renderingPresetRepository->get($presetId);
+        ): RenderingPreset => $this->renderingPresetRepository->get($presetId);
     }
 }

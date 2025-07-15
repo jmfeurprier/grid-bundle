@@ -1,6 +1,10 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Jmf\Grid\RenderingPreset;
+
+use Jmf\Grid\Exception\GridException;
 
 readonly class RenderingPresetApplier
 {
@@ -10,25 +14,32 @@ readonly class RenderingPresetApplier
     }
 
     /**
-     * @template T of WithRenderingPresetInterface
+     * @psalm-template T of WithRenderingPresetInterface
      *
-     * @param T $subject
+     * @psalm-param T $subject
      *
-     * @return T
+     * @psalm-return T
+     *
+     * @throws GridException
      */
     public function apply(WithRenderingPresetInterface $subject): WithRenderingPresetInterface
     {
-        if (null === $subject->getPreset()) {
+        if (null === $subject->getPresetId()) {
             return $subject;
         }
 
-        $renderingPreset = $this->getRenderingPreset($subject->getPreset());
+        $renderingPreset = $this->getRenderingPreset($subject->getPresetId());
 
         return $this->apply(
-            $subject->applyPreset($renderingPreset)
+            $subject->applyPreset($renderingPreset),
         );
     }
 
+    /**
+     * @param non-empty-string $presetId
+     *
+     * @throws GridException
+     */
     private function getRenderingPreset(string $presetId): RenderingPreset
     {
         return $this->renderingPresetRepository->get($presetId);

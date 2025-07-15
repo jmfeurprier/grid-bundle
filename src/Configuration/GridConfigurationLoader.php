@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Jmf\Grid\Configuration;
 
 use Jmf\Grid\Exception\GridException;
@@ -31,7 +33,7 @@ readonly class GridConfigurationLoader implements GridConfigurationLoaderInterfa
 
         $config = $this->gridsConfig[$gridId];
 
-        Assert::isArray($config);
+        Assert::isMap($config);
 
         return new GridConfiguration(
             $this->buildGridArguments($config),
@@ -104,7 +106,7 @@ readonly class GridConfigurationLoader implements GridConfigurationLoaderInterfa
         $columnConfigurations = [];
 
         foreach ($columnsConfig as $columnConfig) {
-            Assert::isArray($columnConfig);
+            Assert::isMap($columnConfig);
 
             $columnConfigurations[] = $this->columnConfigurationLoader->load($columnConfig);
         }
@@ -123,7 +125,7 @@ readonly class GridConfigurationLoader implements GridConfigurationLoaderInterfa
             return RowConfiguration::createEmpty();
         }
 
-        Assert::isArray($rowsConfig);
+        Assert::isMap($rowsConfig);
 
         return $this->rowConfigurationLoader->load($rowsConfig);
     }
@@ -132,6 +134,8 @@ readonly class GridConfigurationLoader implements GridConfigurationLoaderInterfa
      * @param array<string, mixed> $config
      *
      * @return FooterConfiguration[][]
+     *
+     * @throws GridException
      */
     private function buildFooterConfigurations(array $config): iterable
     {
@@ -151,7 +155,7 @@ readonly class GridConfigurationLoader implements GridConfigurationLoaderInterfa
             $footerColumnConfigurations = [];
 
             foreach ($footerColumnConfigs as $footerColumnConfig) {
-                Assert::isArray($footerColumnConfig);
+                Assert::isMap($footerColumnConfig);
 
                 $footerColumnConfigurations[] = $this->footerConfigurationLoader->load($footerColumnConfig);
             }

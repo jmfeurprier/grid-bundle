@@ -1,18 +1,20 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Jmf\Grid\Configuration;
 
 use Jmf\Grid\Exception\GridException;
 use Webmozart\Assert\Assert;
 
 /**
- * @template T of object
+ * @psalm-template T of object
  */
 readonly class KeyObjectCollection
 {
     /**
-     * @param array<string, T> $values
-     * @param class-string<T>  $class
+     * @psalm-param array<string, T> $values
+     * @psalm-param class-string<T>  $class
      */
     public function __construct(
         private array $values,
@@ -23,7 +25,11 @@ readonly class KeyObjectCollection
     }
 
     /**
-     * @return T
+     * @psalm-param non-empty-string $key
+     *
+     * @psalm-return T
+     *
+     * @throws GridException
      */
     public function get(string $key): object
     {

@@ -1,7 +1,10 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Jmf\Grid\Configuration;
 
+use Jmf\Grid\Exception\GridException;
 use Jmf\Grid\RenderingPreset\RenderingPresetApplier;
 use Webmozart\Assert\Assert;
 
@@ -19,6 +22,8 @@ class FooterConfigurationLoader
 
     /**
      * @param array<string, mixed> $footerConfig
+     *
+     * @throws GridException
      */
     public function load(array $footerConfig): FooterConfiguration
     {
@@ -31,7 +36,7 @@ class FooterConfigurationLoader
             $this->getTemplate(),
             $this->getMerge(),
             $this->getValue(),
-            $this->getPreset(),
+            $this->getPresetId(),
         );
 
         return $this->renderingPresetApplier->apply($footerConfiguration);
@@ -73,12 +78,15 @@ class FooterConfigurationLoader
         return $value;
     }
 
-    private function getPreset(): ?string
+    /**
+     * @return null|non-empty-string
+     */
+    private function getPresetId(): ?string
     {
-        $preset = $this->footerConfig['preset'] ?? null;
+        $presetId = $this->footerConfig['preset'] ?? null;
 
-        Assert::nullOrString($preset);
+        Assert::nullOrStringNotEmpty($presetId);
 
-        return $preset;
+        return $presetId;
     }
 }

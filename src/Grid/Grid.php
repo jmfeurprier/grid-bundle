@@ -1,22 +1,22 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Jmf\Grid\Grid;
 
-use Webmozart\Assert\Assert;
+use Jmf\Grid\Grid\Column\GridColumn;
+use Jmf\Grid\Grid\Column\GridColumnCollection;
+use Jmf\Grid\Grid\Footer\GridFooter;
+use Jmf\Grid\Grid\Row\GridRow;
+use Jmf\Grid\Grid\Row\GridRowCollection;
 
 readonly class Grid
 {
-    /**
-     * @param GridColumn[] $columns
-     * @param GridRow[]    $rows
-     */
     public function __construct(
-        private iterable $columns,
-        private iterable $rows,
+        private GridColumnCollection $columns,
+        private GridRowCollection $rows,
         private GridFooter $footer,
     ) {
-        Assert::allIsInstanceOf($this->columns, GridColumn::class);
-        Assert::allIsInstanceOf($this->rows, GridRow::class);
     }
 
     /**
@@ -24,7 +24,7 @@ readonly class Grid
      */
     public function getColumns(): iterable
     {
-        return $this->columns;
+        return $this->columns->all();
     }
 
     /**
@@ -32,7 +32,7 @@ readonly class Grid
      */
     public function getRows(): iterable
     {
-        return $this->rows;
+        return $this->rows->all();
     }
 
     public function getFooter(): GridFooter

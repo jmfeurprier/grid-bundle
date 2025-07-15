@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Jmf\Grid\RenderingPreset;
 
 use Jmf\Grid\Exception\GridException;
@@ -8,7 +10,7 @@ use Override;
 readonly class RenderingPresetRepository implements RenderingPresetRepositoryInterface
 {
     /**
-     * @param array<string, mixed> $renderingPresetConfigs
+     * @param array<non-empty-string, mixed> $renderingPresetConfigs
      */
     public function __construct(
         private RenderingPresetCollectionLoader $renderingPresetCollectionLoader,

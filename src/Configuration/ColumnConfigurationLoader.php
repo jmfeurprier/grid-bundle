@@ -1,7 +1,10 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Jmf\Grid\Configuration;
 
+use Jmf\Grid\Exception\GridException;
 use Jmf\Grid\RenderingPreset\RenderingPresetApplier;
 use Webmozart\Assert\Assert;
 
@@ -19,6 +22,8 @@ class ColumnConfigurationLoader
 
     /**
      * @param array<string, mixed> $columnConfig
+     *
+     * @throws GridException
      */
     public function load(array $columnConfig): ColumnConfiguration
     {
@@ -31,7 +36,7 @@ class ColumnConfigurationLoader
             $this->getLabel(),
             $this->getSource(),
             $this->getTemplate(),
-            $this->getPreset(),
+            $this->getPresetId(),
         );
 
         return $this->renderingPresetApplier->apply($columnConfiguration);
@@ -73,12 +78,15 @@ class ColumnConfigurationLoader
         return $template;
     }
 
-    private function getPreset(): ?string
+    /**
+     * @return null|non-empty-string
+     */
+    private function getPresetId(): ?string
     {
-        $preset = $this->columnConfig['preset'] ?? null;
+        $presetId = $this->columnConfig['preset'] ?? null;
 
-        Assert::nullOrString($preset);
+        Assert::nullOrStringNotEmpty($presetId);
 
-        return $preset;
+        return $presetId;
     }
 }

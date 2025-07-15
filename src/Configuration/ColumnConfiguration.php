@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Jmf\Grid\Configuration;
 
 use Jmf\Grid\RenderingPreset\RenderingPreset;
@@ -8,43 +10,42 @@ use Override;
 
 readonly class ColumnConfiguration implements WithRenderingPresetInterface
 {
+    /**
+     * @param null|non-empty-string $presetId
+     */
     final public function __construct(
         private ?string $align,
         private ?string $label,
         private ?string $source,
         private ?string $template,
-        private ?string $preset,
+        private ?string $presetId,
     ) {
     }
 
-    #[Override]
     public function getAlign(): ?string
     {
         return $this->align;
     }
 
-    #[Override]
     public function getLabel(): ?string
     {
         return $this->label;
     }
 
-    #[Override]
     public function getSource(): ?string
     {
         return $this->source;
     }
 
-    #[Override]
     public function getTemplate(): ?string
     {
         return $this->template;
     }
 
     #[Override]
-    public function getPreset(): ?string
+    public function getPresetId(): ?string
     {
-        return $this->preset;
+        return $this->presetId;
     }
 
     #[Override]
@@ -55,7 +56,7 @@ readonly class ColumnConfiguration implements WithRenderingPresetInterface
             $this->label ?? $renderingPreset->getLabel(),
             $this->source ?? $renderingPreset->getSource(),
             $this->template ?? $renderingPreset->getTemplate(),
-            $renderingPreset->getPreset(),
+            $renderingPreset->getPresetId(),
         );
     }
 }

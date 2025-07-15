@@ -1,6 +1,8 @@
 <?php
 
-namespace Jmf\Grid\Grid;
+declare(strict_types=1);
+
+namespace Jmf\Grid\Grid\Row;
 
 readonly class GridRow
 {
