@@ -68,8 +68,6 @@ readonly class GridRowGenerator
         $rowVariables['_item'] = $item;
         $rowVariables['_loop'] = $loopVariables;
 
-        // @todo Inject template prefix (for macros, etc).
-
         foreach ($gridConfiguration->getRowConfiguration()->getVariables()->all() as $key => $value) {
             Assert::stringNotEmpty($key);
             Assert::stringNotEmpty($value);

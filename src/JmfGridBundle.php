@@ -26,7 +26,6 @@ class JmfGridBundle extends AbstractBundle
     public function configure(DefinitionConfigurator $definition): void
     {
         $definition->rootNode()
-            ->fixXmlConfig('macro')
             ->fixXmlConfig('preset')
             ->children()
                 ->arrayNode('grids')
@@ -63,11 +62,6 @@ class JmfGridBundle extends AbstractBundle
                 ->scalarNode('template_path')
                     ->info('Grid template path.')
                     ->defaultValue('@JmfGrid/grid.html.twig')
-                ->end()
-                ->arrayNode('macros')
-                    ->scalarPrototype()->end()
-                    ->info('Grid macros to import.')
-                    ->defaultValue([])
                 ->end()
                 ->scalarNode('twig_functions_prefix')
                     ->info('Twig functions prefix.')
@@ -142,16 +136,14 @@ class JmfGridBundle extends AbstractBundle
             ->tag('twig.extension')
         ;
 
-        $container->services()
-            ->set(GridRowCellGenerator::class)
-            ->autowire()
-            ->arg('$macros', $config['macros'])
-        ;
+        //$container->services()
+        //    ->set(GridRowCellGenerator::class)
+        //    ->autowire()
+        //;
 
-        $container->services()
-            ->set(Grid\Row\GridRowGenerator::class)
-            ->autowire()
-            ->arg('$macros', $config['macros'])
-        ;
+        //$container->services()
+        //    ->set(Grid\Row\GridRowGenerator::class)
+        //    ->autowire()
+        //;
     }
 }

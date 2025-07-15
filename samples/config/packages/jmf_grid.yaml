@@ -2,8 +2,6 @@ jmf_grid:
 
     #template_path:         '@JmfGrid/grid.html.twig'
     #twig_functions_prefix: 'jmf_'
-    macros:
-        macro_buttons: '_macro/buttons.html.twig'
 
     presets:
         buttonEdit:
