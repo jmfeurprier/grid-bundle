@@ -1,0 +1,7 @@
+{% if (grid.footer.rows is not empty) %}
+    <tfoot>
+        {% for footerRow in grid.footer.rows %}
+            {{ include('grid_footer_row.html.twig') }}
+        {% endfor %}
+    </tfoot>
+{% endif %}

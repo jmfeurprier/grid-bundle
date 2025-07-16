@@ -26,7 +26,9 @@ readonly class CacheableRenderingPresetRepository implements RenderingPresetRepo
     {
         $renderingPreset = $this->cache->get(
             $this->getCacheKey($presetId),
-            $this->getCallback($presetId),
+            fn(
+                ItemInterface $item,
+            ): RenderingPreset => $this->renderingPresetRepository->get($presetId),
         );
 
         Assert::isInstanceOf($renderingPreset, RenderingPreset::class);
@@ -47,17 +49,5 @@ readonly class CacheableRenderingPresetRepository implements RenderingPresetRepo
                 ],
             ),
         );
-    }
-
-    /**
-     * @param non-empty-string $presetId
-     *
-     * @return callable
-     */
-    private function getCallback(string $presetId): callable
-    {
-        return fn(
-            ItemInterface $item,
-        ): RenderingPreset => $this->renderingPresetRepository->get($presetId);
     }
 }

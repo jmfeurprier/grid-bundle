@@ -1,0 +1,3 @@
+<td{% for key, value in (footerCell.attributes) %} {{ key }}="{{ value }}"{% endfor %}>
+{{ footerCell.value|default('')|raw }}
+</td>

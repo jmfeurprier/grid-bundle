@@ -1,0 +1,7 @@
+{% set classes = [] %}
+{% if (column.align is not null) %}
+    {% set classes = classes|merge(['text-' ~ column.align]) %}
+{% endif %}
+<th{% if (classes is not empty) %} class="{{ classes|join(' ') }}"{% endif %}>
+    {% if (column.label is not null) %}{{ column.label }}{% endif %}
+</th>

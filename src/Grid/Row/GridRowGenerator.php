@@ -111,6 +111,7 @@ readonly class GridRowGenerator
      * @return GridRowCell[]
      *
      * @throws GridException
+     * @throws TemplateRenderingException
      */
     private function buildRowCells(
         GridConfiguration $gridConfiguration,
@@ -135,6 +136,7 @@ readonly class GridRowGenerator
      * @param array<string, mixed>        $rowVariables
      *
      * @throws GridException
+     * @throws TemplateRenderingException
      */
     private function buildCell(
         ColumnConfiguration $columnConfiguration,

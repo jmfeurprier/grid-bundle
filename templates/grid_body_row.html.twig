@@ -1,0 +1,9 @@
+{% if (row.link is null) %}
+<tr>
+    {% else %}
+<tr onclick="window.location='{{ row.link }}'" style="cursor:pointer">
+    {% endif %}
+    {% for cell in row.cells %}
+        {{ include('grid_body_row_cell.html.twig') }}
+    {% endfor %}
+</tr>

@@ -6,18 +6,19 @@ namespace Jmf\Grid\Grid\Row;
 
 use Jmf\Grid\Configuration\ColumnConfiguration;
 use Jmf\Grid\Exception\GridException;
+use Jmf\TemplateRendering\Exception\TemplateRenderingException;
+use Jmf\TemplateRendering\TemplateRendererInterface;
 use Stringable;
 use Symfony\Component\PropertyAccess\PropertyAccessorInterface;
 use Throwable;
-use Twig\Environment as TwigEnvironment;
 use Twig\TemplateWrapper;
 
 // @todo Rewrite without Twig dependency and local cache.
 readonly class GridRowCellGenerator
 {
     public function __construct(
-        private TwigEnvironment $twigEnvironment,
         private PropertyAccessorInterface $propertyAccessor,
+        private TemplateRendererInterface $templateRenderer,
     ) {
     }
 
@@ -26,6 +27,7 @@ readonly class GridRowCellGenerator
      * @param array<string, mixed>        $rowVariables
      *
      * @throws GridException
+     * @throws TemplateRenderingException
      */
     public function generate(
         ColumnConfiguration $columnConfiguration,
@@ -43,6 +45,7 @@ readonly class GridRowCellGenerator
      * @param array<string, mixed>        $rowVariables
      *
      * @throws GridException
+     * @throws TemplateRenderingException
      */
     private function getCellValue(
         ColumnConfiguration $columnConfiguration,
@@ -66,7 +69,7 @@ readonly class GridRowCellGenerator
                 ],
             );
 
-            $value = $this->getColumnTemplate($template)->render($context);
+            $value = $this->templateRenderer->renderFromString($template, $context);
         }
 
         return trim($this->getStringValue($value));
@@ -122,45 +125,5 @@ readonly class GridRowCellGenerator
         }
 
         return $parameters;
-    }
-
-    /**
-     * @throws GridException
-     */
-    private function getColumnTemplate(string $template): TemplateWrapper
-    {
-        return $this->createTemplate(
-            $template,
-        );
-        /*
-                static $cache = [];
-
-                $cacheKey = serialize($template);
-
-                if (!array_key_exists($cacheKey, $cache)) {
-                    $templateWrapper = $this->createTemplate(
-                        $template,
-                    );
-
-                    $cache[$cacheKey] = $templateWrapper;
-                }
-
-                return $cache[$cacheKey];
-        */
-    }
-
-    /**
-     * @throws GridException
-     */
-    protected function createTemplate(string $template): TemplateWrapper
-    {
-        try {
-            return $this->twigEnvironment->createTemplate($template);
-        } catch (Throwable $e) {
-            throw new GridException(
-                message:  'Failed creating template.',
-                previous: $e,
-            );
-        }
     }
 }
