@@ -1,7 +1,7 @@
 name: Symfony CI
 on:
     push:
-        branches: [ "master", "4.0", "5.0" ]
+        branches: [ "*" ]
     pull_request:
         branches: [ "*" ]
 jobs:

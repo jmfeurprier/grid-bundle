@@ -1,6 +1,6 @@
 {
     "name": "jmf/grid-bundle",
-    "description" : "Grid bundle for Symfony",
+    "description": "Grid bundle for Symfony",
     "license": "mit",
     "type": "symfony-bundle",
     "require": {

@@ -3,26 +3,6 @@ jmf_grid:
     #template_path:         '@JmfGrid/grid.html.twig'
     #twig_functions_prefix: 'jmf_'
 
-    presets:
-        buttonEdit:
-            align:    'end'
-            template: '<a href="{{ path(entityType ~ ".edit", {"id": entityId} ) }}">Edit</a>'
-        buttonShow:
-            align:    'end'
-            template: '<a href="{{ path(entityType ~ ".show", {"id": entityId} ) }}">Show</a>'
-        date:
-            align:    'center'
-            template: '{% if (_value is not null) %}{{ _value.format("Y-m-d") }}{% endif %}'
-        dateTime:
-            align:    'center'
-            template: '{% if (_value is not null) %}{{ _value.format("Y-m-d H:i:s") }}{% endif %}'
-        gender:
-            align:  'center'
-            label:  'Gender'
-            source: 'gender'
-        text:
-            align: 'start'
-
     grids:
         articles:
             grid:
@@ -40,7 +20,7 @@ jmf_grid:
                     preset: 'date'
                     source: 'date'
                 -
-                    preset: 'buttonsShow'
+                    preset: 'button_show'
         users:
             grid:
                 variables:
@@ -51,17 +31,17 @@ jmf_grid:
                     entityId: '{{ _item.id }}'
             columns:
                 -
-                    label:  'Last name'
+                    label:  'Last Name'
                     source: 'lastName'
                 -
-                    label:  'First name'
+                    label:  'First Name'
                     source: 'firstName'
                 -
                     preset: 'gender'
                 -
-                    label:  'Birth date'
+                    label:  'Birth Date'
                     source: 'startDate'
                 -
-                    preset: 'buttonShow'
+                    preset: 'button_show'
                 -
-                    preset: 'buttonEdit'
+                    preset: 'button_edit'

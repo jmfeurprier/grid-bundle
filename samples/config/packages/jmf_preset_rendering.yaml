@@ -1,0 +1,42 @@
+jmf_preset_rendering:
+
+    #twig_functions_prefix: 'jmf_'
+
+    properties:
+
+        align:
+            choices:
+                - 'center'
+                - 'left'
+                - 'right'
+            default:  'left'
+            required: false
+
+        label:
+            required: false
+
+    presets:
+
+        button_edit:
+            align:    'end'
+            template: '<a href="{{ path(entityType ~ ".edit", {"id": entityId} ) }}">Edit</a>'
+
+        button_show:
+            align:    'end'
+            template: '<a href="{{ path(entityType ~ ".show", {"id": entityId} ) }}">Show</a>'
+
+        date:
+            align:    'center'
+            template: '{% if (_value is not null) %}{{ _value.format("Y-m-d") }}{% endif %}'
+
+        date_time:
+            align:    'center'
+            template: '{% if (_value is not null) %}{{ _value.format("Y-m-d H:i:s") }}{% endif %}'
+
+        gender:
+            align:  'center'
+            label:  'Gender'
+            source: 'gender'
+
+        text:
+            align: 'start'

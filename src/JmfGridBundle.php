@@ -7,7 +7,6 @@ namespace Jmf\Grid;
 use Jmf\Grid\Configuration\CacheableGridConfigurationLoader;
 use Jmf\Grid\Configuration\GridConfigurationLoader;
 use Jmf\Grid\Configuration\GridConfigurationLoaderInterface;
-use Jmf\Grid\Grid\Row\GridRowCellGenerator;
 use Jmf\Grid\RenderingPreset\CacheableRenderingPresetRepository;
 use Jmf\Grid\RenderingPreset\RenderingPresetRepository;
 use Jmf\Grid\RenderingPreset\RenderingPresetRepositoryInterface;
@@ -135,15 +134,5 @@ class JmfGridBundle extends AbstractBundle
             ->arg('$prefix', $config['twig_functions_prefix'])
             ->tag('twig.extension')
         ;
-
-        //$container->services()
-        //    ->set(GridRowCellGenerator::class)
-        //    ->autowire()
-        //;
-
-        //$container->services()
-        //    ->set(Grid\Row\GridRowGenerator::class)
-        //    ->autowire()
-        //;
     }
 }
