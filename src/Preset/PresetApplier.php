@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace Jmf\Grid\Preset;
 
 use Jmf\Grid\Exception\GridException;
-use Jmf\PresetRendering\Exception\PresetRenderingException;
 use Jmf\PresetRendering\Preset\Preset;
 use Jmf\PresetRendering\Preset\PresetRepositoryInterface;
 use Throwable;
@@ -28,13 +27,27 @@ readonly class PresetApplier
      */
     public function apply(WithPresetInterface $subject): WithPresetInterface
     {
+        return $this->doApply($subject);
+    }
+
+    /**
+     * @psalm-template T of WithPresetInterface
+     *
+     * @psalm-param T $subject
+     *
+     * @psalm-return T
+     *
+     * @throws GridException
+     */
+    private function doApply(WithPresetInterface $subject): WithPresetInterface
+    {
         if (null === $subject->getPresetId()) {
             return $subject;
         }
 
         $preset = $this->getPreset($subject->getPresetId());
 
-        return $this->apply(
+        return $this->doApply(
             $subject->applyPreset($preset),
         );
     }
