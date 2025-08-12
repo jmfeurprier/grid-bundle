@@ -7,6 +7,7 @@ namespace Jmf\Grid\Grid\Footer;
 use Jmf\Grid\Configuration\FooterConfiguration;
 use Jmf\Grid\Configuration\GridConfiguration;
 use Jmf\TemplateRendering\Exception\TemplateRenderingException;
+use Jmf\TemplateRendering\TemplateInterface;
 use Jmf\TemplateRendering\TemplateRendererInterface;
 
 readonly class GridFooterGenerator
@@ -86,7 +87,7 @@ readonly class GridFooterGenerator
 
         if (null !== $footerConfiguration->getValue()) {
             $value = $footerConfiguration->getValue();
-        } elseif (null !== $footerConfiguration->getTemplate()) {
+        } elseif ($footerConfiguration->getTemplate() instanceof TemplateInterface) {
             $context = array_merge(
                 $arguments,
                 [
@@ -94,7 +95,7 @@ readonly class GridFooterGenerator
                 ],
             );
 
-            $value = $this->templateRenderer->renderFromString(
+            $value = $this->templateRenderer->render(
                 $footerConfiguration->getTemplate(),
                 $context,
             );

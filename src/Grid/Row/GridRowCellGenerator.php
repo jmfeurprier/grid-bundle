@@ -7,6 +7,7 @@ namespace Jmf\Grid\Grid\Row;
 use Jmf\Grid\Configuration\ColumnConfiguration;
 use Jmf\Grid\Exception\GridException;
 use Jmf\TemplateRendering\Exception\TemplateRenderingException;
+use Jmf\TemplateRendering\TemplateInterface;
 use Jmf\TemplateRendering\TemplateRendererInterface;
 use Stringable;
 use Symfony\Component\PropertyAccess\PropertyAccessorInterface;
@@ -61,7 +62,7 @@ readonly class GridRowCellGenerator
 
         $template = $columnConfiguration->getTemplate();
 
-        if (null !== $template) {
+        if ($template instanceof TemplateInterface) {
             $context = array_merge(
                 $rowVariables,
                 [
@@ -69,7 +70,7 @@ readonly class GridRowCellGenerator
                 ],
             );
 
-            $value = $this->templateRenderer->renderFromString($template, $context);
+            $value = $this->templateRenderer->render($template, $context);
         }
 
         return trim($this->getStringValue($value));

@@ -7,9 +7,6 @@ namespace Jmf\Grid;
 use Jmf\Grid\Configuration\CacheableGridConfigurationLoader;
 use Jmf\Grid\Configuration\GridConfigurationLoader;
 use Jmf\Grid\Configuration\GridConfigurationLoaderInterface;
-use Jmf\Grid\RenderingPreset\CacheableRenderingPresetRepository;
-use Jmf\Grid\RenderingPreset\RenderingPresetRepository;
-use Jmf\Grid\RenderingPreset\RenderingPresetRepositoryInterface;
 use Jmf\Grid\Twig\GridExtension;
 use Override;
 use Symfony\Component\Config\Definition\Configurator\DefinitionConfigurator;
@@ -102,28 +99,6 @@ class JmfGridBundle extends AbstractBundle
                 ->class(GridConfigurationLoader::class)
                 ->autowire()
                 ->arg('$gridsConfig', $config['grids'])
-            ;
-        }
-
-        if (interface_exists(CacheInterface::class)) {
-            $container->services()
-                ->set(RenderingPresetRepository::class)
-                ->autowire()
-                ->arg('$renderingPresetConfigs', $config['presets'])
-            ;
-
-            $container->services()
-                ->set(RenderingPresetRepositoryInterface::class)
-                ->autowire()
-                ->class(CacheableRenderingPresetRepository::class)
-                ->arg('$renderingPresetRepository', new Reference(RenderingPresetRepository::class))
-            ;
-        } else {
-            $container->services()
-                ->set(RenderingPresetRepositoryInterface::class)
-                ->autowire()
-                ->class(RenderingPresetRepository::class)
-                ->arg('$renderingPresetConfigs', $config['presets'])
             ;
         }
 

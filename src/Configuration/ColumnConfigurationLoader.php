@@ -5,7 +5,9 @@ declare(strict_types=1);
 namespace Jmf\Grid\Configuration;
 
 use Jmf\Grid\Exception\GridException;
-use Jmf\Grid\RenderingPreset\RenderingPresetApplier;
+use Jmf\Grid\Preset\PresetApplier;
+use Jmf\TemplateRendering\StringTemplate;
+use Jmf\TemplateRendering\TemplateInterface;
 use Webmozart\Assert\Assert;
 
 class ColumnConfigurationLoader
@@ -16,7 +18,7 @@ class ColumnConfigurationLoader
     private array $columnConfig;
 
     public function __construct(
-        private readonly RenderingPresetApplier $renderingPresetApplier,
+        private readonly PresetApplier $presetApplier,
     ) {
     }
 
@@ -39,7 +41,7 @@ class ColumnConfigurationLoader
             $this->getPresetId(),
         );
 
-        return $this->renderingPresetApplier->apply($columnConfiguration);
+        return $this->presetApplier->apply($columnConfiguration);
     }
 
     private function getAlign(): ?string
@@ -72,13 +74,18 @@ class ColumnConfigurationLoader
         return $source;
     }
 
-    private function getTemplate(): ?string
+    private function getTemplate(): ?TemplateInterface
     {
         $template = $this->columnConfig['template'] ?? null;
 
-        Assert::nullOrString($template);
+        if (null === $template) {
+            return null;
+        }
 
-        return $template;
+        Assert::string($template);
+
+        // @todo
+        return new StringTemplate($template);
     }
 
     /**

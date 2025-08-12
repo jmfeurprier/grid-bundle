@@ -4,18 +4,20 @@ declare(strict_types=1);
 
 namespace Jmf\Grid\Configuration;
 
-use Jmf\Grid\RenderingPreset\RenderingPreset;
-use Jmf\Grid\RenderingPreset\WithRenderingPresetInterface;
+use Jmf\Grid\Preset\WithPresetInterface;
+use Jmf\PresetRendering\Preset\Preset;
+use Jmf\TemplateRendering\TemplateInterface;
 use Override;
+use Webmozart\Assert\Assert;
 
-readonly class FooterConfiguration implements WithRenderingPresetInterface
+readonly class FooterConfiguration implements WithPresetInterface
 {
     /**
      * @param null|non-empty-string $presetId
      */
     final public function __construct(
         private ?string $align,
-        private ?string $template,
+        private ?TemplateInterface $template,
         private ?int $merge,
         private ?string $value,
         private ?string $presetId,
@@ -27,7 +29,7 @@ readonly class FooterConfiguration implements WithRenderingPresetInterface
         return $this->align;
     }
 
-    public function getTemplate(): ?string
+    public function getTemplate(): ?TemplateInterface
     {
         return $this->template;
     }
@@ -59,14 +61,21 @@ readonly class FooterConfiguration implements WithRenderingPresetInterface
     }
 
     #[Override]
-    public function applyPreset(RenderingPreset $renderingPreset): static
+    public function applyPreset(Preset $preset): static
     {
+        $properties  = $preset->getProperties();
+        $presetAlign = $properties->tryGetValue('align');
+        $presetMerge = $properties->tryGetValue('merge');
+
+        Assert::nullOrStringNotEmpty($presetAlign);
+        Assert::nullOrInteger($presetMerge);
+
         return new static(
-            $this->getAlign() ?? $renderingPreset->getAlign(),
-            $this->getTemplate() ?? $renderingPreset->getTemplate(),
-            $this->getMerge(),
-            $this->getValue(),
-            $renderingPreset->getPresetId(),
+            $this->align ?? $presetAlign,
+            $this->template ?? $preset->getTemplate(),
+            $this->merge ?? $presetMerge,
+            $this->value,
+            $preset->getId(),
         );
     }
 }

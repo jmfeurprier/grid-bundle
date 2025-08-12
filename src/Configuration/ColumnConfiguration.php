@@ -4,11 +4,13 @@ declare(strict_types=1);
 
 namespace Jmf\Grid\Configuration;
 
-use Jmf\Grid\RenderingPreset\RenderingPreset;
-use Jmf\Grid\RenderingPreset\WithRenderingPresetInterface;
+use Jmf\Grid\Preset\WithPresetInterface;
+use Jmf\PresetRendering\Preset\Preset;
+use Jmf\TemplateRendering\TemplateInterface;
 use Override;
+use Webmozart\Assert\Assert;
 
-readonly class ColumnConfiguration implements WithRenderingPresetInterface
+readonly class ColumnConfiguration implements WithPresetInterface
 {
     /**
      * @param null|non-empty-string $presetId
@@ -18,7 +20,7 @@ readonly class ColumnConfiguration implements WithRenderingPresetInterface
         private ?string $align,
         private ?string $label,
         private ?string $source,
-        private ?string $template,
+        private ?TemplateInterface $template,
         private ?string $presetId,
     ) {
     }
@@ -41,7 +43,7 @@ readonly class ColumnConfiguration implements WithRenderingPresetInterface
         return $this->source;
     }
 
-    public function getTemplate(): ?string
+    public function getTemplate(): ?TemplateInterface
     {
         return $this->template;
     }
@@ -53,14 +55,21 @@ readonly class ColumnConfiguration implements WithRenderingPresetInterface
     }
 
     #[Override]
-    public function applyPreset(RenderingPreset $renderingPreset): static
+    public function applyPreset(Preset $preset): static
     {
+        $properties = $preset->getProperties();
+        $presetAlign = $properties->tryGetValue('align');
+        $presetLabel = $properties->tryGetValue('label');
+
+        Assert::nullOrStringNotEmpty($presetAlign);
+        Assert::nullOrString($presetLabel);
+
         return new static(
-            $this->align ?? $renderingPreset->getAlign(),
-            $this->label ?? $renderingPreset->getLabel(),
-            $this->source ?? $renderingPreset->getSource(),
-            $this->template ?? $renderingPreset->getTemplate(),
-            $renderingPreset->getPresetId(),
+            $this->align ?? $presetAlign,
+            $this->label ?? $presetLabel,
+            $this->source ?? $preset->getSource(),
+            $this->template ?? $preset->getTemplate(),
+            $preset->getId(),
         );
     }
 }
