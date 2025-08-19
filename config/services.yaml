@@ -6,3 +6,21 @@ services:
 
     Jmf\Grid\:
         resource: '../src/'
+
+    Jmf\Grid\Configuration\CacheableGridConfigurationLoader:
+        arguments:
+            $gridConfigurationLoader: '@Jmf\Grid\Configuration\GridConfigurationLoader'
+
+    Jmf\Grid\Configuration\GridConfigurationLoader:
+        arguments:
+            $gridsConfig: '%jmf_grid.grid_configurations%'
+
+    Jmf\Grid\Configuration\GridConfigurationLoaderInterface:
+        alias: Jmf\Grid\Configuration\CacheableGridConfigurationLoader
+
+    Jmf\Grid\Twig\GridExtension:
+        arguments:
+            $templatePath: '%jmf_grid.template_path%'
+            $prefix:       '%jmf_grid.twig_functions_prefix%'
+        tags:
+            - 'twig.extension'

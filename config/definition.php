@@ -1,0 +1,55 @@
+<?php
+
+declare(strict_types=1);
+
+use Jmf\Grid\Twig\GridExtension;
+use Symfony\Component\Config\Definition\Configurator\DefinitionConfigurator;
+
+return static function (DefinitionConfigurator $definition): void {
+    $definition->rootNode()
+        ->fixXmlConfig('grid')
+        ->children()
+            ->arrayNode('grids')
+                ->defaultValue([])
+                ->info('Grid definitions.')
+                ->useAttributeAsKey('id')
+                ->arrayPrototype()
+                    ->children()
+                        ->arrayNode('grid')
+                            ->fixXmlConfig('argument')
+                            ->fixXmlConfig('variable')
+                            ->children()
+                                ->arrayNode('arguments')
+                                    ->useAttributeAsKey('key')
+                                    ->variablePrototype()->end()
+                                ->end()
+                                ->arrayNode('variables')
+                                    ->useAttributeAsKey('key')
+                                    ->variablePrototype()->end()
+                                ->end()
+                            ->end()
+                        ->end()
+                        ->arrayNode('rows')
+                            ->variablePrototype()->end()
+                        ->end()
+                        ->arrayNode('columns')
+                            ->isRequired()
+                            ->variablePrototype()->end()
+                        ->end()
+                        ->arrayNode('footer')
+                            ->variablePrototype()->end()
+                        ->end()
+                    ->end()
+                ->end()
+            ->end()
+            ->scalarNode('template_path')
+                ->info('Grid template path.')
+                ->defaultValue('@JmfGrid/grid.html.twig')
+            ->end()
+            ->scalarNode('twig_functions_prefix')
+                ->info('Twig functions prefix.')
+                ->defaultValue(GridExtension::PREFIX_DEFAULT)
+            ->end()
+        ->end()
+    ;
+};

@@ -5,14 +5,12 @@ declare(strict_types=1);
 namespace Jmf\Grid\Grid\Row;
 
 use Jmf\Grid\Configuration\ColumnConfiguration;
-use Jmf\Grid\Exception\GridException;
+use Jmf\Grid\Exception\UnexpectedValueTypeException;
 use Jmf\TemplateRendering\Exception\TemplateRenderingException;
 use Jmf\TemplateRendering\TemplateInterface;
 use Jmf\TemplateRendering\TemplateRendererInterface;
 use Stringable;
 use Symfony\Component\PropertyAccess\PropertyAccessorInterface;
-use Throwable;
-use Twig\TemplateWrapper;
 
 // @todo Rewrite without Twig dependency and local cache.
 readonly class GridRowCellGenerator
@@ -27,8 +25,8 @@ readonly class GridRowCellGenerator
      * @param array<string, mixed>|object $item
      * @param array<string, mixed>        $rowVariables
      *
-     * @throws GridException
      * @throws TemplateRenderingException
+     * @throws UnexpectedValueTypeException
      */
     public function generate(
         ColumnConfiguration $columnConfiguration,
@@ -45,8 +43,8 @@ readonly class GridRowCellGenerator
      * @param array<string, mixed>|object $item
      * @param array<string, mixed>        $rowVariables
      *
-     * @throws GridException
      * @throws TemplateRenderingException
+     * @throws UnexpectedValueTypeException
      */
     private function getCellValue(
         ColumnConfiguration $columnConfiguration,
@@ -95,7 +93,7 @@ readonly class GridRowCellGenerator
     }
 
     /**
-     * @throws GridException
+     * @throws UnexpectedValueTypeException
      */
     private function getStringValue(mixed $value): string
     {
@@ -115,7 +113,7 @@ readonly class GridRowCellGenerator
             return (string) $value;
         }
 
-        throw new GridException('Unexpected cell value type.');
+        throw new UnexpectedValueTypeException();
     }
 
     /**

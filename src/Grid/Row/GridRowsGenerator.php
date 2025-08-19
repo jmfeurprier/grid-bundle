@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace Jmf\Grid\Grid\Row;
 
 use Jmf\Grid\Configuration\GridConfiguration;
-use Jmf\Grid\Exception\GridException;
+use Jmf\Grid\Exception\UnexpectedValueTypeException;
 use Jmf\TemplateRendering\Exception\TemplateRenderingException;
 
 readonly class GridRowsGenerator
@@ -19,8 +19,8 @@ readonly class GridRowsGenerator
      * @param list<array<string, mixed>|object> $items
      * @param array<string, mixed>              $arguments
      *
-     * @throws GridException
      * @throws TemplateRenderingException
+     * @throws UnexpectedValueTypeException
      */
     public function generate(
         GridConfiguration $gridConfiguration,
@@ -37,7 +37,7 @@ readonly class GridRowsGenerator
                 $item,
                 $rowIndex,
                 $rowCount,
-                $arguments
+                $arguments,
             );
 
             ++$rowIndex;

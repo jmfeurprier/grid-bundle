@@ -4,72 +4,29 @@ declare(strict_types=1);
 
 namespace Jmf\Grid;
 
-use Jmf\Grid\Configuration\CacheableGridConfigurationLoader;
-use Jmf\Grid\Configuration\GridConfigurationLoader;
-use Jmf\Grid\Configuration\GridConfigurationLoaderInterface;
-use Jmf\Grid\Twig\GridExtension;
 use Override;
 use Symfony\Component\Config\Definition\Configurator\DefinitionConfigurator;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Loader\Configurator\ContainerConfigurator;
-use Symfony\Component\DependencyInjection\Reference;
 use Symfony\Component\HttpKernel\Bundle\AbstractBundle;
-use Symfony\Contracts\Cache\CacheInterface;
 
 class JmfGridBundle extends AbstractBundle
 {
+    /**
+     * @const array<non-empty-string, non-empty-string>
+     */
+    private const array PARAMETERS_MAPPING = [
+        'grids'                 => 'grid_configurations',
+        'template_path'         => 'template_path',
+        'twig_functions_prefix' => 'twig_functions_prefix',
+    ];
+
+    protected string $extensionAlias = 'jmf_grid';
+
     #[Override]
     public function configure(DefinitionConfigurator $definition): void
     {
-        $definition->rootNode()
-            ->fixXmlConfig('preset')
-            ->children()
-                ->arrayNode('grids')
-                    ->info('Grid definitions.')
-                    ->useAttributeAsKey('gridId')
-                    ->arrayPrototype()
-                        ->children()
-                            ->arrayNode('grid')
-                                ->children()
-                                    ->arrayNode('arguments')
-                                        ->useAttributeAsKey('key')
-                                        ->variablePrototype()->end()
-                                    ->end()
-                                    ->arrayNode('variables')
-                                        ->useAttributeAsKey('key')
-                                        ->variablePrototype()->end()
-                                    ->end()
-                                ->end()
-                            ->end()
-                            ->arrayNode('rows')
-                                ->variablePrototype()->end()
-                            ->end()
-                            ->arrayNode('columns')
-                                ->isRequired()
-                                ->variablePrototype()->end()
-                            ->end()
-                            ->arrayNode('footer')
-                                ->variablePrototype()->end()
-                            ->end()
-                        ->end()
-                    ->end()
-//                    ->defaultValue([])
-                ->end()
-                ->scalarNode('template_path')
-                    ->info('Grid template path.')
-                    ->defaultValue('@JmfGrid/grid.html.twig')
-                ->end()
-                ->scalarNode('twig_functions_prefix')
-                    ->info('Twig functions prefix.')
-                    ->defaultValue(GridExtension::PREFIX_DEFAULT)
-                ->end()
-                ->arrayNode('presets')
-                    ->variablePrototype()->end()
-                    ->info('Rendering presets.')
-                    ->defaultValue([])
-                ->end()
-            ->end()
-        ;
+        $definition->import('../config/definition.php');
     }
 
     #[Override]
@@ -80,34 +37,21 @@ class JmfGridBundle extends AbstractBundle
     ): void {
         $container->import('../config/services.yaml');
 
-        if (interface_exists(CacheInterface::class)) {
-            $container->services()
-                ->set(GridConfigurationLoader::class)
-                ->autowire()
-                ->arg('$gridsConfig', $config['grids'])
-            ;
+        $this->loadParameters($config, $container);
+    }
 
-            $container->services()
-                ->set(GridConfigurationLoaderInterface::class)
-                ->class(CacheableGridConfigurationLoader::class)
-                ->autowire()
-                ->arg('$gridConfigurationLoader', new Reference(GridConfigurationLoader::class))
-            ;
-        } else {
-            $container->services()
-                ->set(GridConfigurationLoaderInterface::class)
-                ->class(GridConfigurationLoader::class)
-                ->autowire()
-                ->arg('$gridsConfig', $config['grids'])
-            ;
+    /**
+     * @param array<string, mixed> $config
+     */
+    private function loadParameters(
+        array $config,
+        ContainerConfigurator $container,
+    ): void {
+        foreach (self::PARAMETERS_MAPPING as $configKey => $property) {
+            $container->parameters()->set(
+                "{$this->extensionAlias}.{$property}",
+                $config[$configKey],
+            );
         }
-
-        $container->services()
-            ->set(GridExtension::class)
-            ->autowire()
-            ->arg('$templatePath', $config['template_path'])
-            ->arg('$prefix', $config['twig_functions_prefix'])
-            ->tag('twig.extension')
-        ;
     }
 }

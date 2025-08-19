@@ -4,8 +4,9 @@ declare(strict_types=1);
 
 namespace Jmf\Grid\Configuration;
 
-use Jmf\Grid\Exception\GridException;
 use Jmf\Grid\Preset\PresetApplier;
+use Jmf\RenderingPreset\Exception\InvalidConfigurationException;
+use Jmf\RenderingPreset\Exception\PresetNotFoundException;
 use Jmf\TemplateRendering\StringTemplate;
 use Jmf\TemplateRendering\TemplateInterface;
 use Webmozart\Assert\Assert;
@@ -25,7 +26,8 @@ class ColumnConfigurationLoader
     /**
      * @param array<string, mixed> $columnConfig
      *
-     * @throws GridException
+     * @throws InvalidConfigurationException
+     * @throws PresetNotFoundException
      */
     public function load(array $columnConfig): ColumnConfiguration
     {

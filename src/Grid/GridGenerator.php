@@ -6,13 +6,18 @@ namespace Jmf\Grid\Grid;
 
 use Jmf\Grid\Configuration\GridConfiguration;
 use Jmf\Grid\Configuration\GridConfigurationLoaderInterface;
-use Jmf\Grid\Exception\GridException;
+use Jmf\Grid\Exception\GridNotFoundException;
+use Jmf\Grid\Exception\GridWithoutColumnException;
+use Jmf\Grid\Exception\MissingGridArgumentException;
+use Jmf\Grid\Exception\UnexpectedValueTypeException;
 use Jmf\Grid\Grid\Column\GridColumnCollection;
 use Jmf\Grid\Grid\Column\GridColumnsGenerator;
 use Jmf\Grid\Grid\Footer\GridFooter;
 use Jmf\Grid\Grid\Footer\GridFooterGenerator;
 use Jmf\Grid\Grid\Row\GridRowCollection;
 use Jmf\Grid\Grid\Row\GridRowsGenerator;
+use Jmf\RenderingPreset\Exception\InvalidConfigurationException;
+use Jmf\RenderingPreset\Exception\PresetNotFoundException;
 use Jmf\TemplateRendering\Exception\TemplateRenderingException;
 
 readonly class GridGenerator
@@ -30,8 +35,13 @@ readonly class GridGenerator
      * @param list<array<string, mixed>|object> $items
      * @param array<string, mixed>              $arguments
      *
-     * @throws GridException
+     * @throws GridNotFoundException
+     * @throws GridWithoutColumnException
+     * @throws InvalidConfigurationException
+     * @throws MissingGridArgumentException
+     * @throws PresetNotFoundException
      * @throws TemplateRenderingException
+     * @throws UnexpectedValueTypeException
      */
     public function generate(
         string $gridId,
@@ -57,7 +67,7 @@ readonly class GridGenerator
      * @param non-empty-string     $gridId
      * @param array<string, mixed> $arguments
      *
-     * @throws GridException
+     * @throws MissingGridArgumentException
      */
     private function validateArguments(
         string $gridId,
@@ -66,8 +76,10 @@ readonly class GridGenerator
     ): void {
         foreach ($gridConfiguration->getArguments() as $argument) {
             if (!array_key_exists($argument, $arguments)) {
-                // @todo Specialize exception.
-                throw new GridException("Missing grid argument '{$argument}' for grid '{$gridId}'.");
+                throw new MissingGridArgumentException(
+                    $gridId,
+                    $argument,
+                );
             }
         }
     }
@@ -83,8 +95,8 @@ readonly class GridGenerator
      * @param array<string, mixed>              $arguments
      * @param list<array<string, mixed>|object> $items
      *
-     * @throws GridException
      * @throws TemplateRenderingException
+     * @throws UnexpectedValueTypeException
      */
     private function generateRows(
         GridConfiguration $gridConfiguration,

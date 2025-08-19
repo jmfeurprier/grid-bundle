@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace Jmf\Grid\Configuration;
 
 use Jmf\Grid\Preset\WithPresetInterface;
-use Jmf\PresetRendering\Preset\Preset;
+use Jmf\RenderingPreset\Preset\Preset;
 use Jmf\TemplateRendering\TemplateInterface;
 use Override;
 use Webmozart\Assert\Assert;
@@ -57,7 +57,7 @@ readonly class ColumnConfiguration implements WithPresetInterface
     #[Override]
     public function applyPreset(Preset $preset): static
     {
-        $properties = $preset->getProperties();
+        $properties  = $preset->getProperties();
         $presetAlign = $properties->tryGetValue('align');
         $presetLabel = $properties->tryGetValue('label');
 

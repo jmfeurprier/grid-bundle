@@ -4,12 +4,10 @@ declare(strict_types=1);
 
 namespace Jmf\Grid\Preset;
 
-use Jmf\Grid\Exception\GridException;
 use Jmf\RenderingPreset\Exception\InvalidConfigurationException;
 use Jmf\RenderingPreset\Exception\PresetNotFoundException;
 use Jmf\RenderingPreset\Preset\Preset;
 use Jmf\RenderingPreset\Preset\PresetRepositoryInterface;
-use Throwable;
 
 readonly class PresetApplier
 {

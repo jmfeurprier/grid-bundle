@@ -6,7 +6,7 @@ namespace Jmf\Grid\Grid\Row;
 
 use Jmf\Grid\Configuration\ColumnConfiguration;
 use Jmf\Grid\Configuration\GridConfiguration;
-use Jmf\Grid\Exception\GridException;
+use Jmf\Grid\Exception\UnexpectedValueTypeException;
 use Jmf\TemplateRendering\Exception\TemplateRenderingException;
 use Jmf\TemplateRendering\TemplateRendererInterface;
 use Webmozart\Assert\Assert;
@@ -24,8 +24,8 @@ readonly class GridRowGenerator
      * @param array<string, mixed>|object $item
      * @param array<string, mixed>        $arguments
      *
-     * @throws GridException
      * @throws TemplateRenderingException
+     * @throws UnexpectedValueTypeException
      */
     public function generate(
         GridConfiguration $gridConfiguration,
@@ -110,8 +110,8 @@ readonly class GridRowGenerator
      *
      * @return GridRowCell[]
      *
-     * @throws GridException
      * @throws TemplateRenderingException
+     * @throws UnexpectedValueTypeException
      */
     private function buildRowCells(
         GridConfiguration $gridConfiguration,
@@ -135,8 +135,8 @@ readonly class GridRowGenerator
      * @param array<string, mixed>|object $item
      * @param array<string, mixed>        $rowVariables
      *
-     * @throws GridException
      * @throws TemplateRenderingException
+     * @throws UnexpectedValueTypeException
      */
     private function buildCell(
         ColumnConfiguration $columnConfiguration,

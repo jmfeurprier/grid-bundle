@@ -6,6 +6,6 @@ namespace Jmf\Grid\Exception;
 
 use Exception;
 
-class GridException extends Exception
+abstract class GridException extends Exception
 {
 }

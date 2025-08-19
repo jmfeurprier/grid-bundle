@@ -4,8 +4,9 @@ declare(strict_types=1);
 
 namespace Jmf\Grid\Twig;
 
-use Exception;
+use Jmf\Grid\Exception\GridException;
 use Jmf\Grid\Grid\GridGenerator;
+use Jmf\RenderingPreset\Exception\RenderingPresetException;
 use Jmf\TemplateRendering\Exception\TemplateRenderingException;
 use Jmf\TemplateRendering\TemplateRendererInterface;
 use Override;
@@ -47,7 +48,8 @@ class GridExtension extends AbstractExtension
      * @param array<string, mixed>              $arguments
      * @param array<string, mixed>              $parameters
      *
-     * @throws Exception
+     * @throws GridException
+     * @throws RenderingPresetException
      * @throws TemplateRenderingException
      */
     public function grid(

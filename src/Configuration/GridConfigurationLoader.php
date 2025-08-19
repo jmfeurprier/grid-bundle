@@ -4,7 +4,10 @@ declare(strict_types=1);
 
 namespace Jmf\Grid\Configuration;
 
-use Jmf\Grid\Exception\GridException;
+use Jmf\Grid\Exception\GridNotFoundException;
+use Jmf\Grid\Exception\GridWithoutColumnException;
+use Jmf\RenderingPreset\Exception\InvalidConfigurationException;
+use Jmf\RenderingPreset\Exception\PresetNotFoundException;
 use Override;
 use Webmozart\Assert\Assert;
 
@@ -21,14 +24,11 @@ readonly class GridConfigurationLoader implements GridConfigurationLoaderInterfa
     ) {
     }
 
-    /**
-     * @throws GridException
-     */
     #[Override]
     public function load(string $gridId): GridConfiguration
     {
         if (!isset($this->gridsConfig[$gridId])) {
-            throw new GridException("Grid with Id '{$gridId}' is not defined.");
+            throw new GridNotFoundException($gridId);
         }
 
         $config = $this->gridsConfig[$gridId];
@@ -91,14 +91,16 @@ readonly class GridConfigurationLoader implements GridConfigurationLoaderInterfa
      *
      * @return ColumnConfiguration[]
      *
-     * @throws GridException
+     * @throws GridWithoutColumnException
+     * @throws InvalidConfigurationException
+     * @throws PresetNotFoundException
      */
     private function buildColumnConfigurations(array $config): iterable
     {
         $columnsConfig = $config['columns'] ?? [];
 
         if ([] === $columnsConfig) {
-            throw new GridException('Grid has not column defined.');
+            throw new GridWithoutColumnException();
         }
 
         Assert::isIterable($columnsConfig);
@@ -135,7 +137,8 @@ readonly class GridConfigurationLoader implements GridConfigurationLoaderInterfa
      *
      * @return FooterConfiguration[][]
      *
-     * @throws GridException
+     * @throws InvalidConfigurationException
+     * @throws PresetNotFoundException
      */
     private function buildFooterConfigurations(array $config): iterable
     {

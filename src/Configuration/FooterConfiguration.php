@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace Jmf\Grid\Configuration;
 
 use Jmf\Grid\Preset\WithPresetInterface;
-use Jmf\PresetRendering\Preset\Preset;
+use Jmf\RenderingPreset\Preset\Preset;
 use Jmf\TemplateRendering\TemplateInterface;
 use Override;
 use Webmozart\Assert\Assert;
