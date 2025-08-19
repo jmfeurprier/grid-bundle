@@ -5,8 +5,10 @@ declare(strict_types=1);
 namespace Jmf\Grid\Preset;
 
 use Jmf\Grid\Exception\GridException;
-use Jmf\PresetRendering\Preset\Preset;
-use Jmf\PresetRendering\Preset\PresetRepositoryInterface;
+use Jmf\RenderingPreset\Exception\InvalidConfigurationException;
+use Jmf\RenderingPreset\Exception\PresetNotFoundException;
+use Jmf\RenderingPreset\Preset\Preset;
+use Jmf\RenderingPreset\Preset\PresetRepositoryInterface;
 use Throwable;
 
 readonly class PresetApplier
@@ -23,7 +25,8 @@ readonly class PresetApplier
      *
      * @psalm-return T
      *
-     * @throws GridException
+     * @throws InvalidConfigurationException
+     * @throws PresetNotFoundException
      */
     public function apply(WithPresetInterface $subject): WithPresetInterface
     {
@@ -37,7 +40,8 @@ readonly class PresetApplier
      *
      * @psalm-return T
      *
-     * @throws GridException
+     * @throws InvalidConfigurationException
+     * @throws PresetNotFoundException
      */
     private function doApply(WithPresetInterface $subject): WithPresetInterface
     {
@@ -55,17 +59,11 @@ readonly class PresetApplier
     /**
      * @param non-empty-string $presetId
      *
-     * @throws GridException
+     * @throws InvalidConfigurationException
+     * @throws PresetNotFoundException
      */
     private function getPreset(string $presetId): Preset
     {
-        try {
-            return $this->presetRepository->get($presetId);
-        } catch (Throwable $e) {
-            throw new GridException(
-                message:  'Failed retrieving preset.',
-                previous: $e,
-            );
-        }
+        return $this->presetRepository->getCollection()->get($presetId);
     }
 }

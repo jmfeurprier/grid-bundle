@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Jmf\Grid\Preset;
 
-use Jmf\PresetRendering\Preset\Preset;
+use Jmf\RenderingPreset\Preset\Preset;
 
 interface WithPresetInterface
 {
