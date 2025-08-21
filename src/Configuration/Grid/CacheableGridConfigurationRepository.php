@@ -28,16 +28,16 @@ readonly class CacheableGridConfigurationRepository implements GridConfiguration
     #[Override]
     public function getCollection(): GridConfigurationCollection
     {
-        $gridConfiguration = $this->cache->get(
+        $gridConfigurationCollection = $this->cache->get(
             $this->getCacheKey(),
             fn(
                 ItemInterface $item,
             ): GridConfigurationCollection => $this->wrapped->getCollection(),
         );
 
-        Assert::isInstanceOf($gridConfiguration, GridConfiguration::class);
+        Assert::isInstanceOf($gridConfigurationCollection, GridConfigurationCollection::class);
 
-        return $gridConfiguration;
+        return $gridConfigurationCollection;
     }
 
     /**
