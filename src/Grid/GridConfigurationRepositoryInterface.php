@@ -2,8 +2,9 @@
 
 declare(strict_types=1);
 
-namespace Jmf\Grid\Configuration\Grid;
+namespace Jmf\Grid\Grid;
 
+use Jmf\Grid\Configuration\Grid\GridConfigurationCollection;
 use Jmf\Grid\Exception\GridWithoutColumnException;
 use Jmf\RenderingPreset\Exception\InvalidConfigurationException;
 use Jmf\RenderingPreset\Exception\PresetNotFoundException;

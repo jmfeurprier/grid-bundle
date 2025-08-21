@@ -140,7 +140,7 @@ readonly class GridConfigurationLoader
     /**
      * @param array<string, mixed> $config
      *
-     * @return \Jmf\Grid\Configuration\Footer\FooterConfiguration[][]
+     * @return FooterConfiguration[][]
      *
      * @throws InvalidConfigurationException
      * @throws PresetNotFoundException

@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Jmf\Grid\Configuration\Column;
 
-use Jmf\Grid\Preset\WithPresetInterface;
+use Jmf\Grid\Configuration\Preset\WithPresetInterface;
 use Jmf\RenderingPreset\Preset\Preset;
 use Jmf\TemplateRendering\TemplateInterface;
 use Override;

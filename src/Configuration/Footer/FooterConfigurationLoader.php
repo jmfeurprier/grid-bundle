@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Jmf\Grid\Configuration\Footer;
 
-use Jmf\Grid\Preset\PresetApplier;
+use Jmf\Grid\Configuration\Preset\PresetApplier;
 use Jmf\RenderingPreset\Exception\InvalidConfigurationException;
 use Jmf\RenderingPreset\Exception\PresetNotFoundException;
 use Jmf\TemplateRendering\StringTemplate;

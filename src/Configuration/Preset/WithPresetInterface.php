@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Jmf\Grid\Preset;
+namespace Jmf\Grid\Configuration\Preset;
 
 use Jmf\RenderingPreset\Preset\Preset;
 
