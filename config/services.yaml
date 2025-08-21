@@ -16,8 +16,8 @@ services:
         arguments:
             $gridConfigs: '%jmf_grid.grid_configurations%'
 
-    Jmf\Grid\Configuration\Grid\GridConfigurationLoaderInterface:
-        alias: Jmf\Grid\Configuration\Grid\CacheableGridConfigurationLoader
+    Jmf\Grid\Configuration\Grid\GridConfigurationRepositoryInterface:
+        alias: Jmf\Grid\Configuration\Grid\CacheableGridConfigurationRepository
 
     Jmf\Grid\Twig\GridExtension:
         arguments:
