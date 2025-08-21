@@ -4,19 +4,19 @@ declare(strict_types=1);
 
 namespace Jmf\Grid\Grid\Row;
 
-use Jmf\Grid\Configuration\ColumnConfiguration;
-use Jmf\Grid\Configuration\GridConfiguration;
+use Jmf\Grid\Configuration\Column\ColumnConfiguration;
+use Jmf\Grid\Configuration\Grid\GridConfiguration;
 use Jmf\Grid\Exception\UnexpectedValueTypeException;
 use Jmf\TemplateRendering\Exception\TemplateRenderingException;
 use Jmf\TemplateRendering\TemplateRendererInterface;
 use Webmozart\Assert\Assert;
 
-readonly class GridRowGenerator
+readonly class RowGenerator
 {
     public function __construct(
         private TemplateRendererInterface $templateRenderer,
-        private GridRowCellGenerator $gridRowCellGenerator,
-        private GridRowLinkGenerator $gridRowLinkGenerator,
+        private RowCellGenerator $gridRowCellGenerator,
+        private RowLinkGenerator $gridRowLinkGenerator,
     ) {
     }
 
@@ -33,7 +33,7 @@ readonly class GridRowGenerator
         int $rowIndex,
         int $rowCount,
         array $arguments,
-    ): GridRow {
+    ): Row {
         $rowVariables = $this->buildRowVariables(
             $gridConfiguration,
             $item,
@@ -42,7 +42,7 @@ readonly class GridRowGenerator
             $arguments,
         );
 
-        return new GridRow(
+        return new Row(
             $this->buildRowCells($gridConfiguration, $item, $rowVariables),
             $this->buildRowLink($gridConfiguration, $item, $arguments, $rowVariables),
         );
@@ -108,7 +108,7 @@ readonly class GridRowGenerator
      * @param array<string, mixed>|object $item
      * @param array<string, mixed>        $rowVariables
      *
-     * @return GridRowCell[]
+     * @return RowCell[]
      *
      * @throws TemplateRenderingException
      * @throws UnexpectedValueTypeException
@@ -142,7 +142,7 @@ readonly class GridRowGenerator
         ColumnConfiguration $columnConfiguration,
         array | object $item,
         array $rowVariables,
-    ): GridRowCell {
+    ): RowCell {
         return $this->gridRowCellGenerator->generate(
             $columnConfiguration,
             $item,

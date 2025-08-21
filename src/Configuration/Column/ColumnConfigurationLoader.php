@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Jmf\Grid\Configuration;
+namespace Jmf\Grid\Configuration\Column;
 
 use Jmf\Grid\Preset\PresetApplier;
 use Jmf\RenderingPreset\Exception\InvalidConfigurationException;
@@ -11,15 +11,10 @@ use Jmf\TemplateRendering\StringTemplate;
 use Jmf\TemplateRendering\TemplateInterface;
 use Webmozart\Assert\Assert;
 
-class ColumnConfigurationLoader
+readonly class ColumnConfigurationLoader
 {
-    /**
-     * @var array<string, mixed>
-     */
-    private array $columnConfig;
-
     public function __construct(
-        private readonly PresetApplier $presetApplier,
+        private PresetApplier $presetApplier,
     ) {
     }
 
@@ -33,31 +28,35 @@ class ColumnConfigurationLoader
     {
         Assert::isMap($columnConfig);
 
-        $this->columnConfig = $columnConfig;
-
         $columnConfiguration = new ColumnConfiguration(
-            $this->getAlign(),
-            $this->getLabel(),
-            $this->getSource(),
-            $this->getTemplate(),
-            $this->getPresetId(),
+            $this->getAlign($columnConfig),
+            $this->getLabel($columnConfig),
+            $this->getSource($columnConfig),
+            $this->getTemplate($columnConfig),
+            $this->getPresetId($columnConfig),
         );
 
         return $this->presetApplier->apply($columnConfiguration);
     }
 
-    private function getAlign(): ?string
+    /**
+     * @param array<string, mixed> $columnConfig
+     */
+    private function getAlign(array $columnConfig): ?string
     {
-        $align = $this->columnConfig['align'] ?? null;
+        $align = $columnConfig['align'] ?? null;
 
         Assert::nullOrString($align);
 
         return $align;
     }
 
-    private function getLabel(): ?string
+    /**
+     * @param array<string, mixed> $columnConfig
+     */
+    private function getLabel(array $columnConfig): ?string
     {
-        $label = $this->columnConfig['label'] ?? null;
+        $label = $columnConfig['label'] ?? null;
 
         Assert::nullOrString($label);
 
@@ -65,20 +64,25 @@ class ColumnConfigurationLoader
     }
 
     /**
+     * @param array<string, mixed> $columnConfig
+     *
      * @return null|non-empty-string
      */
-    private function getSource(): ?string
+    private function getSource(array $columnConfig): ?string
     {
-        $source = $this->columnConfig['source'] ?? null;
+        $source = $columnConfig['source'] ?? null;
 
         Assert::nullOrStringNotEmpty($source);
 
         return $source;
     }
 
-    private function getTemplate(): ?TemplateInterface
+    /**
+     * @param array<string, mixed> $columnConfig
+     */
+    private function getTemplate(array $columnConfig): ?TemplateInterface
     {
-        $template = $this->columnConfig['template'] ?? null;
+        $template = $columnConfig['template'] ?? null;
 
         if (null === $template) {
             return null;
@@ -90,12 +94,15 @@ class ColumnConfigurationLoader
         return new StringTemplate($template);
     }
 
+
     /**
+     * @param array<string, mixed> $columnConfig
+     *
      * @return null|non-empty-string
      */
-    private function getPresetId(): ?string
+    private function getPresetId(array $columnConfig): ?string
     {
-        $presetId = $this->columnConfig['preset'] ?? null;
+        $presetId = $columnConfig['preset'] ?? null;
 
         Assert::nullOrStringNotEmpty($presetId);
 

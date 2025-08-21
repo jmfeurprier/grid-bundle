@@ -49,9 +49,7 @@ readonly class PresetApplier
 
         $preset = $this->getPreset($subject->getPresetId());
 
-        return $this->doApply(
-            $subject->applyPreset($preset),
-        );
+        return $subject->applyPreset($preset);
     }
 
     /**

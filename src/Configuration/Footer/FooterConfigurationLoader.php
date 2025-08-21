@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Jmf\Grid\Configuration;
+namespace Jmf\Grid\Configuration\Footer;
 
 use Jmf\Grid\Preset\PresetApplier;
 use Jmf\RenderingPreset\Exception\InvalidConfigurationException;
@@ -11,15 +11,10 @@ use Jmf\TemplateRendering\StringTemplate;
 use Jmf\TemplateRendering\TemplateInterface;
 use Webmozart\Assert\Assert;
 
-class FooterConfigurationLoader
+readonly class FooterConfigurationLoader
 {
-    /**
-     * @var array<string, mixed>
-     */
-    private array $footerConfig;
-
     public function __construct(
-        private readonly PresetApplier $presetApplier,
+        private PresetApplier $presetApplier,
     ) {
     }
 
@@ -33,31 +28,35 @@ class FooterConfigurationLoader
     {
         Assert::isMap($footerConfig);
 
-        $this->footerConfig = $footerConfig;
-
         $footerConfiguration = new FooterConfiguration(
-            $this->getAlign(),
-            $this->getTemplate(),
-            $this->getMerge(),
-            $this->getValue(),
-            $this->getPresetId(),
+            $this->getAlign($footerConfig),
+            $this->getTemplate($footerConfig),
+            $this->getMerge($footerConfig),
+            $this->getValue($footerConfig),
+            $this->getPresetId($footerConfig),
         );
 
         return $this->presetApplier->apply($footerConfiguration);
     }
 
-    private function getAlign(): ?string
+    /**
+     * @param array<string, mixed> $footerConfig
+     */
+    private function getAlign(array $footerConfig): ?string
     {
-        $align = $this->footerConfig['align'] ?? null;
+        $align = $footerConfig['align'] ?? null;
 
-        Assert::nullOrString($align);
+        Assert::nullOrStringNotEmpty($align);
 
         return $align;
     }
 
-    private function getTemplate(): ?TemplateInterface
+    /**
+     * @param array<string, mixed> $footerConfig
+     */
+    private function getTemplate(array $footerConfig): ?TemplateInterface
     {
-        $template = $this->footerConfig['template'] ?? null;
+        $template = $footerConfig['template'] ?? null;
 
         if (null === $template) {
             return null;
@@ -69,18 +68,24 @@ class FooterConfigurationLoader
         return new StringTemplate($template);
     }
 
-    private function getMerge(): ?int
+    /**
+     * @param array<string, mixed> $footerConfig
+     */
+    private function getMerge(array $footerConfig): ?int
     {
-        $merge = $this->footerConfig['merge'] ?? null;
+        $merge = $footerConfig['merge'] ?? null;
 
         Assert::nullOrPositiveInteger($merge);
 
         return $merge;
     }
 
-    private function getValue(): ?string
+    /**
+     * @param array<string, mixed> $footerConfig
+     */
+    private function getValue(array $footerConfig): ?string
     {
-        $value = $this->footerConfig['value'] ?? null;
+        $value = $footerConfig['value'] ?? null;
 
         Assert::nullOrString($value);
 
@@ -88,11 +93,13 @@ class FooterConfigurationLoader
     }
 
     /**
+     * @param array<string, mixed> $footerConfig
+     *
      * @return null|non-empty-string
      */
-    private function getPresetId(): ?string
+    private function getPresetId(array $footerConfig): ?string
     {
-        $presetId = $this->footerConfig['preset'] ?? null;
+        $presetId = $footerConfig['preset'] ?? null;
 
         Assert::nullOrStringNotEmpty($presetId);
 

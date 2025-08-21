@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Jmf\Grid\Grid\Column;
 
-readonly class GridColumn
+readonly class Column
 {
     public function __construct(
         private ?string $label,

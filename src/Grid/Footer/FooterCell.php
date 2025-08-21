@@ -6,7 +6,7 @@ namespace Jmf\Grid\Grid\Footer;
 
 use Webmozart\Assert\Assert;
 
-readonly class GridFooterCell
+readonly class FooterCell
 {
     /**
      * @param array<string, mixed> $attributes

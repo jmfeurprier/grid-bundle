@@ -4,11 +4,11 @@ declare(strict_types=1);
 
 namespace Jmf\Grid\Grid\Row;
 
-use Jmf\Grid\Configuration\GridConfiguration;
+use Jmf\Grid\Configuration\Grid\GridConfiguration;
 use Jmf\TemplateRendering\Exception\TemplateRenderingException;
 use Jmf\TemplateRendering\TemplateRendererInterface;
 
-readonly class GridRowLinkGenerator
+readonly class RowLinkGenerator
 {
     public function __construct(
         private TemplateRendererInterface $templateRenderer,

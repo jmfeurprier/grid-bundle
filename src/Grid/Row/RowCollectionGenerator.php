@@ -4,14 +4,14 @@ declare(strict_types=1);
 
 namespace Jmf\Grid\Grid\Row;
 
-use Jmf\Grid\Configuration\GridConfiguration;
+use Jmf\Grid\Configuration\Grid\GridConfiguration;
 use Jmf\Grid\Exception\UnexpectedValueTypeException;
 use Jmf\TemplateRendering\Exception\TemplateRenderingException;
 
-readonly class GridRowsGenerator
+readonly class RowCollectionGenerator
 {
     public function __construct(
-        private GridRowGenerator $gridRowGenerator,
+        private RowGenerator $gridRowGenerator,
     ) {
     }
 
@@ -26,7 +26,7 @@ readonly class GridRowsGenerator
         GridConfiguration $gridConfiguration,
         array $items,
         array $arguments,
-    ): GridRowCollection {
+    ): RowCollection {
         $rowCount = count($items);
         $rowIndex = 1;
         $rows     = [];
@@ -43,6 +43,6 @@ readonly class GridRowsGenerator
             ++$rowIndex;
         }
 
-        return new GridRowCollection($rows);
+        return new RowCollection($rows);
     }
 }

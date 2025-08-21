@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Jmf\Grid\Grid\Row;
 
-use Jmf\Grid\Configuration\ColumnConfiguration;
+use Jmf\Grid\Configuration\Column\ColumnConfiguration;
 use Jmf\Grid\Exception\UnexpectedValueTypeException;
 use Jmf\TemplateRendering\Exception\TemplateRenderingException;
 use Jmf\TemplateRendering\TemplateInterface;
@@ -13,7 +13,7 @@ use Stringable;
 use Symfony\Component\PropertyAccess\PropertyAccessorInterface;
 
 // @todo Rewrite without Twig dependency and local cache.
-readonly class GridRowCellGenerator
+readonly class RowCellGenerator
 {
     public function __construct(
         private PropertyAccessorInterface $propertyAccessor,
@@ -32,8 +32,8 @@ readonly class GridRowCellGenerator
         ColumnConfiguration $columnConfiguration,
         array | object $item,
         array $rowVariables,
-    ): GridRowCell {
-        return new GridRowCell(
+    ): RowCell {
+        return new RowCell(
             $this->getCellValue($columnConfiguration, $item, $rowVariables),
             $this->getCellParameters($columnConfiguration),
         );

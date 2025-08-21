@@ -6,19 +6,19 @@ namespace Jmf\Grid\Grid\Footer;
 
 use Webmozart\Assert\Assert;
 
-readonly class GridFooterRow
+readonly class FooterRow
 {
     /**
-     * @param GridFooterCell[] $cells
+     * @param FooterCell[] $cells
      */
     public function __construct(
         private iterable $cells,
     ) {
-        Assert::allIsInstanceOf($this->cells, GridFooterCell::class);
+        Assert::allIsInstanceOf($this->cells, FooterCell::class);
     }
 
     /**
-     * @return GridFooterCell[]
+     * @return FooterCell[]
      */
     public function getCells(): iterable
     {

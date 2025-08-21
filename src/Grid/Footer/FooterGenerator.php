@@ -4,13 +4,13 @@ declare(strict_types=1);
 
 namespace Jmf\Grid\Grid\Footer;
 
-use Jmf\Grid\Configuration\FooterConfiguration;
-use Jmf\Grid\Configuration\GridConfiguration;
+use Jmf\Grid\Configuration\Footer\FooterConfiguration;
+use Jmf\Grid\Configuration\Grid\GridConfiguration;
 use Jmf\TemplateRendering\Exception\TemplateRenderingException;
 use Jmf\TemplateRendering\TemplateInterface;
 use Jmf\TemplateRendering\TemplateRendererInterface;
 
-readonly class GridFooterGenerator
+readonly class FooterGenerator
 {
     public function __construct(
         private TemplateRendererInterface $templateRenderer,
@@ -27,23 +27,23 @@ readonly class GridFooterGenerator
         GridConfiguration $gridConfiguration,
         iterable $items,
         array $arguments,
-    ): GridFooter {
+    ): Footer {
         $rows = [];
 
         foreach ($gridConfiguration->getFooterConfigurations() as $footerRowConfiguration) {
             $cells = [];
 
             foreach ($footerRowConfiguration as $footerColumnConfiguration) {
-                $cells[] = new GridFooterCell(
+                $cells[] = new FooterCell(
                     $this->buildValue($footerColumnConfiguration, $items, $arguments),
                     $this->buildAttributes($footerColumnConfiguration),
                 );
             }
 
-            $rows[] = new GridFooterRow($cells);
+            $rows[] = new FooterRow($cells);
         }
 
-        return new GridFooter($rows);
+        return new Footer($rows);
     }
 
     /**
@@ -54,7 +54,7 @@ readonly class GridFooterGenerator
         $attributes = [];
         $classes    = [];
 
-        // @todo Too "bootstrapy". Move to dedicated field in GridFooterCell.
+        // @todo Too "bootstrapy". Move to dedicated field in FooterCell.
         if (null !== $footerConfiguration->getAlign()) {
             $classes[] = "text-{$footerConfiguration->getAlign()}";
         }

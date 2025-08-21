@@ -4,12 +4,12 @@ declare(strict_types=1);
 
 namespace Jmf\Grid\Grid\Column;
 
-use Jmf\Grid\Configuration\ColumnConfiguration;
-use Jmf\Grid\Configuration\GridConfiguration;
+use Jmf\Grid\Configuration\Column\ColumnConfiguration;
+use Jmf\Grid\Configuration\Grid\GridConfiguration;
 
-readonly class GridColumnsGenerator
+readonly class ColumnCollectionGenerator
 {
-    public function generate(GridConfiguration $gridConfiguration): GridColumnCollection
+    public function generate(GridConfiguration $gridConfiguration): ColumnCollection
     {
         $columns = [];
 
@@ -17,15 +17,15 @@ readonly class GridColumnsGenerator
             $columns[] = $this->generateColumn($columnConfiguration);
         }
 
-        return new GridColumnCollection(
+        return new ColumnCollection(
             $columns,
         );
     }
 
     private function generateColumn(
         ColumnConfiguration $columnConfiguration,
-    ): GridColumn {
-        return new GridColumn(
+    ): Column {
+        return new Column(
             $columnConfiguration->getLabel(),
             $columnConfiguration->getAlign(),
         );

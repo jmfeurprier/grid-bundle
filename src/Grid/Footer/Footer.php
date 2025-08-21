@@ -2,25 +2,25 @@
 
 declare(strict_types=1);
 
-namespace Jmf\Grid\Grid\Row;
+namespace Jmf\Grid\Grid\Footer;
 
 use Webmozart\Assert\Assert;
 
-readonly class GridRowCollection
+readonly class Footer
 {
     /**
-     * @param GridRow[] $rows
+     * @param FooterRow[] $rows
      */
     public function __construct(
         private iterable $rows,
     ) {
-        Assert::allIsInstanceOf($this->rows, GridRow::class);
+        Assert::allIsInstanceOf($this->rows, FooterRow::class);
     }
 
     /**
-     * @return GridRow[]
+     * @return FooterRow[]
      */
-    public function all(): iterable
+    public function getRows(): iterable
     {
         return $this->rows;
     }

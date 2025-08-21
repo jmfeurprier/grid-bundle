@@ -4,10 +4,10 @@ declare(strict_types=1);
 
 namespace Jmf\Grid\Grid\Row;
 
-readonly class GridRow
+readonly class Row
 {
     /**
-     * @param GridRowCell[] $cells
+     * @param RowCell[] $cells
      */
     public function __construct(
         private iterable $cells,
@@ -16,7 +16,7 @@ readonly class GridRow
     }
 
     /**
-     * @return GridRowCell[]
+     * @return RowCell[]
      */
     public function getCells(): iterable
     {

@@ -1,7 +1,7 @@
 {% set classes = [] %}
-        {% if (cell.parameters.align is defined) %}
-            {% set classes = classes|merge(['text-' ~ cell.parameters.align]) %}
-        {% endif %}
+{% if (cell.parameters.align is defined) %}
+    {% set classes = classes|merge(['text-' ~ cell.parameters.align]) %}
+{% endif %}
 <td{% if (classes is not empty) %} class="{{ classes|join(' ') }}"{% endif %}>
     {{ cell.value|raw }}
 </td>

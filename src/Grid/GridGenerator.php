@@ -4,18 +4,18 @@ declare(strict_types=1);
 
 namespace Jmf\Grid\Grid;
 
-use Jmf\Grid\Configuration\GridConfiguration;
-use Jmf\Grid\Configuration\GridConfigurationLoaderInterface;
+use Jmf\Grid\Configuration\Grid\GridConfiguration;
+use Jmf\Grid\Configuration\Grid\GridConfigurationLoaderInterface;
 use Jmf\Grid\Exception\GridNotFoundException;
 use Jmf\Grid\Exception\GridWithoutColumnException;
 use Jmf\Grid\Exception\MissingGridArgumentException;
 use Jmf\Grid\Exception\UnexpectedValueTypeException;
-use Jmf\Grid\Grid\Column\GridColumnCollection;
-use Jmf\Grid\Grid\Column\GridColumnsGenerator;
-use Jmf\Grid\Grid\Footer\GridFooter;
-use Jmf\Grid\Grid\Footer\GridFooterGenerator;
-use Jmf\Grid\Grid\Row\GridRowCollection;
-use Jmf\Grid\Grid\Row\GridRowsGenerator;
+use Jmf\Grid\Grid\Column\ColumnCollection;
+use Jmf\Grid\Grid\Column\ColumnCollectionGenerator;
+use Jmf\Grid\Grid\Footer\Footer;
+use Jmf\Grid\Grid\Footer\FooterGenerator;
+use Jmf\Grid\Grid\Row\RowCollection;
+use Jmf\Grid\Grid\Row\RowCollectionGenerator;
 use Jmf\RenderingPreset\Exception\InvalidConfigurationException;
 use Jmf\RenderingPreset\Exception\PresetNotFoundException;
 use Jmf\TemplateRendering\Exception\TemplateRenderingException;
@@ -24,9 +24,9 @@ readonly class GridGenerator
 {
     public function __construct(
         private GridConfigurationLoaderInterface $gridConfigurationLoader,
-        private GridColumnsGenerator $gridColumnsGenerator,
-        private GridRowsGenerator $gridRowsGenerator,
-        private GridFooterGenerator $gridFooterGenerator,
+        private ColumnCollectionGenerator $columnCollectionGenerator,
+        private RowCollectionGenerator $rowCollectionGenerator,
+        private FooterGenerator $footerGenerator,
     ) {
     }
 
@@ -84,9 +84,9 @@ readonly class GridGenerator
         }
     }
 
-    private function generateColumns(GridConfiguration $gridConfiguration): GridColumnCollection
+    private function generateColumns(GridConfiguration $gridConfiguration): ColumnCollection
     {
-        return $this->gridColumnsGenerator->generate(
+        return $this->columnCollectionGenerator->generate(
             $gridConfiguration,
         );
     }
@@ -102,8 +102,8 @@ readonly class GridGenerator
         GridConfiguration $gridConfiguration,
         array $arguments,
         array $items,
-    ): GridRowCollection {
-        return $this->gridRowsGenerator->generate(
+    ): RowCollection {
+        return $this->rowCollectionGenerator->generate(
             $gridConfiguration,
             $items,
             $arguments,
@@ -120,8 +120,8 @@ readonly class GridGenerator
         GridConfiguration $gridConfiguration,
         array $arguments,
         array $items,
-    ): GridFooter {
-        return $this->gridFooterGenerator->generate(
+    ): Footer {
+        return $this->footerGenerator->generate(
             $gridConfiguration,
             $items,
             $arguments,

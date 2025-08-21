@@ -2,40 +2,45 @@
 
 declare(strict_types=1);
 
-namespace Jmf\Grid\Configuration;
+namespace Jmf\Grid\Configuration\Grid;
 
-use Jmf\Grid\Exception\GridNotFoundException;
+use Jmf\Grid\Configuration\Column\ColumnConfiguration;
+use Jmf\Grid\Configuration\Column\ColumnConfigurationLoader;
+use Jmf\Grid\Configuration\Footer\FooterConfiguration;
+use Jmf\Grid\Configuration\Footer\FooterConfigurationLoader;
+use Jmf\Grid\Configuration\KeyValueCollection;
+use Jmf\Grid\Configuration\Row\RowConfiguration;
+use Jmf\Grid\Configuration\Row\RowConfigurationLoader;
 use Jmf\Grid\Exception\GridWithoutColumnException;
 use Jmf\RenderingPreset\Exception\InvalidConfigurationException;
 use Jmf\RenderingPreset\Exception\PresetNotFoundException;
-use Override;
 use Webmozart\Assert\Assert;
 
-readonly class GridConfigurationLoader implements GridConfigurationLoaderInterface
+readonly class GridConfigurationLoader
 {
-    /**
-     * @param array<string, mixed> $gridsConfig
-     */
     public function __construct(
         private ColumnConfigurationLoader $columnConfigurationLoader,
         private RowConfigurationLoader $rowConfigurationLoader,
         private FooterConfigurationLoader $footerConfigurationLoader,
-        private array $gridsConfig,
     ) {
     }
 
-    #[Override]
-    public function load(string $gridId): GridConfiguration
-    {
-        if (!isset($this->gridsConfig[$gridId])) {
-            throw new GridNotFoundException($gridId);
-        }
-
-        $config = $this->gridsConfig[$gridId];
-
+    /**
+     * @param non-empty-string     $gridId
+     * @param array<string, mixed> $config
+     *
+     * @throws GridWithoutColumnException
+     * @throws InvalidConfigurationException
+     * @throws PresetNotFoundException
+     */
+    public function load(
+        string $gridId,
+        array $config,
+    ): GridConfiguration {
         Assert::isMap($config);
 
         return new GridConfiguration(
+            $gridId,
             $this->buildGridArguments($config),
             $this->buildGridVariables($config),
             $this->buildColumnConfigurations($config),
@@ -135,7 +140,7 @@ readonly class GridConfigurationLoader implements GridConfigurationLoaderInterfa
     /**
      * @param array<string, mixed> $config
      *
-     * @return FooterConfiguration[][]
+     * @return \Jmf\Grid\Configuration\Footer\FooterConfiguration[][]
      *
      * @throws InvalidConfigurationException
      * @throws PresetNotFoundException

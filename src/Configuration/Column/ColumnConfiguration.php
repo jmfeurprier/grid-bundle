@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Jmf\Grid\Configuration;
+namespace Jmf\Grid\Configuration\Column;
 
 use Jmf\Grid\Preset\WithPresetInterface;
 use Jmf\RenderingPreset\Preset\Preset;
@@ -21,7 +21,7 @@ readonly class ColumnConfiguration implements WithPresetInterface
         private ?string $label,
         private ?string $source,
         private ?TemplateInterface $template,
-        private ?string $presetId,
+        private ?string $presetId = null,
     ) {
     }
 
@@ -69,7 +69,6 @@ readonly class ColumnConfiguration implements WithPresetInterface
             $this->label ?? $presetLabel,
             $this->source ?? $preset->getSource(),
             $this->template ?? $preset->getTemplate(),
-            $preset->getId(),
         );
     }
 }

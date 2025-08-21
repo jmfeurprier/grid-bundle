@@ -2,8 +2,9 @@
 
 declare(strict_types=1);
 
-namespace Jmf\Grid\Configuration;
+namespace Jmf\Grid\Configuration\Row;
 
+use Jmf\Grid\Configuration\KeyValueCollection;
 use Webmozart\Assert\Assert;
 
 readonly class RowConfigurationLoader

@@ -6,7 +6,7 @@ namespace Jmf\Grid\Grid\Row;
 
 use Webmozart\Assert\Assert;
 
-readonly class GridRowCell
+readonly class RowCell
 {
     /**
      * @param array<string, mixed> $parameters

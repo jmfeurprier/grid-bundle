@@ -6,19 +6,19 @@ namespace Jmf\Grid\Grid\Column;
 
 use Webmozart\Assert\Assert;
 
-readonly class GridColumnCollection
+readonly class ColumnCollection
 {
     /**
-     * @param GridColumn[] $columns
+     * @param Column[] $columns
      */
     public function __construct(
         private iterable $columns,
     ) {
-        Assert::allIsInstanceOf($this->columns, GridColumn::class);
+        Assert::allIsInstanceOf($this->columns, Column::class);
     }
 
     /**
-     * @return GridColumn[]
+     * @return Column[]
      */
     public function all(): iterable
     {

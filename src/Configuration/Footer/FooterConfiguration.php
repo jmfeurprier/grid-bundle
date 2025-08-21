@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Jmf\Grid\Configuration;
+namespace Jmf\Grid\Configuration\Footer;
 
 use Jmf\Grid\Preset\WithPresetInterface;
 use Jmf\RenderingPreset\Preset\Preset;
