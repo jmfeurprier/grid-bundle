@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Jmf\Grid\Grid;
 
 use Jmf\Grid\Configuration\Grid\GridConfiguration;
+use Jmf\Grid\Configuration\Grid\GridConfigurationRepositoryInterface;
 use Jmf\Grid\Exception\GridNotFoundException;
 use Jmf\Grid\Exception\GridWithoutColumnException;
 use Jmf\Grid\Exception\MissingGridArgumentException;
