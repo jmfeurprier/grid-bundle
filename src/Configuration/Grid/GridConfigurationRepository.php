@@ -2,10 +2,8 @@
 
 declare(strict_types=1);
 
-namespace Jmf\Grid\Grid;
+namespace Jmf\Grid\Configuration\Grid;
 
-use Jmf\Grid\Configuration\Grid\GridConfigurationCollection;
-use Jmf\Grid\Configuration\Grid\GridConfigurationCollectionLoader;
 use Override;
 
 readonly class GridConfigurationRepository implements GridConfigurationRepositoryInterface
