@@ -10,7 +10,7 @@ parameters:
         uncheckedExceptionRegexes:
             - '|^PHPUnit\\|'
     excludePaths:
-        - ../src/JmfGridBundle.php
+        - ../src/*Bundle.php
     level: 10
     paths:
         - ../bin/

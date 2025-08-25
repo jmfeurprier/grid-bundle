@@ -30,10 +30,10 @@ readonly class FooterGenerator
     ): Footer {
         $rows = [];
 
-        foreach ($gridConfiguration->getFooterConfigurations() as $footerRowConfiguration) {
+        foreach ($gridConfiguration->getFooterConfigurations() as $footerRowConfigurations) {
             $cells = [];
 
-            foreach ($footerRowConfiguration as $footerColumnConfiguration) {
+            foreach ($footerRowConfigurations as $footerColumnConfiguration) {
                 $cells[] = new FooterCell(
                     $this->buildValue($footerColumnConfiguration, $items, $arguments),
                     $this->buildAttributes($footerColumnConfiguration),

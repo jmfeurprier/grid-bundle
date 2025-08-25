@@ -2,14 +2,13 @@
 
 declare(strict_types=1);
 
+use Rector\CodeQuality\Rector\Identical\FlipTypeControlToUseExclusiveTypeRector;
 use Rector\CodingStyle\Rector\Catch_\CatchExceptionNameMatchingTypeRector;
 use Rector\CodingStyle\Rector\Encapsed\EncapsedStringsToSprintfRector;
 use Rector\Config\RectorConfig;
-use Rector\Naming\Rector\Assign\RenameVariableToMatchMethodCallReturnTypeRector;
 use Rector\Naming\Rector\Class_\RenamePropertyToMatchTypeRector;
 use Rector\Naming\Rector\ClassMethod\RenameParamToMatchTypeRector;
-use Rector\Naming\Rector\Foreach_\RenameForeachValueVariableToMatchExprVariableRector;
-use Rector\Naming\Rector\Foreach_\RenameForeachValueVariableToMatchMethodCallReturnTypeRector;
+use Rector\PHPUnit\CodeQuality\Rector\Class_\PreferPHPUnitThisCallRector;
 use Rector\PHPUnit\CodeQuality\Rector\Class_\YieldDataProviderRector;
 
 $rootPath = realpath(__DIR__ . '/..') . '/';
@@ -27,11 +26,10 @@ return RectorConfig::configure()
         [
             CatchExceptionNameMatchingTypeRector::class,
             EncapsedStringsToSprintfRector::class,
-            RenameForeachValueVariableToMatchExprVariableRector::class,
-            RenameForeachValueVariableToMatchMethodCallReturnTypeRector::class,
+            FlipTypeControlToUseExclusiveTypeRector::class,
+            PreferPHPUnitThisCallRector::class,
             RenameParamToMatchTypeRector::class,
             RenamePropertyToMatchTypeRector::class,
-            RenameVariableToMatchMethodCallReturnTypeRector::class,
             YieldDataProviderRector::class,
         ],
     )

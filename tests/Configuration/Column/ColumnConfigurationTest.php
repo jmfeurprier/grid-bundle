@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Jmf\Grid\Tests\Configuration\Column;
 
 use Jmf\Grid\Configuration\Column\ColumnConfiguration;
@@ -9,9 +11,9 @@ use Jmf\RenderingPreset\Preset\Property\PresetPropertyCollection;
 use Jmf\TemplateRendering\StringTemplate;
 use PHPUnit\Framework\TestCase;
 
-class ColumnConfigurationTest extends TestCase
+final class ColumnConfigurationTest extends TestCase
 {
-    public function testApplyPresetWithEmptyPreset()
+    public function testApplyPresetWithEmptyPreset(): void
     {
         $columnConfiguration = new ColumnConfiguration(
             align:    'abc',
@@ -37,7 +39,7 @@ class ColumnConfigurationTest extends TestCase
         self::assertNull($result->getPresetId());
     }
 
-    public function testApplyPresetWithEmptyColumnConfigurationAndPopulatedPreset()
+    public function testApplyPresetWithEmptyColumnConfigurationAndPopulatedPreset(): void
     {
         $columnConfiguration = new ColumnConfiguration(
             align:    null,
@@ -68,7 +70,7 @@ class ColumnConfigurationTest extends TestCase
         self::assertNull($result->getPresetId());
     }
 
-    public function testApplyPresetWithPopulatedColumnConfigurationAndPopulatedPreset()
+    public function testApplyPresetWithPopulatedColumnConfigurationAndPopulatedPreset(): void
     {
         $columnConfiguration = new ColumnConfiguration(
             align:    'abc',
