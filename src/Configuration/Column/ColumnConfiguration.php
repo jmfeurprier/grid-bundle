@@ -57,9 +57,8 @@ readonly class ColumnConfiguration implements WithPresetInterface
     #[Override]
     public function applyPreset(Preset $preset): static
     {
-        $properties  = $preset->getProperties();
-        $presetAlign = $properties->tryGetValue('align');
-        $presetLabel = $properties->tryGetValue('label');
+        $presetAlign = $preset->getProperties()->tryGetValue('align');
+        $presetLabel = $preset->getProperties()->tryGetValue('label');
 
         Assert::nullOrStringNotEmpty($presetAlign);
         Assert::nullOrString($presetLabel);

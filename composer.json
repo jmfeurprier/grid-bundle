@@ -7,19 +7,18 @@
         "php": ">=8.3",
         "jmf/rendering-preset-bundle": "^1.0",
         "jmf/template-rendering": "^2.0",
-        "symfony/config": "^7.0",
-        "symfony/framework-bundle": "^7.0",
-        "symfony/property-access": "^7.0",
-        "webmozart/assert": "^1.0"
+        "symfony/config": "^7.0|^8.0",
+        "symfony/framework-bundle": "^7.0|^8.0",
+        "symfony/property-access": "^7.0|^8.0",
+        "webmozart/assert": "^1.0|^2.0"
     },
     "require-dev": {
-        "phpmd/phpmd": "^2.10",
-        "phpstan/extension-installer": "^1.4",
+        "overtrue/phplint": "^9.6",
         "phpstan/phpstan": "^2.1",
         "phpstan/phpstan-strict-rules": "^2.0",
-        "phpunit/phpunit": "^12.1",
-        "rector/rector": "^2.0",
-        "squizlabs/php_codesniffer": "^3.9"
+        "phpunit/phpunit": "^12.3",
+        "rector/rector": "^2.2",
+        "squizlabs/php_codesniffer": "^4.0"
     },
     "config": {
         "optimize-autoloader": true,

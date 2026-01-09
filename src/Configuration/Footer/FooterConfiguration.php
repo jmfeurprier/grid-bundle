@@ -63,9 +63,8 @@ readonly class FooterConfiguration implements WithPresetInterface
     #[Override]
     public function applyPreset(Preset $preset): static
     {
-        $properties  = $preset->getProperties();
-        $presetAlign = $properties->tryGetValue('align');
-        $presetMerge = $properties->tryGetValue('merge');
+        $presetAlign = $preset->getProperties()->tryGetValue('align');
+        $presetMerge = $preset->getProperties()->tryGetValue('merge');
 
         Assert::nullOrStringNotEmpty($presetAlign);
         Assert::nullOrInteger($presetMerge);

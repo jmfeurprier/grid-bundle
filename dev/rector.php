@@ -2,21 +2,26 @@
 
 declare(strict_types=1);
 
+use Rector\CodeQuality\Rector\BooleanAnd\RepeatedAndNotEqualToNotInArrayRector;
 use Rector\CodeQuality\Rector\Identical\FlipTypeControlToUseExclusiveTypeRector;
+use Rector\CodeQuality\Rector\If_\CombineIfRector;
+use Rector\CodeQuality\Rector\If_\SimplifyIfElseToTernaryRector;
 use Rector\CodingStyle\Rector\Catch_\CatchExceptionNameMatchingTypeRector;
+use Rector\CodingStyle\Rector\ClassLike\NewlineBetweenClassLikeStmtsRector;
+use Rector\CodingStyle\Rector\ClassMethod\NewlineBeforeNewAssignSetRector;
 use Rector\CodingStyle\Rector\Encapsed\EncapsedStringsToSprintfRector;
+use Rector\CodingStyle\Rector\FuncCall\CountArrayToEmptyArrayComparisonRector;
 use Rector\Config\RectorConfig;
-use Rector\Naming\Rector\Class_\RenamePropertyToMatchTypeRector;
-use Rector\Naming\Rector\ClassMethod\RenameParamToMatchTypeRector;
-use Rector\PHPUnit\CodeQuality\Rector\Class_\PreferPHPUnitThisCallRector;
-use Rector\PHPUnit\CodeQuality\Rector\Class_\YieldDataProviderRector;
+use Rector\EarlyReturn\Rector\Return_\ReturnBinaryOrToEarlyReturnRector;
+use Rector\Php84\Rector\Foreach_\ForeachToArrayAllRector;
 
 $rootPath = realpath(__DIR__ . '/..') . '/';
 
 return RectorConfig::configure()
-    ->withCache($rootPath . 'var/cache/rector')
+    ->withCache($rootPath . 'var/cache')
     ->withPaths(
         [
+            $rootPath . 'config',
             $rootPath . 'src',
             $rootPath . 'tests',
         ],
@@ -25,12 +30,15 @@ return RectorConfig::configure()
     ->withSkip(
         [
             CatchExceptionNameMatchingTypeRector::class,
+            CombineIfRector::class,
+            CountArrayToEmptyArrayComparisonRector::class,
             EncapsedStringsToSprintfRector::class,
             FlipTypeControlToUseExclusiveTypeRector::class,
-            PreferPHPUnitThisCallRector::class,
-            RenameParamToMatchTypeRector::class,
-            RenamePropertyToMatchTypeRector::class,
-            YieldDataProviderRector::class,
+            NewlineBeforeNewAssignSetRector::class,
+            NewlineBetweenClassLikeStmtsRector::class,
+            RepeatedAndNotEqualToNotInArrayRector::class,
+            ReturnBinaryOrToEarlyReturnRector::class,
+            SimplifyIfElseToTernaryRector::class,
         ],
     )
     ->withPreparedSets(
@@ -42,12 +50,11 @@ return RectorConfig::configure()
         naming:              true,
         instanceOf:          true,
         earlyReturn:         true,
-        strictBooleans:      true,
         carbon:              true,
         rectorPreset:        true,
-        phpunitCodeQuality:  true,
-        doctrineCodeQuality: true,
-        symfonyCodeQuality:  true,
+#        phpunitCodeQuality:  true,
+#        doctrineCodeQuality: true,
+#        symfonyCodeQuality:  true,
         symfonyConfigs:      true,
     )
 ;

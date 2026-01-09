@@ -8,8 +8,8 @@
     xsi:noNamespaceSchemaLocation="../vendor/phpunit/phpunit/phpunit.xsd"
 >
     <php>
-        <ini name="display_errors" value="1" />
-        <ini name="error_reporting" value="-1" />
+        <ini name="display_errors" value="1"/>
+        <ini name="error_reporting" value="-1"/>
     </php>
 
     <testsuites>
@@ -24,7 +24,7 @@
         restrictWarnings="true"
     >
         <include>
-            <directory>src</directory>
+            <directory>../src</directory>
         </include>
     </source>
 
