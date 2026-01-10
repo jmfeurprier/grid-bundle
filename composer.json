@@ -13,19 +13,16 @@
         "webmozart/assert": "^1.0|^2.0"
     },
     "require-dev": {
-        "overtrue/phplint": "^9.6",
-        "phpstan/phpstan": "^2.1",
-        "phpstan/phpstan-strict-rules": "^2.0",
-        "phpunit/phpunit": "^12.3",
-        "rector/rector": "^2.2",
-        "squizlabs/php_codesniffer": "^4.0"
+        "overtrue/phplint": "^9.7.1",
+        "phpstan/phpstan": "^2.1.33",
+        "phpstan/phpstan-strict-rules": "^2.0.7",
+        "phpunit/phpunit": "^12.5.4",
+        "rector/rector": "^2.3.0",
+        "squizlabs/php_codesniffer": "^4.0.1"
     },
     "config": {
         "optimize-autoloader": true,
-        "sort-packages": true,
-        "allow-plugins": {
-            "phpstan/extension-installer": true
-        }
+        "sort-packages": true
     },
     "autoload": {
         "psr-4": {
@@ -34,7 +31,7 @@
     },
     "autoload-dev": {
         "psr-4": {
-            "Jmf\\Grid\\Tests\\": "tests"
+            "Jmf\\Grid\\Tests\\": "tests/src"
         }
     }
 }
