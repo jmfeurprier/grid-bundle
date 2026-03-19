@@ -11,34 +11,47 @@ use Jmf\RenderingPreset\Preset\Preset;
 use Jmf\RenderingPreset\Preset\PresetCollection;
 use Jmf\RenderingPreset\Preset\PresetRepositoryInterface;
 use Jmf\RenderingPreset\Preset\Property\PresetPropertyCollection;
+use Override;
+use PHPUnit\Framework\Attributes\AllowMockObjectsWithoutExpectations;
+use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 
 final class PresetApplierTest extends TestCase
 {
+    private PresetRepositoryInterface&MockObject $presetRepository;
+
+    private PresetApplier $presetApplier;
+
+    #[Override]
+    protected function setUp(): void
+    {
+        $this->presetRepository = $this->createMock(PresetRepositoryInterface::class);
+
+        $this->presetApplier = new PresetApplier($this->presetRepository);
+    }
+
     public function testApplyWithNoPresetIdReturnsSubjectUnchanged(): void
     {
         $subject = $this->createMock(WithPresetInterface::class);
         $subject->method('getPresetId')->willReturn(null);
         $subject->expects($this->never())->method('applyPreset');
 
-        $presetRepository = $this->createMock(PresetRepositoryInterface::class);
-        $presetRepository->expects($this->never())->method('getCollection');
+        $this->presetRepository->expects($this->never())->method('getCollection');
 
-        $applier = new PresetApplier($presetRepository);
-        $result  = $applier->apply($subject);
+        $result = $this->presetApplier->apply($subject);
 
         self::assertSame($subject, $result);
     }
 
+    #[AllowMockObjectsWithoutExpectations]
     public function testApplyWithPresetIdFetchesPresetAndAppliesIt(): void
     {
-        $preset     = new Preset('myPreset', 'preset.source', null, new PresetPropertyCollection([]));
-        $collection = new PresetCollection([$preset]);
+        $preset           = new Preset('myPreset', 'preset.source', null, new PresetPropertyCollection([]));
+        $presetCollection = new PresetCollection([$preset]);
 
-        $presetRepository = $this->createStub(PresetRepositoryInterface::class);
-        $presetRepository->method('getCollection')->willReturn($collection);
+        $this->presetRepository->method('getCollection')->willReturn($presetCollection);
 
-        $subject = new ColumnConfiguration(
+        $columnConfiguration = new ColumnConfiguration(
             align:    null,
             label:    null,
             source:   null,
@@ -46,23 +59,22 @@ final class PresetApplierTest extends TestCase
             presetId: 'myPreset',
         );
 
-        $applier = new PresetApplier($presetRepository);
-        $result  = $applier->apply($subject);
+        $result = $this->presetApplier->apply($columnConfiguration);
 
-        self::assertNotSame($subject, $result);
+        self::assertNotSame($columnConfiguration, $result);
         self::assertSame('preset.source', $result->getSource());
         self::assertNull($result->getPresetId());
     }
 
+    #[AllowMockObjectsWithoutExpectations]
     public function testApplyPreservesOwnValuesOverPresetValues(): void
     {
-        $preset     = new Preset('myPreset', 'preset.source', null, new PresetPropertyCollection([]));
-        $collection = new PresetCollection([$preset]);
+        $preset           = new Preset('myPreset', 'preset.source', null, new PresetPropertyCollection([]));
+        $presetCollection = new PresetCollection([$preset]);
 
-        $presetRepository = $this->createStub(PresetRepositoryInterface::class);
-        $presetRepository->method('getCollection')->willReturn($collection);
+        $this->presetRepository->method('getCollection')->willReturn($presetCollection);
 
-        $subject = new ColumnConfiguration(
+        $columnConfiguration = new ColumnConfiguration(
             align:    null,
             label:    null,
             source:   'own.source',
@@ -70,8 +82,7 @@ final class PresetApplierTest extends TestCase
             presetId: 'myPreset',
         );
 
-        $applier = new PresetApplier($presetRepository);
-        $result  = $applier->apply($subject);
+        $result = $this->presetApplier->apply($columnConfiguration);
 
         self::assertSame('own.source', $result->getSource());
     }

@@ -1,8 +1,11 @@
-{% set _tr_attributes = row.attributes %}
+{% set attributes = row.attributes %}
 {% if row.link is not null %}
-    {% set _tr_attributes = _tr_attributes|merge({'onclick': "window.location='" ~ row.link ~ "'", 'style': 'cursor:pointer'}) %}
+    {% set attributes = attributes|merge({
+        'onclick': "window.location='" ~ row.link ~ "'",
+        'style':   'cursor:pointer',
+    }) %}
 {% endif %}
-<tr{% for attr, val in _tr_attributes %} {{ attr }}="{{ val }}"{% endfor %}>
+<tr{% for attribute, value in attributes %} {{ attribute }}="{{ value }}"{% endfor %}>
     {% for cell in row.cells %}
         {{ include('@JmfGrid/grid_body_row_cell.html.twig') }}
     {% endfor %}

@@ -5,8 +5,10 @@ declare(strict_types=1);
 use Rector\CodingStyle\Rector\Encapsed\EncapsedStringsToSprintfRector;
 use Rector\Config\RectorConfig;
 use Rector\DeadCode\Rector\MethodCall\RemoveNullArgOnNullDefaultParamRector;
+use Rector\Naming\Rector\Assign\RenameVariableToMatchMethodCallReturnTypeRector;
 use Rector\Naming\Rector\Class_\RenamePropertyToMatchTypeRector;
 use Rector\Naming\Rector\ClassMethod\RenameParamToMatchTypeRector;
+use Rector\Naming\Rector\ClassMethod\RenameVariableToMatchNewTypeRector;
 use Rector\Naming\Rector\Foreach_\RenameForeachValueVariableToMatchExprVariableRector;
 use Rector\Naming\Rector\Foreach_\RenameForeachValueVariableToMatchMethodCallReturnTypeRector;
 use Rector\PHPUnit\CodeQuality\Rector\Class_\PreferPHPUnitThisCallRector;
@@ -32,6 +34,8 @@ return RectorConfig::configure()
             RenameForeachValueVariableToMatchMethodCallReturnTypeRector::class,
             RenameParamToMatchTypeRector::class,
             RenamePropertyToMatchTypeRector::class,
+            RenameVariableToMatchMethodCallReturnTypeRector::class,
+            RenameVariableToMatchNewTypeRector::class,
         ],
     )
     ->withPreparedSets(

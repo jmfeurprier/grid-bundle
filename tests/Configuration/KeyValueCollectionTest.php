@@ -11,9 +11,9 @@ final class KeyValueCollectionTest extends TestCase
 {
     public function testCreateEmptyReturnsEmptyCollection(): void
     {
-        $collection = KeyValueCollection::createEmpty();
+        $keyValueCollection = KeyValueCollection::createEmpty();
 
-        self::assertSame([], $collection->all());
+        self::assertSame([], $keyValueCollection->all());
     }
 
     public function testConstructWithValuesReturnsAll(): void
@@ -23,8 +23,8 @@ final class KeyValueCollectionTest extends TestCase
             'baz' => 42,
         ];
 
-        $collection = new KeyValueCollection($values);
+        $keyValueCollection = new KeyValueCollection($values);
 
-        self::assertSame($values, $collection->all());
+        self::assertSame($values, $keyValueCollection->all());
     }
 }

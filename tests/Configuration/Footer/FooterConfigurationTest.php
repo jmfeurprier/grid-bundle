@@ -15,18 +15,18 @@ final class FooterConfigurationTest extends TestCase
 {
     public function testGetters(): void
     {
-        $template = new StringTemplate('<b>{{ value }}</b>');
+        $stringTemplate = new StringTemplate('<b>{{ value }}</b>');
 
         $footerConfiguration = new FooterConfiguration(
             align:    'center',
-            template: $template,
+            template: $stringTemplate,
             merge:    3,
             value:    'Total',
             presetId: 'myPreset',
         );
 
         self::assertSame('center', $footerConfiguration->getAlign());
-        self::assertSame($template, $footerConfiguration->getTemplate());
+        self::assertSame($stringTemplate, $footerConfiguration->getTemplate());
         self::assertSame(3, $footerConfiguration->getMerge());
         self::assertSame('Total', $footerConfiguration->getValue());
         self::assertSame('myPreset', $footerConfiguration->getPresetId());
@@ -53,11 +53,11 @@ final class FooterConfigurationTest extends TestCase
 
     public function testApplyPresetWithEmptyPreset(): void
     {
-        $template = new StringTemplate('<b>{{ value }}</b>');
+        $stringTemplate = new StringTemplate('<b>{{ value }}</b>');
 
         $footerConfiguration = new FooterConfiguration(
             align:    'center',
-            template: $template,
+            template: $stringTemplate,
             merge:    2,
             value:    'Total',
             presetId: null,
@@ -73,7 +73,7 @@ final class FooterConfigurationTest extends TestCase
         $result = $footerConfiguration->applyPreset($preset);
 
         self::assertSame('center', $result->getAlign());
-        self::assertSame($template, $result->getTemplate());
+        self::assertSame($stringTemplate, $result->getTemplate());
         self::assertSame(2, $result->getMerge());
         self::assertSame('Total', $result->getValue());
         self::assertSame('myPreset', $result->getPresetId());
@@ -81,7 +81,7 @@ final class FooterConfigurationTest extends TestCase
 
     public function testApplyPresetFillsMissingValuesFromPreset(): void
     {
-        $presetTemplate = new StringTemplate('<i>{{ value }}</i>');
+        $stringTemplate = new StringTemplate('<i>{{ value }}</i>');
 
         $footerConfiguration = new FooterConfiguration(
             align:    null,
@@ -94,7 +94,7 @@ final class FooterConfigurationTest extends TestCase
         $preset = new Preset(
             id:         'myPreset',
             source:     null,
-            template:   $presetTemplate,
+            template:   $stringTemplate,
             properties: new PresetPropertyCollection(
                             [
                                 new PresetProperty('align', 'right'),
@@ -106,7 +106,7 @@ final class FooterConfigurationTest extends TestCase
         $result = $footerConfiguration->applyPreset($preset);
 
         self::assertSame('right', $result->getAlign());
-        self::assertSame($presetTemplate, $result->getTemplate());
+        self::assertSame($stringTemplate, $result->getTemplate());
         self::assertSame(3, $result->getMerge());
         self::assertSame('Total', $result->getValue());
         self::assertSame('myPreset', $result->getPresetId());

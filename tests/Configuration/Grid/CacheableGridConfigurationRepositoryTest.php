@@ -15,71 +15,104 @@ final class CacheableGridConfigurationRepositoryTest extends TestCase
 {
     public function testGetCollectionReturnsCachedResult(): void
     {
-        $collection = new GridConfigurationCollection([]);
+        $gridConfigurationCollection = new GridConfigurationCollection([]);
 
-        $wrapped = $this->createStub(GridConfigurationRepositoryInterface::class);
-        $wrapped->method('getCollection')->willReturn($collection);
+        $gridConfigurationRepository = $this->createStub(GridConfigurationRepositoryInterface::class);
+        $gridConfigurationRepository->method('getCollection')->willReturn($gridConfigurationCollection);
 
         $cache = $this->createMock(CacheInterface::class);
         $cache->expects($this->once())
             ->method('get')
-            ->willReturnCallback(function (string $key, callable $callback): mixed {
-                $item = $this->createStub(ItemInterface::class);
+            ->willReturnCallback(
+                function (
+                    string $key,
+                    callable $callback,
+                ): mixed {
+                    $item = $this->createStub(ItemInterface::class);
 
-                return $callback($item);
-            });
+                    return $callback($item);
+                },
+            )
+        ;
 
-        $repository = new CacheableGridConfigurationRepository($wrapped, [], $cache);
+        $cacheableGridConfigurationRepository =
+            new CacheableGridConfigurationRepository($gridConfigurationRepository, [], $cache);
 
-        $result = $repository->getCollection();
+        $result = $cacheableGridConfigurationRepository->getCollection();
 
-        self::assertSame($collection, $result);
+        self::assertSame($gridConfigurationCollection, $result);
     }
 
     public function testGetCollectionUsesWrappedRepositoryInsideCallback(): void
     {
-        $collection = new GridConfigurationCollection([]);
+        $gridConfigurationCollection = new GridConfigurationCollection([]);
 
-        $wrapped = $this->createMock(GridConfigurationRepositoryInterface::class);
-        $wrapped->expects($this->once())
+        $gridConfigurationRepository = $this->createMock(GridConfigurationRepositoryInterface::class);
+        $gridConfigurationRepository->expects($this->once())
             ->method('getCollection')
-            ->willReturn($collection);
+            ->willReturn($gridConfigurationCollection)
+        ;
 
         $cache = $this->createStub(CacheInterface::class);
         $cache->method('get')
-            ->willReturnCallback(function (string $key, callable $callback): mixed {
-                $item = $this->createStub(ItemInterface::class);
+            ->willReturnCallback(
+                function (
+                    string $key,
+                    callable $callback,
+                ): mixed {
+                    $item = $this->createStub(ItemInterface::class);
 
-                return $callback($item);
-            });
+                    return $callback($item);
+                },
+            )
+        ;
 
-        $repository = new CacheableGridConfigurationRepository($wrapped, [], $cache);
-        $repository->getCollection();
+        $cacheableGridConfigurationRepository =
+            new CacheableGridConfigurationRepository($gridConfigurationRepository, [], $cache);
+
+        $cacheableGridConfigurationRepository->getCollection();
     }
 
     public function testGetCollectionUsesDifferentCacheKeyForDifferentConfigs(): void
     {
-        $collection = new GridConfigurationCollection([]);
+        $gridConfigurationCollection = new GridConfigurationCollection([]);
 
-        $wrapped = $this->createStub(GridConfigurationRepositoryInterface::class);
-        $wrapped->method('getCollection')->willReturn($collection);
+        $gridConfigurationRepository = $this->createStub(GridConfigurationRepositoryInterface::class);
+        $gridConfigurationRepository->method('getCollection')->willReturn($gridConfigurationCollection);
 
         $usedKeys = [];
 
         $cache = $this->createStub(CacheInterface::class);
         $cache->method('get')
-            ->willReturnCallback(function (string $key, callable $callback) use (&$usedKeys): mixed {
-                $usedKeys[] = $key;
-                $item       = $this->createStub(ItemInterface::class);
+            ->willReturnCallback(
+                function (
+                    string $key,
+                    callable $callback,
+                ) use
+                (
+                    &$usedKeys,
+                ): mixed {
+                    $usedKeys[] = $key;
+                    $item       = $this->createStub(ItemInterface::class);
 
-                return $callback($item);
-            });
+                    return $callback($item);
+                },
+            )
+        ;
 
-        $repoA = new CacheableGridConfigurationRepository($wrapped, ['configA' => 'valueA'], $cache);
-        $repoB = new CacheableGridConfigurationRepository($wrapped, ['configB' => 'valueB'], $cache);
+        $cacheableGridConfigurationRepositoryPrimary   = new CacheableGridConfigurationRepository(
+            $gridConfigurationRepository,
+            ['configA' => 'valueA'],
+            $cache,
+        );
+        $cacheableGridConfigurationRepositorySecondary = new CacheableGridConfigurationRepository(
+            $gridConfigurationRepository,
+            ['configB' => 'valueB'],
+            $cache,
+        );
 
-        $repoA->getCollection();
-        $repoB->getCollection();
+        $cacheableGridConfigurationRepositoryPrimary->getCollection();
+        $cacheableGridConfigurationRepositorySecondary->getCollection();
 
         self::assertCount(2, $usedKeys);
         self::assertNotSame($usedKeys[0], $usedKeys[1]);

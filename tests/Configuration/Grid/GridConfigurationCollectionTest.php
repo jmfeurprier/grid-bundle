@@ -4,40 +4,45 @@ declare(strict_types=1);
 
 namespace Jmf\Grid\Tests\Configuration\Grid;
 
-use Override;
 use Jmf\Grid\Configuration\Column\ColumnConfiguration;
 use Jmf\Grid\Configuration\Grid\GridConfiguration;
 use Jmf\Grid\Configuration\Grid\GridConfigurationCollection;
 use Jmf\Grid\Configuration\KeyValueCollection;
 use Jmf\Grid\Configuration\Row\RowConfiguration;
 use Jmf\Grid\Exception\GridNotFoundException;
+use Override;
 use PHPUnit\Framework\TestCase;
 
 final class GridConfigurationCollectionTest extends TestCase
 {
-    private GridConfiguration $gridConfigA;
+    private GridConfiguration $gridConfigurationPrimary;
 
-    private GridConfiguration $gridConfigB;
+    private GridConfiguration $gridConfigurationSecondary;
 
     #[Override]
     protected function setUp(): void
     {
-        $colConfig = new ColumnConfiguration(null, 'Label', 'item.name', null);
+        $columnConfiguration = new ColumnConfiguration(
+            null,
+            'Label',
+            'item.name',
+            null,
+        );
 
-        $this->gridConfigA = new GridConfiguration(
-            id:                   'gridA',
+        $this->gridConfigurationPrimary = new GridConfiguration(
+            id:                   'grid_primary',
             arguments:            [],
             gridVariables:        KeyValueCollection::createEmpty(),
-            columnConfigurations: [$colConfig],
+            columnConfigurations: [$columnConfiguration],
             rowConfiguration:     RowConfiguration::createEmpty(),
             footerConfigurations: [],
         );
 
-        $this->gridConfigB = new GridConfiguration(
-            id:                   'gridB',
+        $this->gridConfigurationSecondary = new GridConfiguration(
+            id:                   'grid_secondary',
             arguments:            [],
             gridVariables:        KeyValueCollection::createEmpty(),
-            columnConfigurations: [$colConfig],
+            columnConfigurations: [$columnConfiguration],
             rowConfiguration:     RowConfiguration::createEmpty(),
             footerConfigurations: [],
         );
@@ -45,48 +50,50 @@ final class GridConfigurationCollectionTest extends TestCase
 
     public function testAllReturnsAllConfigurations(): void
     {
-        $collection =
-            new GridConfigurationCollection(
-                [
-                    $this->gridConfigA,
-                    $this->gridConfigB,
-                ],
-            );
+        $gridConfigurationCollection = new GridConfigurationCollection(
+            [
+                $this->gridConfigurationPrimary,
+                $this->gridConfigurationSecondary,
+            ],
+        );
 
-        $all = $collection->all();
+        $all = $gridConfigurationCollection->all();
 
         self::assertCount(2, $all);
-        self::assertContains($this->gridConfigA, $all);
-        self::assertContains($this->gridConfigB, $all);
+        self::assertContains($this->gridConfigurationPrimary, $all);
+        self::assertContains($this->gridConfigurationSecondary, $all);
     }
 
     public function testGetReturnsCorrectConfiguration(): void
     {
-        $collection =
-            new GridConfigurationCollection(
-                [
-                    $this->gridConfigA,
-                    $this->gridConfigB,
-                ],
-            );
+        $gridConfigurationCollection = new GridConfigurationCollection(
+            [
+                $this->gridConfigurationPrimary,
+                $this->gridConfigurationSecondary,
+            ],
+        );
 
-        self::assertSame($this->gridConfigA, $collection->get('gridA'));
-        self::assertSame($this->gridConfigB, $collection->get('gridB'));
+        self::assertSame($this->gridConfigurationPrimary, $gridConfigurationCollection->get('grid_primary'));
+        self::assertSame($this->gridConfigurationSecondary, $gridConfigurationCollection->get('grid_secondary'));
     }
 
     public function testGetThrowsForUnknownId(): void
     {
-        $collection = new GridConfigurationCollection([$this->gridConfigA]);
+        $gridConfigurationCollection = new GridConfigurationCollection(
+            [
+                $this->gridConfigurationPrimary,
+            ],
+        );
 
         $this->expectException(GridNotFoundException::class);
 
-        $collection->get('unknown');
+        $gridConfigurationCollection->get('unknown');
     }
 
     public function testEmptyCollection(): void
     {
-        $collection = new GridConfigurationCollection([]);
+        $gridConfigurationCollection = new GridConfigurationCollection([]);
 
-        self::assertSame([], $collection->all());
+        self::assertSame([], $gridConfigurationCollection->all());
     }
 }

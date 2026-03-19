@@ -13,36 +13,42 @@ final class GridConfigurationRepositoryTest extends TestCase
 {
     public function testGetCollectionDelegatestoLoader(): void
     {
-        $gridConfigs = ['someKey' => 'someValue'];
-        $collection  = new GridConfigurationCollection([]);
+        $gridConfigs                 = ['someKey' => 'someValue'];
+        $gridConfigurationCollection = new GridConfigurationCollection([]);
 
-        $loader = $this->createMock(GridConfigurationCollectionLoader::class);
-        $loader->expects($this->once())
+        $gridConfigurationCollectionLoader = $this->createMock(GridConfigurationCollectionLoader::class);
+        $gridConfigurationCollectionLoader->expects($this->once())
             ->method('load')
             ->with($gridConfigs)
-            ->willReturn($collection)
+            ->willReturn($gridConfigurationCollection)
         ;
 
-        $repository = new GridConfigurationRepository($loader, $gridConfigs);
+        $gridConfigurationRepository = new GridConfigurationRepository(
+            $gridConfigurationCollectionLoader,
+            $gridConfigs,
+        );
 
-        $result = $repository->getCollection();
+        $result = $gridConfigurationRepository->getCollection();
 
-        self::assertSame($collection, $result);
+        self::assertSame($gridConfigurationCollection, $result);
     }
 
     public function testGetCollectionCallsLoaderEachTime(): void
     {
-        $collection = new GridConfigurationCollection([]);
+        $gridConfigurationCollection = new GridConfigurationCollection([]);
 
-        $loader = $this->createMock(GridConfigurationCollectionLoader::class);
-        $loader->expects($this->exactly(2))
+        $gridConfigurationCollectionLoader = $this->createMock(GridConfigurationCollectionLoader::class);
+        $gridConfigurationCollectionLoader->expects($this->exactly(2))
             ->method('load')
-            ->willReturn($collection)
+            ->willReturn($gridConfigurationCollection)
         ;
 
-        $repository = new GridConfigurationRepository($loader, []);
+        $gridConfigurationRepository = new GridConfigurationRepository(
+            $gridConfigurationCollectionLoader,
+            [],
+        );
 
-        $repository->getCollection();
-        $repository->getCollection();
+        $gridConfigurationRepository->getCollection();
+        $gridConfigurationRepository->getCollection();
     }
 }
