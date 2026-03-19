@@ -164,7 +164,7 @@ final class RowCellGeneratorTest extends TestCase
                 $template,
                 self::callback(fn(
                     array $ctx,
-                ) => $ctx['_value'] === 'Alice'),
+                ): bool => $ctx['_value'] === 'Alice'),
             )
             ->willReturn('Alice')
         ;
@@ -185,7 +185,7 @@ final class RowCellGeneratorTest extends TestCase
                 $template,
                 self::callback(fn(
                     array $ctx,
-                ) => $ctx['currency'] === 'EUR'),
+                ): bool => $ctx['currency'] === 'EUR'),
             )
             ->willReturn('EUR')
         ;

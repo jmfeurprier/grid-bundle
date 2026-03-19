@@ -16,21 +16,29 @@ final class RowLinkGeneratorTest extends TestCase
     /**
      * @param string[] $arguments
      */
-    private function createGridConfiguration(?string $link, array $arguments = []): GridConfiguration
-    {
+    private function createGridConfiguration(
+        ?string $link,
+        array $arguments = [],
+    ): GridConfiguration {
         return new GridConfiguration(
             id:                   'test',
             arguments:            $arguments,
             gridVariables:        KeyValueCollection::createEmpty(),
             columnConfigurations: [],
-            rowConfiguration:     new RowConfiguration($link, KeyValueCollection::createEmpty(), KeyValueCollection::createEmpty()),
+            rowConfiguration:     new RowConfiguration(
+                                      $link,
+                                      KeyValueCollection::createEmpty(),
+                                      KeyValueCollection::createEmpty(),
+                                  ),
             footerConfigurations: [],
         );
     }
 
     public function testGenerateWithNoLinkReturnsNull(): void
     {
-        $generator         = new RowLinkGenerator($this->createStub(TemplateRendererInterface::class));
+        $generator         = new RowLinkGenerator(
+            $this->createStub(TemplateRendererInterface::class),
+        );
         $gridConfiguration = $this->createGridConfiguration(null);
 
         $result = $generator->generate($gridConfiguration, [], [], []);
@@ -45,7 +53,8 @@ final class RowLinkGeneratorTest extends TestCase
             ->expects(self::once())
             ->method('renderFromString')
             ->with('/items/{{ _item.id }}', self::anything())
-            ->willReturn('/items/42');
+            ->willReturn('/items/42')
+        ;
 
         $generator         = new RowLinkGenerator($renderer);
         $gridConfiguration = $this->createGridConfiguration('/items/{{ _item.id }}');
@@ -64,12 +73,15 @@ final class RowLinkGeneratorTest extends TestCase
             ->with(
                 '/items/{{ _item.id }}',
                 self::callback(
-                    fn (array $ctx) => isset($ctx['_item'], $ctx['locale'], $ctx['myVar'])
+                    fn(
+                        array $ctx,
+                    ): bool => isset($ctx['_item'], $ctx['locale'], $ctx['myVar'])
                         && $ctx['locale'] === 'fr'
                         && $ctx['myVar'] === 'hello',
                 ),
             )
-            ->willReturn('/items/1');
+            ->willReturn('/items/1')
+        ;
 
         $generator         = new RowLinkGenerator($renderer);
         $gridConfiguration = $this->createGridConfiguration('/items/{{ _item.id }}');

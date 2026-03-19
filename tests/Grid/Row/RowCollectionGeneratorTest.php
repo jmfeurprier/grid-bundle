@@ -15,15 +15,14 @@ use PHPUnit\Framework\TestCase;
 
 final class RowCollectionGeneratorTest extends TestCase
 {
-    private RowGenerator $rowGenerator;
-
     private RowCollectionGenerator $rowCollectionGenerator;
 
     #[Override]
     protected function setUp(): void
     {
-        $this->rowGenerator           = $this->createStub(RowGenerator::class);
-        $this->rowCollectionGenerator = new RowCollectionGenerator($this->rowGenerator);
+        $this->rowCollectionGenerator = new RowCollectionGenerator(
+            $this->createStub(RowGenerator::class),
+        );
     }
 
     private function createGridConfiguration(): GridConfiguration
@@ -59,7 +58,8 @@ final class RowCollectionGeneratorTest extends TestCase
             ->expects(self::once())
             ->method('generate')
             ->with($gridConfiguration, $item, 1, 1, [])
-            ->willReturn($expectedRow);
+            ->willReturn($expectedRow)
+        ;
 
         $result = (new RowCollectionGenerator($rowGenerator))->generate($gridConfiguration, [$item], []);
         $rows   = iterator_to_array($result->all());
@@ -80,16 +80,26 @@ final class RowCollectionGeneratorTest extends TestCase
             ->expects(self::exactly(3))
             ->method('generate')
             ->willReturnCallback(
-                function (GridConfiguration $config, array $item, int $index, int $count) {
+                function (
+                    GridConfiguration $config,
+                    array $item,
+                    int $index,
+                    int $count,
+                ): Row {
                     self::assertSame(3, $count);
 
                     return new Row([], null);
                 },
-            );
+            )
+        ;
 
         $result = (new RowCollectionGenerator($rowGenerator))->generate(
             $gridConfiguration,
-            [$item1, $item2, $item3],
+            [
+                $item1,
+                $item2,
+                $item3,
+            ],
             [],
         );
 
@@ -106,7 +116,8 @@ final class RowCollectionGeneratorTest extends TestCase
             ->expects(self::once())
             ->method('generate')
             ->with($gridConfiguration, self::anything(), self::anything(), self::anything(), $arguments)
-            ->willReturn(new Row([], null));
+            ->willReturn(new Row([], null))
+        ;
 
         (new RowCollectionGenerator($rowGenerator))->generate($gridConfiguration, [['name' => 'Alice']], $arguments);
     }
