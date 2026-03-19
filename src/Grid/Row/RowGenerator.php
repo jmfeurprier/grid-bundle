@@ -45,6 +45,7 @@ readonly class RowGenerator
         return new Row(
             $this->buildRowCells($gridConfiguration, $item, $rowVariables),
             $this->buildRowLink($gridConfiguration, $item, $arguments, $rowVariables),
+            $this->buildRowAttributes($gridConfiguration, $rowVariables),
         );
     }
 
@@ -102,6 +103,29 @@ readonly class RowGenerator
             'length'    => $rowCount,
             'parent'    => null,
         ];
+    }
+
+    /**
+     * @param array<string, mixed> $rowVariables
+     *
+     * @return array<string, string>
+     *
+     * @throws TemplateRenderingException
+     */
+    private function buildRowAttributes(
+        GridConfiguration $gridConfiguration,
+        array $rowVariables,
+    ): array {
+        $attributes = [];
+
+        foreach ($gridConfiguration->getRowConfiguration()->getAttributes()->all() as $key => $value) {
+            Assert::stringNotEmpty($key);
+            Assert::string($value);
+
+            $attributes[$key] = $this->templateRenderer->renderFromString($value, $rowVariables);
+        }
+
+        return $attributes;
     }
 
     /**

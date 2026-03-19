@@ -19,6 +19,7 @@ readonly class RowConfigurationLoader
         return new RowConfiguration(
             $this->getLink($rowConfig),
             $this->getVariables($rowConfig),
+            $this->getAttributes($rowConfig),
         );
     }
 
@@ -48,5 +49,21 @@ readonly class RowConfigurationLoader
         Assert::isMap($variablesConfig);
 
         return new KeyValueCollection($variablesConfig);
+    }
+
+    /**
+     * @param array<string, mixed> $rowConfig
+     */
+    private function getAttributes(array $rowConfig): KeyValueCollection
+    {
+        if (!isset($rowConfig['attributes'])) {
+            return KeyValueCollection::createEmpty();
+        }
+
+        $attributesConfig = $rowConfig['attributes'];
+
+        Assert::isMap($attributesConfig);
+
+        return new KeyValueCollection($attributesConfig);
     }
 }

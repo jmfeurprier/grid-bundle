@@ -10,6 +10,8 @@ jmf_grid:
                     entityType: 'article'
             rows:
                 link: '{{ path("article.read", {"id": _item.id} ) }}'
+                attributes:
+                    data-id: '{{ _item.id }}'
                 variables:
                     entityId: '{{ _item.id }}'
             columns:

@@ -7,11 +7,13 @@ namespace Jmf\Grid\Grid\Row;
 readonly class Row
 {
     /**
-     * @param RowCell[] $cells
+     * @param RowCell[]             $cells
+     * @param array<string, string> $attributes
      */
     public function __construct(
         private iterable $cells,
         private ?string $link,
+        private array $attributes = [],
     ) {
     }
 
@@ -26,5 +28,13 @@ readonly class Row
     public function getLink(): ?string
     {
         return $this->link;
+    }
+
+    /**
+     * @return array<string, string>
+     */
+    public function getAttributes(): array
+    {
+        return $this->attributes;
     }
 }

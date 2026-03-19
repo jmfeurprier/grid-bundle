@@ -1,8 +1,8 @@
-{% if (row.link is null) %}
-    <tr>
-{% else %}
-    <tr onclick="window.location='{{ row.link }}'" style="cursor:pointer">
+{% set _tr_attributes = row.attributes %}
+{% if row.link is not null %}
+    {% set _tr_attributes = _tr_attributes|merge({'onclick': "window.location='" ~ row.link ~ "'", 'style': 'cursor:pointer'}) %}
 {% endif %}
+<tr{% for attr, val in _tr_attributes %} {{ attr }}="{{ val }}"{% endfor %}>
     {% for cell in row.cells %}
         {{ include('@JmfGrid/grid_body_row_cell.html.twig') }}
     {% endfor %}

@@ -13,12 +13,14 @@ readonly class RowConfiguration
         return new self(
             null,
             KeyValueCollection::createEmpty(),
+            KeyValueCollection::createEmpty(),
         );
     }
 
     public function __construct(
         private ?string $link,
         private KeyValueCollection $variables,
+        private KeyValueCollection $attributes,
     ) {
     }
 
@@ -30,5 +32,10 @@ readonly class RowConfiguration
     public function getVariables(): KeyValueCollection
     {
         return $this->variables;
+    }
+
+    public function getAttributes(): KeyValueCollection
+    {
+        return $this->attributes;
     }
 }
