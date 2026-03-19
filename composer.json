@@ -31,7 +31,7 @@
     },
     "autoload-dev": {
         "psr-4": {
-            "Jmf\\Grid\\Tests\\": "tests/src"
+            "Jmf\\Grid\\Tests\\": "tests"
         }
     }
 }
