@@ -79,12 +79,8 @@ readonly class RowCellGenerator
      */
     private function getItemValue(
         array | object $item,
-        ?string $source,
+        string $source,
     ): mixed {
-        if (null === $source) {
-            return '';
-        }
-
         if (is_array($item)) {
             return $item[$source] ?? null;
         }
