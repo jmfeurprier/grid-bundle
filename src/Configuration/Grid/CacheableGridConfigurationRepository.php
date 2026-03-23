@@ -12,14 +12,24 @@ use Webmozart\Assert\Assert;
 
 readonly class CacheableGridConfigurationRepository implements GridConfigurationRepositoryInterface
 {
+    private string $cacheKey;
+
     /**
      * @param array<string, mixed> $gridConfigs
      */
     public function __construct(
         private GridConfigurationRepositoryInterface $wrapped,
-        private array $gridConfigs,
         private CacheInterface $cache,
+        array $gridConfigs,
     ) {
+        $this->cacheKey = md5(
+            serialize(
+                [
+                    self::class,
+                    $gridConfigs,
+                ],
+            ),
+        );
     }
 
     /**
@@ -29,7 +39,7 @@ readonly class CacheableGridConfigurationRepository implements GridConfiguration
     public function getCollection(): GridConfigurationCollection
     {
         $gridConfigurationCollection = $this->cache->get(
-            $this->getCacheKey(),
+            $this->cacheKey,
             fn(
                 ItemInterface $item,
             ): GridConfigurationCollection => $this->wrapped->getCollection(),
@@ -38,20 +48,5 @@ readonly class CacheableGridConfigurationRepository implements GridConfiguration
         Assert::isInstanceOf($gridConfigurationCollection, GridConfigurationCollection::class);
 
         return $gridConfigurationCollection;
-    }
-
-    /**
-     * @return non-empty-string
-     */
-    private function getCacheKey(): string
-    {
-        return md5(
-            serialize(
-                [
-                    self::class,
-                    $this->gridConfigs,
-                ],
-            ),
-        );
     }
 }
