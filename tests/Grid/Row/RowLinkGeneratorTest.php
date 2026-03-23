@@ -41,7 +41,7 @@ final class RowLinkGeneratorTest extends TestCase
         );
         $gridConfiguration = $this->createGridConfiguration(null);
 
-        $result = $generator->generate($gridConfiguration, [], [], []);
+        $result = $generator->generate($gridConfiguration, []);
 
         self::assertNull($result);
     }
@@ -59,13 +59,20 @@ final class RowLinkGeneratorTest extends TestCase
         $generator         = new RowLinkGenerator($renderer);
         $gridConfiguration = $this->createGridConfiguration('/items/{{ _item.id }}');
 
-        $result = $generator->generate($gridConfiguration, ['id' => 42], [], []);
+        $result = $generator->generate($gridConfiguration, ['_item' => ['id' => 42]]);
 
         self::assertSame('/items/42', $result);
     }
 
-    public function testGenerateWithLinkMergesArgumentsAndRowVariables(): void
+    public function testGeneratePassesRowVariablesAsContext(): void
     {
+        $item         = ['id' => 1];
+        $rowVariables = [
+            '_item'  => $item,
+            'myVar'  => 'hello',
+            'locale' => 'fr',
+        ];
+
         $renderer = $this->createMock(TemplateRendererInterface::class);
         $renderer
             ->expects(self::once())
@@ -75,9 +82,7 @@ final class RowLinkGeneratorTest extends TestCase
                 self::callback(
                     fn(
                         array $ctx,
-                    ): bool => isset($ctx['_item'], $ctx['locale'], $ctx['myVar'])
-                        && $ctx['locale'] === 'fr'
-                        && $ctx['myVar'] === 'hello',
+                    ): bool => $ctx === $rowVariables,
                 ),
             )
             ->willReturn('/items/1')
@@ -86,11 +91,26 @@ final class RowLinkGeneratorTest extends TestCase
         $generator         = new RowLinkGenerator($renderer);
         $gridConfiguration = $this->createGridConfiguration('/items/{{ _item.id }}');
 
-        $generator->generate(
-            $gridConfiguration,
-            ['id' => 1],
-            ['myVar' => 'hello'],
-            ['locale' => 'fr'],
-        );
+        $generator->generate($gridConfiguration, $rowVariables);
+    }
+
+    public function testRowVariablesTakePriorityOverNothingElse(): void
+    {
+        $rowVariables = ['key' => 'from_row_variables'];
+        $renderer     = $this->createMock(TemplateRendererInterface::class);
+        $renderer
+            ->expects(self::once())
+            ->method('renderFromString')
+            ->with(
+                self::anything(),
+                self::callback(fn(array $ctx): bool => $ctx['key'] === 'from_row_variables'),
+            )
+            ->willReturn('/link')
+        ;
+
+        $generator         = new RowLinkGenerator($renderer);
+        $gridConfiguration = $this->createGridConfiguration('/link');
+
+        $generator->generate($gridConfiguration, $rowVariables);
     }
 }

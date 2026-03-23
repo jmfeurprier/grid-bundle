@@ -55,7 +55,7 @@ readonly class RowCellGenerator
         $source = $columnConfiguration->getSource();
 
         if (null !== $source) {
-            $value = $this->getItemValue($item, $source);
+            $value = $this->propertyAccessor->getValue($item, $source);
         }
 
         $template = $columnConfiguration->getTemplate();
@@ -72,20 +72,6 @@ readonly class RowCellGenerator
         }
 
         return trim($this->getStringValue($value));
-    }
-
-    /**
-     * @param array<string, mixed>|object $item
-     */
-    private function getItemValue(
-        array | object $item,
-        string $source,
-    ): mixed {
-        if (is_array($item)) {
-            return $item[$source] ?? null;
-        }
-
-        return $this->propertyAccessor->getValue($item, $source);
     }
 
     /**

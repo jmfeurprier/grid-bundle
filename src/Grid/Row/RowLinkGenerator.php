@@ -16,17 +16,13 @@ readonly class RowLinkGenerator
     }
 
     /**
-     * @param array<string, mixed>|object $item
-     * @param array<string, mixed>        $rowVariables
-     * @param array<string, mixed>        $arguments
+     * @param array<string, mixed> $rowVariables
      *
      * @throws TemplateRenderingException
      */
     public function generate(
         GridConfiguration $gridConfiguration,
-        array | object $item,
         array $rowVariables,
-        array $arguments,
     ): ?string {
         $link = $gridConfiguration->getRowConfiguration()->getLink();
 
@@ -34,13 +30,9 @@ readonly class RowLinkGenerator
             return null;
         }
 
-        $context = $arguments + $rowVariables + [
-                '_item' => $item,
-            ];
-
         return $this->renderTemplateFromString(
             $link,
-            $context,
+            $rowVariables,
         );
     }
 

@@ -44,7 +44,7 @@ readonly class RowGenerator
 
         return new Row(
             $this->buildRowCells($gridConfiguration, $item, $rowVariables),
-            $this->buildRowLink($gridConfiguration, $item, $arguments, $rowVariables),
+            $this->buildRowLink($gridConfiguration, $rowVariables),
             $this->buildRowAttributes($gridConfiguration, $rowVariables),
         );
     }
@@ -64,10 +64,16 @@ readonly class RowGenerator
         int $rowCount,
         array $arguments,
     ): array {
-        $loopVariables         = $this->buildLoopVariable($rowIndex, $rowCount);
-        $rowVariables          = $gridConfiguration->getGridVariables()->all() + $arguments;
-        $rowVariables['_item'] = $item;
-        $rowVariables['_loop'] = $loopVariables;
+        $reservedVariables = [
+            '_item' => $item,
+            '_loop' => $this->buildLoopVariable($rowIndex, $rowCount),
+        ];
+
+        $rowVariables = array_merge(
+            $arguments,
+            $gridConfiguration->getGridVariables()->all(),
+            $reservedVariables,
+        );
 
         foreach ($gridConfiguration->getRowConfiguration()->getVariables()->all() as $key => $value) {
             Assert::stringNotEmpty($key);
@@ -79,11 +85,11 @@ readonly class RowGenerator
             );
         }
 
-        // @xxx Safety to prevent overwrites.
-        $rowVariables['_item'] = $item;
-        $rowVariables['_loop'] = $loopVariables;
-
-        return $rowVariables;
+        // Safety to prevent overwriting reserved variables.
+        return array_merge(
+            $rowVariables,
+            $reservedVariables,
+        );
     }
 
     /**
@@ -175,23 +181,17 @@ readonly class RowGenerator
     }
 
     /**
-     * @param array<string, mixed>|object $item
-     * @param array<string, mixed>        $arguments
-     * @param array<string, mixed>        $rowVariables
+     * @param array<string, mixed> $rowVariables
      *
      * @throws TemplateRenderingException
      */
     private function buildRowLink(
         GridConfiguration $gridConfiguration,
-        array | object $item,
-        array $arguments,
         array $rowVariables,
     ): ?string {
         return $this->gridRowLinkGenerator->generate(
             $gridConfiguration,
-            $item,
             $rowVariables,
-            $arguments,
         );
     }
 }
