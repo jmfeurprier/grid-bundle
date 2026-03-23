@@ -58,8 +58,8 @@ readonly class GridGenerator
 
         return new Grid(
             $this->generateColumns($gridConfiguration),
-            $this->generateRows($gridConfiguration, $arguments, $items),
-            $this->generateFooter($gridConfiguration, $arguments, $items),
+            $this->generateRows($gridConfiguration, $items, $arguments),
+            $this->generateFooter($gridConfiguration, $items, $arguments),
         );
     }
 
@@ -92,16 +92,16 @@ readonly class GridGenerator
     }
 
     /**
-     * @param array<string, mixed>              $arguments
      * @param list<array<string, mixed>|object> $items
+     * @param array<string, mixed>              $arguments
      *
      * @throws TemplateRenderingException
      * @throws UnexpectedValueTypeException
      */
     private function generateRows(
         GridConfiguration $gridConfiguration,
-        array $arguments,
         array $items,
+        array $arguments,
     ): RowCollection {
         return $this->rowCollectionGenerator->generate(
             $gridConfiguration,
@@ -111,15 +111,15 @@ readonly class GridGenerator
     }
 
     /**
-     * @param array<string, mixed>              $arguments
      * @param list<array<string, mixed>|object> $items
+     * @param array<string, mixed>              $arguments
      *
      * @throws TemplateRenderingException
      */
     private function generateFooter(
         GridConfiguration $gridConfiguration,
-        array $arguments,
         array $items,
+        array $arguments,
     ): Footer {
         return $this->footerGenerator->generate(
             $gridConfiguration,
