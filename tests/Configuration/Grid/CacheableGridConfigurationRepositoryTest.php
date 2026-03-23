@@ -35,8 +35,11 @@ final class CacheableGridConfigurationRepositoryTest extends TestCase
             )
         ;
 
-        $cacheableGridConfigurationRepository =
-            new CacheableGridConfigurationRepository($gridConfigurationRepository, [], $cache);
+        $cacheableGridConfigurationRepository = new CacheableGridConfigurationRepository(
+            $gridConfigurationRepository,
+            $cache,
+            [],
+        );
 
         $result = $cacheableGridConfigurationRepository->getCollection();
 
@@ -67,8 +70,11 @@ final class CacheableGridConfigurationRepositoryTest extends TestCase
             )
         ;
 
-        $cacheableGridConfigurationRepository =
-            new CacheableGridConfigurationRepository($gridConfigurationRepository, [], $cache);
+        $cacheableGridConfigurationRepository = new CacheableGridConfigurationRepository(
+            $gridConfigurationRepository,
+            $cache,
+            [],
+        );
 
         $cacheableGridConfigurationRepository->getCollection();
     }
@@ -102,13 +108,13 @@ final class CacheableGridConfigurationRepositoryTest extends TestCase
 
         $cacheableGridConfigurationRepositoryPrimary   = new CacheableGridConfigurationRepository(
             $gridConfigurationRepository,
-            ['configA' => 'valueA'],
             $cache,
+            ['configA' => 'valueA'],
         );
         $cacheableGridConfigurationRepositorySecondary = new CacheableGridConfigurationRepository(
             $gridConfigurationRepository,
-            ['configB' => 'valueB'],
             $cache,
+            ['configB' => 'valueB'],
         );
 
         $cacheableGridConfigurationRepositoryPrimary->getCollection();
