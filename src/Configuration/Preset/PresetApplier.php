@@ -45,6 +45,6 @@ readonly class PresetApplier
      */
     private function getPreset(string $presetId): Preset
     {
-        return $this->presetRepository->getCollection()->get($presetId);
+        return $this->presetRepository->get($presetId);
     }
 }

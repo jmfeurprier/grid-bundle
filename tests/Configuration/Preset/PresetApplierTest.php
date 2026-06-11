@@ -8,7 +8,6 @@ use Jmf\Grid\Configuration\Column\ColumnConfiguration;
 use Jmf\Grid\Configuration\Preset\PresetApplier;
 use Jmf\Grid\Configuration\Preset\WithPresetInterface;
 use Jmf\RenderingPreset\Preset\Preset;
-use Jmf\RenderingPreset\Preset\PresetCollection;
 use Jmf\RenderingPreset\Preset\PresetRepositoryInterface;
 use Jmf\RenderingPreset\Preset\Property\PresetPropertyCollection;
 use Override;
@@ -36,7 +35,7 @@ final class PresetApplierTest extends TestCase
         $subject->method('getPresetId')->willReturn(null);
         $subject->expects($this->never())->method('applyPreset');
 
-        $this->presetRepository->expects($this->never())->method('getCollection');
+        $this->presetRepository->expects($this->never())->method('get');
 
         $result = $this->presetApplier->apply($subject);
 
@@ -46,10 +45,9 @@ final class PresetApplierTest extends TestCase
     #[AllowMockObjectsWithoutExpectations]
     public function testApplyWithPresetIdFetchesPresetAndAppliesIt(): void
     {
-        $preset           = new Preset('myPreset', 'preset.source', null, new PresetPropertyCollection([]));
-        $presetCollection = new PresetCollection([$preset]);
+        $preset = new Preset('myPreset', 'preset.source', null, new PresetPropertyCollection([]));
 
-        $this->presetRepository->method('getCollection')->willReturn($presetCollection);
+        $this->presetRepository->method('get')->with('myPreset')->willReturn($preset);
 
         $columnConfiguration = new ColumnConfiguration(
             align:    null,
@@ -69,10 +67,9 @@ final class PresetApplierTest extends TestCase
     #[AllowMockObjectsWithoutExpectations]
     public function testApplyPreservesOwnValuesOverPresetValues(): void
     {
-        $preset           = new Preset('myPreset', 'preset.source', null, new PresetPropertyCollection([]));
-        $presetCollection = new PresetCollection([$preset]);
+        $preset = new Preset('myPreset', 'preset.source', null, new PresetPropertyCollection([]));
 
-        $this->presetRepository->method('getCollection')->willReturn($presetCollection);
+        $this->presetRepository->method('get')->with('myPreset')->willReturn($preset);
 
         $columnConfiguration = new ColumnConfiguration(
             align:    null,

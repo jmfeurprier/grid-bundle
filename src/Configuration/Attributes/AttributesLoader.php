@@ -27,18 +27,21 @@ readonly class AttributesLoader
         $values = [];
 
         foreach ($attributesConfig as $key => $value) {
+            // XML-style list entry: `- { key: ..., value: ... }` (what fixXmlConfig/useAttributeAsKey
+            // accepted); normalize it to a `key => value` map entry. A map entry passes through.
             if (is_int($key) && is_array($value)) {
                 Assert::keyExists($value, 'key');
-                $key = Assert::stringNotEmpty($value['key']);
+                $key = $value['key'];
 
                 Assert::keyExists($value, 'value');
                 $value = $value['value'];
-
-                $values[$key] = $value;
             }
+
+            Assert::stringNotEmpty($key);
+
+            $values[$key] = $value;
         }
 
-
-        return new KeyValueCollection($attributesConfig);
+        return new KeyValueCollection($values);
     }
 }
