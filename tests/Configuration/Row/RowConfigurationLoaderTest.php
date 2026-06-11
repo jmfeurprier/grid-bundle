@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Jmf\Grid\Tests\Configuration\Row;
 
+use Jmf\Grid\Configuration\Attributes\AttributesLoader;
 use Jmf\Grid\Configuration\Row\RowConfigurationLoader;
 use Override;
 use PHPUnit\Framework\TestCase;
@@ -15,7 +16,9 @@ final class RowConfigurationLoaderTest extends TestCase
     #[Override]
     protected function setUp(): void
     {
-        $this->loader = new RowConfigurationLoader();
+        $this->loader = new RowConfigurationLoader(
+            new AttributesLoader(),
+        );
     }
 
     public function testLoadWithEmptyConfig(): void

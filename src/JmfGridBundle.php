@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace Jmf\Grid;
 
+use Jmf\Grid\Configuration\GridConfigurationFileLoader;
+use Jmf\Grid\Exception\DuplicateGridException;
 use Override;
 use Symfony\Component\Config\Definition\Configurator\DefinitionConfigurator;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
@@ -23,6 +25,11 @@ class JmfGridBundle extends AbstractBundle
 
     protected string $extensionAlias = 'jmf_grid';
 
+    public function __construct(
+        private readonly GridConfigurationFileLoader $gridConfigurationFileLoader = new GridConfigurationFileLoader(),
+    ) {
+    }
+
     #[Override]
     public function configure(DefinitionConfigurator $definition): void
     {
@@ -31,6 +38,8 @@ class JmfGridBundle extends AbstractBundle
 
     /**
      * @param array<string, mixed> $config
+     *
+     * @throws DuplicateGridException
      */
     #[Override]
     public function loadExtension(
@@ -39,6 +48,9 @@ class JmfGridBundle extends AbstractBundle
         ContainerBuilder $builder,
     ): void {
         $container->import('../config/services.yaml');
+
+        // The `grids` config (inline + per-grid files) is assembled by the loader.
+        $config['grids'] = $this->gridConfigurationFileLoader->load($config, $builder, $this->extensionAlias);
 
         $this->loadParameters($config, $container);
     }

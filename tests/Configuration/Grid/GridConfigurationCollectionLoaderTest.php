@@ -4,8 +4,7 @@ declare(strict_types=1);
 
 namespace Jmf\Grid\Tests\Configuration\Grid;
 
-use Jmf\Grid\Configuration\Grid\GridConfigurationCollection;
-use Override;
+use Jmf\Grid\Configuration\Attributes\AttributesLoader;
 use Jmf\Grid\Configuration\Column\ColumnConfiguration;
 use Jmf\Grid\Configuration\Column\ColumnConfigurationLoader;
 use Jmf\Grid\Configuration\Footer\FooterConfigurationLoader;
@@ -14,6 +13,7 @@ use Jmf\Grid\Configuration\Grid\GridConfigurationLoader;
 use Jmf\Grid\Configuration\Preset\PresetApplier;
 use Jmf\Grid\Configuration\Row\RowConfigurationLoader;
 use Jmf\RenderingPreset\Preset\PresetRepositoryInterface;
+use Override;
 use PHPUnit\Framework\TestCase;
 
 final class GridConfigurationCollectionLoaderTest extends TestCase
@@ -28,7 +28,9 @@ final class GridConfigurationCollectionLoaderTest extends TestCase
 
         $gridConfigurationLoader = new GridConfigurationLoader(
             columnConfigurationLoader: new ColumnConfigurationLoader($presetApplier),
-            rowConfigurationLoader:    new RowConfigurationLoader(),
+            rowConfigurationLoader:    new RowConfigurationLoader(
+                                           new AttributesLoader(),
+                                       ),
             footerConfigurationLoader: new FooterConfigurationLoader($presetApplier),
         );
 

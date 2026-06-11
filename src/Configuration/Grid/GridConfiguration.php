@@ -12,10 +12,10 @@ use Jmf\Grid\Configuration\Row\RowConfiguration;
 readonly class GridConfiguration
 {
     /**
-     * @param non-empty-string                                     $id
-     * @param string[]                                             $arguments
-     * @param \Jmf\Grid\Configuration\Column\ColumnConfiguration[] $columnConfigurations
-     * @param FooterConfiguration[][]                              $footerConfigurations
+     * @param non-empty-string        $id
+     * @param string[]                $arguments
+     * @param ColumnConfiguration[]   $columnConfigurations
+     * @param FooterConfiguration[][] $footerConfigurations
      */
     public function __construct(
         private string $id,

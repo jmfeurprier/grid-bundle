@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Jmf\Grid\Tests\Configuration\Grid;
 
+use Jmf\Grid\Configuration\Attributes\AttributesLoader;
 use Jmf\Grid\Configuration\Column\ColumnConfiguration;
 use Jmf\Grid\Configuration\Column\ColumnConfigurationLoader;
 use Jmf\Grid\Configuration\Footer\FooterConfiguration;
@@ -28,7 +29,9 @@ final class GridConfigurationLoaderTest extends TestCase
 
         $this->loader = new GridConfigurationLoader(
             columnConfigurationLoader: new ColumnConfigurationLoader($presetApplier),
-            rowConfigurationLoader:    new RowConfigurationLoader(),
+            rowConfigurationLoader:    new RowConfigurationLoader(
+                                           new AttributesLoader(),
+                                       ),
             footerConfigurationLoader: new FooterConfigurationLoader($presetApplier),
         );
     }

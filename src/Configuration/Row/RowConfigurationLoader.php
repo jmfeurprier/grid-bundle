@@ -4,11 +4,17 @@ declare(strict_types=1);
 
 namespace Jmf\Grid\Configuration\Row;
 
+use Jmf\Grid\Configuration\Attributes\AttributesLoader;
 use Jmf\Grid\Configuration\KeyValueCollection;
 use Webmozart\Assert\Assert;
 
 readonly class RowConfigurationLoader
 {
+    public function __construct(
+        private AttributesLoader $attributesLoader,
+    ) {
+    }
+
     /**
      * @param array<string, mixed> $rowConfig
      */
@@ -56,14 +62,6 @@ readonly class RowConfigurationLoader
      */
     private function getAttributes(array $rowConfig): KeyValueCollection
     {
-        if (!isset($rowConfig['attributes'])) {
-            return KeyValueCollection::createEmpty();
-        }
-
-        $attributesConfig = $rowConfig['attributes'];
-
-        Assert::isMap($attributesConfig);
-
-        return new KeyValueCollection($attributesConfig);
+        return $this->attributesLoader->load($rowConfig);
     }
 }

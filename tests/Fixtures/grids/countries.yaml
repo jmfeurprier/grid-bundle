@@ -1,0 +1,4 @@
+columns:
+    -
+        label:  'Name'
+        source: 'name'

@@ -128,10 +128,6 @@ readonly class GridConfigurationLoader
     {
         $rowsConfig = $config['rows'] ?? [];
 
-        if ([] === $rowsConfig) {
-            return RowConfiguration::createEmpty();
-        }
-
         Assert::isMap($rowsConfig);
 
         return $this->rowConfigurationLoader->load($rowsConfig);
