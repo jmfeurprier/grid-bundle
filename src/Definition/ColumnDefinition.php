@@ -71,6 +71,7 @@ readonly class ColumnDefinition implements WithPresetInterface
             $this->label ?? $presetLabel,
             $this->source ?? $preset->getSource(),
             $this->template ?? $preset->getTemplate(),
+            $preset->getId(),
         );
     }
 }

@@ -36,7 +36,7 @@ final class ColumnDefinitionTest extends TestCase
         self::assertSame('def', $result->getLabel());
         self::assertSame('ghi', $result->getSource());
         self::assertEquals(new StringTemplate('jkl'), $result->getTemplate());
-        self::assertNull($result->getPresetId());
+        self::assertSame('foo', $result->getPresetId());
     }
 
     public function testApplyPresetWithEmptyColumnDefinitionAndPopulatedPreset(): void
@@ -67,7 +67,7 @@ final class ColumnDefinitionTest extends TestCase
         self::assertSame('def', $result->getLabel());
         self::assertSame('ghi', $result->getSource());
         self::assertEquals(new StringTemplate('jkl'), $result->getTemplate());
-        self::assertNull($result->getPresetId());
+        self::assertSame('foo', $result->getPresetId());
     }
 
     public function testApplyPresetWithPopulatedColumnDefinitionAndPopulatedPreset(): void
@@ -98,6 +98,6 @@ final class ColumnDefinitionTest extends TestCase
         self::assertSame('def', $result->getLabel());
         self::assertSame('ghi', $result->getSource());
         self::assertEquals(new StringTemplate('jkl'), $result->getTemplate());
-        self::assertNull($result->getPresetId());
+        self::assertSame('foo', $result->getPresetId());
     }
 }

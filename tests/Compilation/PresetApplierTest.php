@@ -59,7 +59,7 @@ final class PresetApplierTest extends TestCase
 
         self::assertNotSame($columnDefinition, $result);
         self::assertSame('preset.source', $result->getSource());
-        self::assertNull($result->getPresetId());
+        self::assertSame('myPreset', $result->getPresetId());
     }
 
     public function testApplyPreservesOwnValuesOverPresetValues(): void
