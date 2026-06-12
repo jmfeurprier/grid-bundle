@@ -17,13 +17,13 @@ use Webmozart\Assert\Assert;
  * registers a cache-invalidation resource per directory. A grid id defined more than once (across
  * files, or against an inline entry) is a configuration error.
  */
-final readonly class GridConfigurationFileLoader
+readonly class GridConfigurationFileLoader
 {
     /**
      * @param array<string, mixed> $config         resolved `jmf_grid` config (`paths` + `grids`)
      * @param string               $extensionAlias used to derive the default path
      *
-     * @return array<mixed, mixed> grid configs keyed by id
+     * @return array<string, array<string, mixed>> grid configs keyed by id
      *
      * @throws DuplicateGridException
      */

@@ -7,14 +7,14 @@ namespace Jmf\Grid\Exception;
 class DuplicateGridException extends GridException
 {
     /**
-     * @param non-empty-list<string> $gridIds
+     * @param non-empty-list<non-empty-string> $gridIds
      */
     public function __construct(
         private readonly array $gridIds,
     ) {
         parent::__construct(
             sprintf(
-                'Duplicate grid configuration for %s: defined both inline under "grids" and via "paths".',
+                'Duplicate grid configuration for %s.',
                 implode(', ', $this->gridIds),
             ),
         );
