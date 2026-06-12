@@ -38,13 +38,17 @@ readonly class GridConfigurationFileLoader
 
         $gridsFromPaths = $this->loadFromPaths($directories);
 
+        /** @var array<string, array<string, mixed>> $inlineGrids */
         $inlineGrids = $config['grids'];
         Assert::isArray($inlineGrids);
 
         $duplicates = array_intersect_key($gridsFromPaths, $inlineGrids);
 
         if ([] !== $duplicates) {
-            throw new DuplicateGridException(array_keys($duplicates));
+            $duplicateIds = array_keys($duplicates);
+            Assert::allStringNotEmpty($duplicateIds);
+
+            throw new DuplicateGridException($duplicateIds);
         }
 
         return $gridsFromPaths + $inlineGrids;
@@ -103,7 +107,7 @@ readonly class GridConfigurationFileLoader
     /**
      * @param list<string> $directories
      *
-     * @return array<string, array<mixed, mixed>>
+     * @return array<string, array<string, mixed>>
      *
      * @throws DuplicateGridException
      */
@@ -120,6 +124,7 @@ readonly class GridConfigurationFileLoader
             foreach ((new Finder())->files()->in($directory)->name('*.yaml')->sortByName() as $file) {
                 $relativeName = substr($file->getRelativePathname(), 0, -strlen('.yaml'));
                 $gridId       = str_replace('/', '.', $relativeName);
+                Assert::stringNotEmpty($gridId);
 
                 if (isset($grids[$gridId])) {
                     throw new DuplicateGridException([$gridId]);
@@ -127,6 +132,7 @@ readonly class GridConfigurationFileLoader
 
                 // PARSE_CONSTANT so files may use `!php/const ...`, matching what Symfony's own
                 // config loader enables for inline config.
+                /** @var array<string, mixed> $parsed */
                 $parsed = Yaml::parseFile($file->getRealPath(), Yaml::PARSE_CONSTANT);
 
                 $grids[$gridId] = is_array($parsed) ? $parsed : [];
