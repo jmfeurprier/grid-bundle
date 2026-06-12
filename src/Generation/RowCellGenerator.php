@@ -36,7 +36,7 @@ readonly class RowCellGenerator
     ): RowCell {
         return new RowCell(
             $this->getCellValue($columnDefinition, $item, $rowVariables),
-            $this->getCellParameters($columnDefinition),
+            $columnDefinition->getAlign(),
         );
     }
 
@@ -99,17 +99,5 @@ readonly class RowCellGenerator
         throw new UnexpectedValueTypeException(get_debug_type($value));
     }
 
-    /**
-     * @return array<string, mixed>
-     */
-    private function getCellParameters(ColumnDefinition $columnDefinition): array
-    {
-        $parameters = [];
 
-        if (null !== $columnDefinition->getAlign()) {
-            $parameters['align'] = $columnDefinition->getAlign();
-        }
-
-        return $parameters;
-    }
 }

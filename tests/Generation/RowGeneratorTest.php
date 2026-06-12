@@ -102,7 +102,7 @@ final class RowGeneratorTest extends TestCase
     {
         $columnConfig      = new ColumnDefinition(align: null, label: 'Name', source: 'name', template: null);
         $gridDefinition = $this->createGridDefinition([$columnConfig]);
-        $expectedCell      = new RowCell('Alice', []);
+        $expectedCell      = new RowCell('Alice', null);
 
         $rowCellGenerator = $this->createMock(RowCellGenerator::class);
         $rowCellGenerator

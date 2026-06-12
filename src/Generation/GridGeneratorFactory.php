@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Jmf\Grid\Generation;
 
 use Jmf\Grid\Compilation\GridDefinitionCollectionCompiler;
+use Jmf\Grid\Exception\DuplicateGridException;
 use Jmf\Grid\Exception\GridWithoutColumnException;
 use Jmf\RenderingPreset\Exception\InvalidConfigurationException;
 use Jmf\RenderingPreset\Exception\PresetNotFoundException;
@@ -24,6 +25,7 @@ readonly class GridGeneratorFactory
     }
 
     /**
+     * @throws DuplicateGridException
      * @throws GridWithoutColumnException
      * @throws InvalidConfigurationException
      * @throws PresetNotFoundException

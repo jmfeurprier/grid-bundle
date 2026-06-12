@@ -4,8 +4,6 @@ declare(strict_types=1);
 
 namespace Jmf\Grid\Definition;
 
-use Jmf\Grid\Definition\KeyValueCollection;
-
 readonly class GridDefinition
 {
     /**

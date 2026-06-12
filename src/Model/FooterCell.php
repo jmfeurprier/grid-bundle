@@ -14,6 +14,7 @@ readonly class FooterCell
     public function __construct(
         private string $value,
         private array $attributes,
+        private ?string $align,
     ) {
         Assert::isMap($this->attributes);
     }
@@ -29,5 +30,10 @@ readonly class FooterCell
     public function getAttributes(): array
     {
         return $this->attributes;
+    }
+
+    public function getAlign(): ?string
+    {
+        return $this->align;
     }
 }

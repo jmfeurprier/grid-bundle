@@ -64,7 +64,7 @@ final class FooterGeneratorTest extends TestCase
         self::assertSame([], $cells[0]->getAttributes());
     }
 
-    public function testGenerateWithAlignAddsClassAttribute(): void
+    public function testGenerateWithAlignSetsAlign(): void
     {
         $gridDefinition = $this->createGridDefinition(
             [
@@ -83,7 +83,8 @@ final class FooterGeneratorTest extends TestCase
         $footer = $this->footerGenerator->generate($gridDefinition, [], []);
         $cells  = iterator_to_array(iterator_to_array($footer->getRows())[0]->getCells());
 
-        self::assertSame(['class' => 'text-right'], $cells[0]->getAttributes());
+        self::assertSame('right', $cells[0]->getAlign());
+        self::assertSame([], $cells[0]->getAttributes());
     }
 
     public function testGenerateWithMergeGreaterThanOneAddsColspan(): void
@@ -149,13 +150,8 @@ final class FooterGeneratorTest extends TestCase
         $footer = $this->footerGenerator->generate($gridDefinition, [], []);
         $cells  = iterator_to_array(iterator_to_array($footer->getRows())[0]->getCells());
 
-        self::assertSame(
-            [
-                'class'   => 'text-center',
-                'colspan' => 2,
-            ],
-            $cells[0]->getAttributes(),
-        );
+        self::assertSame('center', $cells[0]->getAlign());
+        self::assertSame(['colspan' => 2], $cells[0]->getAttributes());
     }
 
     public function testGenerateWithTemplate(): void
@@ -310,7 +306,8 @@ final class FooterGeneratorTest extends TestCase
         self::assertCount(2, $cells);
         self::assertSame('Label', $cells[0]->getValue());
         self::assertSame('100.00', $cells[1]->getValue());
-        self::assertSame(['class' => 'text-right'], $cells[1]->getAttributes());
+        self::assertSame('right', $cells[1]->getAlign());
+        self::assertSame([], $cells[1]->getAttributes());
     }
 
     /**

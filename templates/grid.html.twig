@@ -4,4 +4,6 @@
         {{ include('@JmfGrid/grid_body.html.twig') }}
         {{ include('@JmfGrid/grid_footer.html.twig') }}
     </table>
+{% else %}
+    {{ include('@JmfGrid/grid_empty.html.twig') }}
 {% endif %}

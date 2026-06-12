@@ -4,18 +4,12 @@ declare(strict_types=1);
 
 namespace Jmf\Grid\Model;
 
-use Webmozart\Assert\Assert;
-
 readonly class RowCell
 {
-    /**
-     * @param array<string, mixed> $parameters
-     */
     public function __construct(
         private string $value,
-        private array $parameters,
+        private ?string $align,
     ) {
-        Assert::isMap($this->parameters);
     }
 
     public function getValue(): string
@@ -23,11 +17,8 @@ readonly class RowCell
         return $this->value;
     }
 
-    /**
-     * @return array<string, mixed>
-     */
-    public function getParameters(): array
+    public function getAlign(): ?string
     {
-        return $this->parameters;
+        return $this->align;
     }
 }

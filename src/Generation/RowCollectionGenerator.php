@@ -12,7 +12,7 @@ use Jmf\TemplateRendering\Exception\TemplateRenderingException;
 readonly class RowCollectionGenerator
 {
     public function __construct(
-        private RowGenerator $gridRowGenerator,
+        private RowGenerator $rowGenerator,
     ) {
     }
 
@@ -33,7 +33,7 @@ readonly class RowCollectionGenerator
         $rows     = [];
 
         foreach ($items as $item) {
-            $rows[] = $this->gridRowGenerator->generate(
+            $rows[] = $this->rowGenerator->generate(
                 $gridDefinition,
                 $item,
                 $rowIndex,

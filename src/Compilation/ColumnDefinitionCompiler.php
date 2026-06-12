@@ -41,12 +41,14 @@ readonly class ColumnDefinitionCompiler
 
     /**
      * @param array<string, mixed> $columnConfig
+     *
+     * @return null|non-empty-string
      */
     private function getAlign(array $columnConfig): ?string
     {
         $align = $columnConfig['align'] ?? null;
 
-        Assert::nullOrString($align);
+        Assert::nullOrStringNotEmpty($align);
 
         return $align;
     }

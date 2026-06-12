@@ -9,6 +9,7 @@ use Jmf\Grid\Definition\GridDefinition;
 use Jmf\Grid\Definition\GridDefinitionCollection;
 use Jmf\Grid\Definition\KeyValueCollection;
 use Jmf\Grid\Definition\RowDefinition;
+use Jmf\Grid\Exception\DuplicateGridException;
 use Jmf\Grid\Exception\GridNotFoundException;
 use Override;
 use PHPUnit\Framework\TestCase;
@@ -95,5 +96,17 @@ final class GridDefinitionCollectionTest extends TestCase
         $gridDefinitionCollection = new GridDefinitionCollection([]);
 
         self::assertSame([], $gridDefinitionCollection->all());
+    }
+
+    public function testDuplicateIdThrows(): void
+    {
+        $this->expectException(DuplicateGridException::class);
+
+        new GridDefinitionCollection(
+            [
+                $this->gridDefinitionPrimary,
+                $this->gridDefinitionPrimary,
+            ],
+        );
     }
 }

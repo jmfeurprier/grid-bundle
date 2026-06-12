@@ -11,22 +11,22 @@ final class RowCellTest extends TestCase
 {
     public function testGetValueReturnsValue(): void
     {
-        $rowCell = new RowCell('foo', []);
+        $rowCell = new RowCell('foo', null);
 
         self::assertSame('foo', $rowCell->getValue());
     }
 
-    public function testGetParametersReturnsEmpty(): void
+    public function testGetAlignReturnsNull(): void
     {
-        $rowCell = new RowCell('foo', []);
+        $rowCell = new RowCell('foo', null);
 
-        self::assertSame([], $rowCell->getParameters());
+        self::assertNull($rowCell->getAlign());
     }
 
-    public function testGetParametersReturnsValues(): void
+    public function testGetAlignReturnsValue(): void
     {
-        $rowCell = new RowCell('foo', ['align' => 'right']);
+        $rowCell = new RowCell('foo', 'right');
 
-        self::assertSame(['align' => 'right'], $rowCell->getParameters());
+        self::assertSame('right', $rowCell->getAlign());
     }
 }

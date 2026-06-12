@@ -11,7 +11,7 @@ use Webmozart\Assert\Assert;
 readonly class RowDefinitionCompiler
 {
     public function __construct(
-        private AttributesCompiler $attributesLoader,
+        private AttributesCompiler $attributesCompiler,
     ) {
     }
 
@@ -62,6 +62,6 @@ readonly class RowDefinitionCompiler
      */
     private function getAttributes(array $rowConfig): KeyValueCollection
     {
-        return $this->attributesLoader->compile($rowConfig);
+        return $this->attributesCompiler->compile($rowConfig);
     }
 }

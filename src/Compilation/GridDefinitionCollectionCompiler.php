@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Jmf\Grid\Compilation;
 
 use Jmf\Grid\Definition\GridDefinitionCollection;
+use Jmf\Grid\Exception\DuplicateGridException;
 use Jmf\Grid\Exception\GridWithoutColumnException;
 use Jmf\RenderingPreset\Exception\InvalidConfigurationException;
 use Jmf\RenderingPreset\Exception\PresetNotFoundException;
@@ -20,6 +21,7 @@ readonly class GridDefinitionCollectionCompiler
     /**
      * @param array<string, mixed> $gridConfigs
      *
+     * @throws DuplicateGridException
      * @throws GridWithoutColumnException
      * @throws InvalidConfigurationException
      * @throws PresetNotFoundException

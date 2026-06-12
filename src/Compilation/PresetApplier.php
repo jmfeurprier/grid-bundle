@@ -7,7 +7,6 @@ namespace Jmf\Grid\Compilation;
 use Jmf\Grid\Definition\WithPresetInterface;
 use Jmf\RenderingPreset\Exception\InvalidConfigurationException;
 use Jmf\RenderingPreset\Exception\PresetNotFoundException;
-use Jmf\RenderingPreset\Preset\Preset;
 use Jmf\RenderingPreset\Preset\PresetRepositoryInterface;
 
 readonly class PresetApplier
@@ -33,19 +32,10 @@ readonly class PresetApplier
             return $subject;
         }
 
-        $preset = $this->getPreset($subject->getPresetId());
-
-        return $subject->applyPreset($preset);
-    }
-
-    /**
-     * @param non-empty-string $presetId
-     *
-     * @throws InvalidConfigurationException
-     * @throws PresetNotFoundException
-     */
-    private function getPreset(string $presetId): Preset
-    {
-        return $this->presetRepository->get($presetId);
+        return $subject->applyPreset(
+            $this->presetRepository->get(
+                $subject->getPresetId(),
+            ),
+        );
     }
 }

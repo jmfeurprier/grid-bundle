@@ -30,21 +30,6 @@ readonly class RowLinkGenerator
             return null;
         }
 
-        return $this->renderTemplateFromString(
-            $link,
-            $rowVariables,
-        );
-    }
-
-    /**
-     * @param array<string, mixed> $context
-     *
-     * @throws TemplateRenderingException
-     */
-    private function renderTemplateFromString(
-        string $template,
-        array $context,
-    ): string {
-        return $this->templateRenderer->renderFromString($template, $context);
+        return $this->templateRenderer->renderFromString($link, $rowVariables);
     }
 }

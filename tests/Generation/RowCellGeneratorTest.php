@@ -116,22 +116,22 @@ final class RowCellGeneratorTest extends TestCase
         $this->createRowCellGenerator()->generate($columnConfig, ['obj' => new stdClass()], []);
     }
 
-    public function testGenerateWithAlignSetsParameter(): void
+    public function testGenerateWithAlignSetsAlign(): void
     {
         $columnConfig = new ColumnDefinition(align: 'right', label: null, source: null, template: null);
 
         $cell = $this->createRowCellGenerator()->generate($columnConfig, [], []);
 
-        self::assertSame(['align' => 'right'], $cell->getParameters());
+        self::assertSame('right', $cell->getAlign());
     }
 
-    public function testGenerateWithNoAlignReturnsEmptyParameters(): void
+    public function testGenerateWithNoAlignReturnsNull(): void
     {
         $columnConfig = new ColumnDefinition(align: null, label: null, source: null, template: null);
 
         $cell = $this->createRowCellGenerator()->generate($columnConfig, [], []);
 
-        self::assertSame([], $cell->getParameters());
+        self::assertNull($cell->getAlign());
     }
 
     public function testGenerateWithTemplate(): void

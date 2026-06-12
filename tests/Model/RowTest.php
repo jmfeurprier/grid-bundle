@@ -19,8 +19,8 @@ final class RowTest extends TestCase
 
     public function testGetCellsReturnsCells(): void
     {
-        $cell1 = new RowCell('foo', []);
-        $cell2 = new RowCell('bar', ['align' => 'right']);
+        $cell1 = new RowCell('foo', null);
+        $cell2 = new RowCell('bar', 'right');
         $row   = new Row([$cell1, $cell2], null);
 
         self::assertSame([$cell1, $cell2], iterator_to_array($row->getCells()));

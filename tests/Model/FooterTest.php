@@ -20,7 +20,7 @@ final class FooterTest extends TestCase
 
     public function testGetRowsReturnsSingleRow(): void
     {
-        $footerRow = new FooterRow([new FooterCell('Total', [])]);
+        $footerRow = new FooterRow([new FooterCell('Total', [], null)]);
         $footer    = new Footer([$footerRow]);
 
         self::assertSame([$footerRow], iterator_to_array($footer->getRows()));
@@ -28,8 +28,8 @@ final class FooterTest extends TestCase
 
     public function testGetRowsReturnsMultipleRows(): void
     {
-        $row1   = new FooterRow([new FooterCell('Subtotal', [])]);
-        $row2   = new FooterRow([new FooterCell('Total', [])]);
+        $row1   = new FooterRow([new FooterCell('Subtotal', [], null)]);
+        $row2   = new FooterRow([new FooterCell('Total', [], null)]);
         $footer = new Footer(
             [
                 $row1,

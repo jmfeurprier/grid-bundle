@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Jmf\Grid\Definition;
 
+use Jmf\Grid\Exception\DuplicateGridException;
 use Jmf\Grid\Exception\GridNotFoundException;
 use Webmozart\Assert\Assert;
 
@@ -16,16 +17,29 @@ readonly class GridDefinitionCollection
 
     /**
      * @param GridDefinition[] $gridDefinitions
+     *
+     * @throws DuplicateGridException
      */
     public function __construct(
         iterable $gridDefinitions,
     ) {
         Assert::allIsInstanceOf($gridDefinitions, GridDefinition::class);
 
-        $indexed = [];
+        $indexed     = [];
+        $duplicateIds = [];
 
         foreach ($gridDefinitions as $gridDefinition) {
-            $indexed[$gridDefinition->getId()] = $gridDefinition;
+            $id = $gridDefinition->getId();
+
+            if (array_key_exists($id, $indexed)) {
+                $duplicateIds[] = $id;
+            } else {
+                $indexed[$id] = $gridDefinition;
+            }
+        }
+
+        if ([] !== $duplicateIds) {
+            throw new DuplicateGridException($duplicateIds);
         }
 
         $this->gridDefinitions = $indexed;

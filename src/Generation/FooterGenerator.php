@@ -40,6 +40,7 @@ readonly class FooterGenerator
                 $cells[] = new FooterCell(
                     $this->buildValue($footerColumnDefinition, $items, $arguments),
                     $this->buildAttributes($footerColumnDefinition),
+                    $footerColumnDefinition->getAlign(),
                 );
             }
 
@@ -55,16 +56,6 @@ readonly class FooterGenerator
     private function buildAttributes(FooterDefinition $footerDefinition): array
     {
         $attributes = [];
-        $classes    = [];
-
-        // @todo Too "bootstrapy". Move to dedicated field in FooterCell.
-        if (null !== $footerDefinition->getAlign()) {
-            $classes[] = "text-{$footerDefinition->getAlign()}";
-        }
-
-        if ([] !== $classes) {
-            $attributes['class'] = implode(' ', $classes);
-        }
 
         $merge = $footerDefinition->getMerge() ?? 1;
 

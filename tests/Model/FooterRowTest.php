@@ -19,7 +19,7 @@ final class FooterRowTest extends TestCase
 
     public function testGetCellsReturnsSingleCell(): void
     {
-        $cell = new FooterCell('Total', []);
+        $cell = new FooterCell('Total', [], null);
         $row  = new FooterRow([$cell]);
 
         self::assertSame([$cell], iterator_to_array($row->getCells()));
@@ -27,8 +27,8 @@ final class FooterRowTest extends TestCase
 
     public function testGetCellsReturnsMultipleCells(): void
     {
-        $cell1 = new FooterCell('Label', []);
-        $cell2 = new FooterCell('42', ['class' => 'text-right']);
+        $cell1 = new FooterCell('Label', [], null);
+        $cell2 = new FooterCell('42', [], 'right');
         $row   = new FooterRow([$cell1, $cell2]);
 
         self::assertSame([$cell1, $cell2], iterator_to_array($row->getCells()));

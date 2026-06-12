@@ -2,6 +2,7 @@
 {% if row.link is not null %}
     {% set attributes = attributes|merge({
         'onclick': "window.location='" ~ row.link|e('js') ~ "'",
+        'role':    'link',
         'style':   'cursor:pointer',
     }) %}
 {% endif %}

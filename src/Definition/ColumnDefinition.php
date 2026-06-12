@@ -12,8 +12,9 @@ use Webmozart\Assert\Assert;
 readonly class ColumnDefinition implements WithPresetInterface
 {
     /**
-     * @param null|non-empty-string $presetId
+     * @param null|non-empty-string $align
      * @param null|non-empty-string $source
+     * @param null|non-empty-string $presetId
      */
     final public function __construct(
         private ?string $align,
@@ -24,6 +25,9 @@ readonly class ColumnDefinition implements WithPresetInterface
     ) {
     }
 
+    /**
+     * @return null|non-empty-string
+     */
     public function getAlign(): ?string
     {
         return $this->align;
