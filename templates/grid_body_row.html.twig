@@ -1,7 +1,7 @@
 {% set attributes = row.attributes %}
 {% if row.link is not null %}
     {% set attributes = attributes|merge({
-        'onclick': "window.location='" ~ row.link ~ "'",
+        'onclick': "window.location='" ~ row.link|e('js') ~ "'",
         'style':   'cursor:pointer',
     }) %}
 {% endif %}

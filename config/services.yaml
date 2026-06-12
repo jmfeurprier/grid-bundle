@@ -6,13 +6,18 @@ services:
 
     Jmf\Grid\:
         resource: '../src/'
+        exclude:
+            - '../src/Definition/'
+            - '../src/Exception/'
+            - '../src/Model/'
+            - '../src/JmfGridBundle.php'
 
-    Jmf\Grid\Grid\GridGeneratorFactory:
+    Jmf\Grid\Generation\GridGenerator:
+        factory: ['@Jmf\Grid\Generation\GridGeneratorFactory', 'create']
+
+    Jmf\Grid\Generation\GridGeneratorFactory:
         arguments:
             $gridConfigs: '%jmf_grid.grid_configurations%'
-
-    Jmf\Grid\Grid\GridGenerator:
-        factory: ['@Jmf\Grid\Grid\GridGeneratorFactory', 'create']
 
     Jmf\Grid\Twig\GridExtension:
         arguments:

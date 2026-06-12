@@ -6,9 +6,11 @@ namespace Jmf\Grid\Exception;
 
 class GridWithoutColumnException extends GridException
 {
-    // @todo Add context (grid Id, etc).
-    public function __construct()
+    /**
+     * @param non-empty-string $gridId
+     */
+    public function __construct(string $gridId)
     {
-        parent::__construct('Grid has not column defined.');
+        parent::__construct(sprintf('Grid "%s" has no column defined.', $gridId));
     }
 }

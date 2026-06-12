@@ -7,8 +7,8 @@ namespace Jmf\Grid\Exception;
 class UnexpectedValueTypeException extends GridException
 {
     // @todo Add context (grid Id, etc).
-    public function __construct()
+    public function __construct(string $valueType)
     {
-        parent::__construct('Unexpected cell value type.');
+        parent::__construct(sprintf('Unexpected cell value type "%s".', $valueType));
     }
 }

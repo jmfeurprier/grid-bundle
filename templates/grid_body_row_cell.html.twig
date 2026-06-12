@@ -1,7 +1,3 @@
-{% set classes = [] %}
-{% if (cell.parameters.align is defined) %}
-    {% set classes = classes|merge(['text-' ~ cell.parameters.align]) %}
-{% endif %}
-<td{% if (classes is not empty) %} class="{{ classes|join(' ') }}"{% endif %}>
+<td{% if (cell.parameters.align is defined) %} style="text-align: {{ cell.parameters.align }}"{% endif %}>
     {{ cell.value|raw }}
 </td>

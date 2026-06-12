@@ -1,0 +1,69 @@
+<?php
+
+declare(strict_types=1);
+
+namespace Jmf\Grid\Definition;
+
+use Jmf\RenderingPreset\Preset\Preset;
+use Jmf\TemplateRendering\TemplateInterface;
+use Override;
+use Webmozart\Assert\Assert;
+
+readonly class FooterDefinition implements WithPresetInterface
+{
+    /**
+     * @param null|non-empty-string $presetId
+     */
+    final public function __construct(
+        private ?string $align,
+        private ?TemplateInterface $template,
+        private ?int $merge,
+        private ?string $value,
+        private ?string $presetId,
+    ) {
+    }
+
+    public function getAlign(): ?string
+    {
+        return $this->align;
+    }
+
+    public function getTemplate(): ?TemplateInterface
+    {
+        return $this->template;
+    }
+
+    public function getMerge(): ?int
+    {
+        return $this->merge;
+    }
+
+    public function getValue(): ?string
+    {
+        return $this->value;
+    }
+
+    #[Override]
+    public function getPresetId(): ?string
+    {
+        return $this->presetId;
+    }
+
+    #[Override]
+    public function applyPreset(Preset $preset): static
+    {
+        $presetAlign = $preset->getProperties()->tryGetValue('align');
+        $presetMerge = $preset->getProperties()->tryGetValue('merge');
+
+        Assert::nullOrStringNotEmpty($presetAlign);
+        Assert::nullOrInteger($presetMerge);
+
+        return new static(
+            $this->align ?? $presetAlign,
+            $this->template ?? $preset->getTemplate(),
+            $this->merge ?? $presetMerge,
+            $this->value,
+            $preset->getId(),
+        );
+    }
+}

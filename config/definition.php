@@ -21,7 +21,6 @@ return static function (DefinitionConfigurator $definition): void {
                             ->fixXmlConfig('variable')
                             ->children()
                                 ->arrayNode('arguments')
-                                    ->useAttributeAsKey('key')
                                     ->scalarPrototype()->end()
                                 ->end()
                                 ->arrayNode('variables')

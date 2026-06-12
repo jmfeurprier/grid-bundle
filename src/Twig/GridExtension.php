@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace Jmf\Grid\Twig;
 
 use Jmf\Grid\Exception\GridException;
-use Jmf\Grid\Grid\GridGenerator;
+use Jmf\Grid\Generation\GridGenerator;
 use Jmf\RenderingPreset\Exception\RenderingPresetException;
 use Jmf\TemplateRendering\Exception\TemplateRenderingException;
 use Jmf\TemplateRendering\TemplateRendererInterface;
@@ -46,7 +46,7 @@ class GridExtension extends AbstractExtension
      * @param non-empty-string                  $gridId
      * @param list<array<string, mixed>|object> $items
      * @param array<string, mixed>              $arguments
-     * @param array<string, mixed>              $parameters
+     * @param array<string, mixed>              $parameters Extra parameters for the Twig template.
      *
      * @throws GridException
      * @throws RenderingPresetException
@@ -60,9 +60,12 @@ class GridExtension extends AbstractExtension
     ): string {
         return $this->templateRenderer->renderFromFile(
             $this->templatePath,
-            $parameters + [
-                'grid' => $this->gridGenerator->generate($gridId, $items, $arguments),
-            ],
+            array_merge(
+                $parameters,
+                [
+                    'grid' => $this->gridGenerator->generate($gridId, $items, $arguments),
+                ],
+            ),
         );
     }
 }
