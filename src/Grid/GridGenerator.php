@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace Jmf\Grid\Grid;
 
 use Jmf\Grid\Configuration\Grid\GridConfiguration;
-use Jmf\Grid\Configuration\Grid\GridConfigurationRepositoryInterface;
+use Jmf\Grid\Configuration\Grid\GridConfigurationCollection;
 use Jmf\Grid\Exception\GridNotFoundException;
 use Jmf\Grid\Exception\GridWithoutColumnException;
 use Jmf\Grid\Exception\MissingGridArgumentException;
@@ -23,7 +23,7 @@ use Jmf\TemplateRendering\Exception\TemplateRenderingException;
 readonly class GridGenerator
 {
     public function __construct(
-        private GridConfigurationRepositoryInterface $gridConfigurationRepository,
+        private GridConfigurationCollection $gridConfigurationCollection,
         private ColumnCollectionGenerator $columnCollectionGenerator,
         private RowCollectionGenerator $rowCollectionGenerator,
         private FooterGenerator $footerGenerator,
@@ -48,7 +48,7 @@ readonly class GridGenerator
         array $items,
         array $arguments,
     ): Grid {
-        $gridConfiguration = $this->gridConfigurationRepository->getCollection()->get($gridId);
+        $gridConfiguration = $this->gridConfigurationCollection->get($gridId);
 
         $this->validateArguments(
             $gridId,

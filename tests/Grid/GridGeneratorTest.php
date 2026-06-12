@@ -6,7 +6,6 @@ namespace Jmf\Grid\Tests\Grid;
 
 use Jmf\Grid\Configuration\Grid\GridConfiguration;
 use Jmf\Grid\Configuration\Grid\GridConfigurationCollection;
-use Jmf\Grid\Configuration\Grid\GridConfigurationRepositoryInterface;
 use Jmf\Grid\Configuration\KeyValueCollection;
 use Jmf\Grid\Configuration\Row\RowConfiguration;
 use Jmf\Grid\Exception\GridNotFoundException;
@@ -45,15 +44,8 @@ final class GridGeneratorTest extends TestCase
 
     public function testGenerateReturnsGrid(): void
     {
-        $gridConfig                  = $this->createGridConfiguration('myGrid');
-        $gridConfigurationRepository = $this->createGridConfigurationRepository($gridConfig);
-
-        $gridGenerator = new GridGenerator(
-            $gridConfigurationRepository,
-            $this->columnCollectionGenerator,
-            $this->rowCollectionGenerator,
-            $this->footerGenerator,
-        );
+        $gridConfig    = $this->createGridConfiguration('myGrid');
+        $gridGenerator = $this->createGridGenerator($gridConfig);
 
         $result = $gridGenerator->generate('myGrid', [], []);
 
@@ -64,14 +56,7 @@ final class GridGeneratorTest extends TestCase
 
     public function testGenerateThrowsGridNotFoundException(): void
     {
-        $gridConfigurationRepository = $this->createGridConfigurationRepository();
-
-        $gridGenerator = new GridGenerator(
-            $gridConfigurationRepository,
-            $this->columnCollectionGenerator,
-            $this->rowCollectionGenerator,
-            $this->footerGenerator,
-        );
+        $gridGenerator = $this->createGridGenerator();
 
         $this->expectException(GridNotFoundException::class);
 
@@ -80,15 +65,8 @@ final class GridGeneratorTest extends TestCase
 
     public function testGenerateThrowsMissingGridArgumentException(): void
     {
-        $gridConfig                  = $this->createGridConfiguration('myGrid', ['locale']);
-        $gridConfigurationRepository = $this->createGridConfigurationRepository($gridConfig);
-
-        $gridGenerator = new GridGenerator(
-            $gridConfigurationRepository,
-            $this->columnCollectionGenerator,
-            $this->rowCollectionGenerator,
-            $this->footerGenerator,
-        );
+        $gridConfig    = $this->createGridConfiguration('myGrid', ['locale']);
+        $gridGenerator = $this->createGridGenerator($gridConfig);
 
         $this->expectException(MissingGridArgumentException::class);
 
@@ -97,15 +75,8 @@ final class GridGeneratorTest extends TestCase
 
     public function testGenerateWithAllRequiredArgumentsSucceeds(): void
     {
-        $gridConfig                  = $this->createGridConfiguration('myGrid', ['locale']);
-        $gridConfigurationRepository = $this->createGridConfigurationRepository($gridConfig);
-
-        $gridGenerator = new GridGenerator(
-            $gridConfigurationRepository,
-            $this->columnCollectionGenerator,
-            $this->rowCollectionGenerator,
-            $this->footerGenerator,
-        );
+        $gridConfig    = $this->createGridConfiguration('myGrid', ['locale']);
+        $gridGenerator = $this->createGridGenerator($gridConfig);
 
         $result = $gridGenerator->generate('myGrid', [], ['locale' => 'fr']);
 
@@ -130,14 +101,13 @@ final class GridGeneratorTest extends TestCase
         );
     }
 
-    private function createGridConfigurationRepository(
-        GridConfiguration ...$configs,
-    ): GridConfigurationRepositoryInterface {
-        $gridConfigurationCollection = new GridConfigurationCollection($configs);
-
-        $gridConfigurationRepository = $this->createStub(GridConfigurationRepositoryInterface::class);
-        $gridConfigurationRepository->method('getCollection')->willReturn($gridConfigurationCollection);
-
-        return $gridConfigurationRepository;
+    private function createGridGenerator(GridConfiguration ...$configs): GridGenerator
+    {
+        return new GridGenerator(
+            new GridConfigurationCollection($configs),
+            $this->columnCollectionGenerator,
+            $this->rowCollectionGenerator,
+            $this->footerGenerator,
+        );
     }
 }

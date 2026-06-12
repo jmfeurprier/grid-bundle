@@ -7,17 +7,12 @@ services:
     Jmf\Grid\:
         resource: '../src/'
 
-    Jmf\Grid\Configuration\Grid\CacheableGridConfigurationRepository:
-        arguments:
-            $gridConfigs: '%jmf_grid.grid_configurations%'
-            $wrapped:     '@Jmf\Grid\Configuration\Grid\GridConfigurationRepository'
-
-    Jmf\Grid\Configuration\Grid\GridConfigurationRepository:
+    Jmf\Grid\Grid\GridGeneratorFactory:
         arguments:
             $gridConfigs: '%jmf_grid.grid_configurations%'
 
-    Jmf\Grid\Configuration\Grid\GridConfigurationRepositoryInterface:
-        alias: Jmf\Grid\Configuration\Grid\CacheableGridConfigurationRepository
+    Jmf\Grid\Grid\GridGenerator:
+        factory: ['@Jmf\Grid\Grid\GridGeneratorFactory', 'create']
 
     Jmf\Grid\Twig\GridExtension:
         arguments:
