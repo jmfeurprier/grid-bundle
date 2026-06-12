@@ -4,9 +4,9 @@ declare(strict_types=1);
 
 namespace Jmf\Grid\Tests\Grid\Row;
 
-use Jmf\Grid\Configuration\Grid\GridConfiguration;
-use Jmf\Grid\Configuration\KeyValueCollection;
-use Jmf\Grid\Configuration\Row\RowConfiguration;
+use Jmf\Grid\Grid\GridDefinition;
+use Jmf\Grid\Grid\KeyValueCollection;
+use Jmf\Grid\Grid\Row\RowDefinition;
 use Jmf\Grid\Grid\Row\Row;
 use Jmf\Grid\Grid\Row\RowCollectionGenerator;
 use Jmf\Grid\Grid\Row\RowGenerator;
@@ -25,23 +25,23 @@ final class RowCollectionGeneratorTest extends TestCase
         );
     }
 
-    private function createGridConfiguration(): GridConfiguration
+    private function createGridDefinition(): GridDefinition
     {
-        return new GridConfiguration(
+        return new GridDefinition(
             id:                   'test',
             arguments:            [],
             gridVariables:        KeyValueCollection::createEmpty(),
-            columnConfigurations: [],
-            rowConfiguration:     RowConfiguration::createEmpty(),
-            footerConfigurations: [],
+            columnDefinitions: [],
+            rowDefinition:     RowDefinition::createEmpty(),
+            footerDefinitions: [],
         );
     }
 
     public function testGenerateWithNoItemsReturnsEmptyCollection(): void
     {
-        $gridConfiguration = $this->createGridConfiguration();
+        $gridDefinition = $this->createGridDefinition();
 
-        $result = $this->rowCollectionGenerator->generate($gridConfiguration, [], []);
+        $result = $this->rowCollectionGenerator->generate($gridDefinition, [], []);
         $rows   = iterator_to_array($result->all());
 
         self::assertSame([], $rows);
@@ -49,7 +49,7 @@ final class RowCollectionGeneratorTest extends TestCase
 
     public function testGenerateWithSingleItemCallsRowGeneratorOnce(): void
     {
-        $gridConfiguration = $this->createGridConfiguration();
+        $gridDefinition = $this->createGridDefinition();
         $item              = ['name' => 'Alice'];
         $expectedRow       = new Row([], null);
 
@@ -57,11 +57,11 @@ final class RowCollectionGeneratorTest extends TestCase
         $rowGenerator
             ->expects(self::once())
             ->method('generate')
-            ->with($gridConfiguration, $item, 1, 1, [])
+            ->with($gridDefinition, $item, 1, 1, [])
             ->willReturn($expectedRow)
         ;
 
-        $result = (new RowCollectionGenerator($rowGenerator))->generate($gridConfiguration, [$item], []);
+        $result = (new RowCollectionGenerator($rowGenerator))->generate($gridDefinition, [$item], []);
         $rows   = iterator_to_array($result->all());
 
         self::assertCount(1, $rows);
@@ -70,7 +70,7 @@ final class RowCollectionGeneratorTest extends TestCase
 
     public function testGenerateWithMultipleItemsPassesCorrectIndicesAndCount(): void
     {
-        $gridConfiguration = $this->createGridConfiguration();
+        $gridDefinition = $this->createGridDefinition();
         $item1             = ['name' => 'Alice'];
         $item2             = ['name' => 'Bob'];
         $item3             = ['name' => 'Carol'];
@@ -81,7 +81,7 @@ final class RowCollectionGeneratorTest extends TestCase
             ->method('generate')
             ->willReturnCallback(
                 function (
-                    GridConfiguration $config,
+                    GridDefinition $config,
                     array $item,
                     int $index,
                     int $count,
@@ -94,7 +94,7 @@ final class RowCollectionGeneratorTest extends TestCase
         ;
 
         $result = (new RowCollectionGenerator($rowGenerator))->generate(
-            $gridConfiguration,
+            $gridDefinition,
             [
                 $item1,
                 $item2,
@@ -108,17 +108,17 @@ final class RowCollectionGeneratorTest extends TestCase
 
     public function testGeneratePassesArgumentsToRowGenerator(): void
     {
-        $gridConfiguration = $this->createGridConfiguration();
+        $gridDefinition = $this->createGridDefinition();
         $arguments         = ['locale' => 'fr'];
 
         $rowGenerator = $this->createMock(RowGenerator::class);
         $rowGenerator
             ->expects(self::once())
             ->method('generate')
-            ->with($gridConfiguration, self::anything(), self::anything(), self::anything(), $arguments)
+            ->with($gridDefinition, self::anything(), self::anything(), self::anything(), $arguments)
             ->willReturn(new Row([], null))
         ;
 
-        (new RowCollectionGenerator($rowGenerator))->generate($gridConfiguration, [['name' => 'Alice']], $arguments);
+        (new RowCollectionGenerator($rowGenerator))->generate($gridDefinition, [['name' => 'Alice']], $arguments);
     }
 }

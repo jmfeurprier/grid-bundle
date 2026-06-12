@@ -4,10 +4,10 @@ declare(strict_types=1);
 
 namespace Jmf\Grid\Tests\Grid\Row;
 
-use Jmf\Grid\Configuration\Column\ColumnConfiguration;
-use Jmf\Grid\Configuration\Grid\GridConfiguration;
-use Jmf\Grid\Configuration\KeyValueCollection;
-use Jmf\Grid\Configuration\Row\RowConfiguration;
+use Jmf\Grid\Grid\Column\ColumnDefinition;
+use Jmf\Grid\Grid\GridDefinition;
+use Jmf\Grid\Grid\KeyValueCollection;
+use Jmf\Grid\Grid\Row\RowDefinition;
 use Jmf\Grid\Grid\Row\Row;
 use Jmf\Grid\Grid\Row\RowCell;
 use Jmf\Grid\Grid\Row\RowCellGenerator;
@@ -42,27 +42,27 @@ final class RowGeneratorTest extends TestCase
     }
 
     /**
-     * @param ColumnConfiguration[] $columnConfigurations
+     * @param ColumnDefinition[] $columnDefinitions
      */
-    private function createGridConfiguration(
-        array $columnConfigurations = [],
-        ?RowConfiguration $rowConfiguration = null,
-    ): GridConfiguration {
-        return new GridConfiguration(
+    private function createGridDefinition(
+        array $columnDefinitions = [],
+        ?RowDefinition $rowDefinition = null,
+    ): GridDefinition {
+        return new GridDefinition(
             id:                   'test',
             arguments:            [],
             gridVariables:        KeyValueCollection::createEmpty(),
-            columnConfigurations: $columnConfigurations,
-            rowConfiguration:     $rowConfiguration ?? RowConfiguration::createEmpty(),
-            footerConfigurations: [],
+            columnDefinitions: $columnDefinitions,
+            rowDefinition:     $rowDefinition ?? RowDefinition::createEmpty(),
+            footerDefinitions: [],
         );
     }
 
     public function testGenerateWithNoColumnsReturnsEmptyRow(): void
     {
-        $gridConfiguration = $this->createGridConfiguration();
+        $gridDefinition = $this->createGridDefinition();
 
-        $row = $this->rowGenerator->generate($gridConfiguration, [], 1, 1, []);
+        $row = $this->rowGenerator->generate($gridDefinition, [], 1, 1, []);
 
         self::assertInstanceOf(Row::class, $row);
         self::assertSame([], iterator_to_array($row->getCells()));
@@ -70,16 +70,16 @@ final class RowGeneratorTest extends TestCase
 
     public function testGenerateWithNoLinkReturnsNullLink(): void
     {
-        $gridConfiguration = $this->createGridConfiguration();
+        $gridDefinition = $this->createGridDefinition();
 
-        $row = $this->rowGenerator->generate($gridConfiguration, [], 1, 1, []);
+        $row = $this->rowGenerator->generate($gridDefinition, [], 1, 1, []);
 
         self::assertNull($row->getLink());
     }
 
     public function testGenerateWithLinkSetsLink(): void
     {
-        $gridConfiguration = $this->createGridConfiguration();
+        $gridDefinition = $this->createGridDefinition();
 
         $this->rowLinkGenerator = $this->createMock(RowLinkGenerator::class);
         $this->rowLinkGenerator
@@ -93,15 +93,15 @@ final class RowGeneratorTest extends TestCase
             $this->rowLinkGenerator,
         );
 
-        $row = $rowGenerator->generate($gridConfiguration, [], 1, 1, []);
+        $row = $rowGenerator->generate($gridDefinition, [], 1, 1, []);
 
         self::assertSame('/items/42', $row->getLink());
     }
 
     public function testGenerateWithColumnsBuildsCells(): void
     {
-        $columnConfig      = new ColumnConfiguration(align: null, label: 'Name', source: 'name', template: null);
-        $gridConfiguration = $this->createGridConfiguration([$columnConfig]);
+        $columnConfig      = new ColumnDefinition(align: null, label: 'Name', source: 'name', template: null);
+        $gridDefinition = $this->createGridDefinition([$columnConfig]);
         $expectedCell      = new RowCell('Alice', []);
 
         $rowCellGenerator = $this->createMock(RowCellGenerator::class);
@@ -117,7 +117,7 @@ final class RowGeneratorTest extends TestCase
             $this->rowLinkGenerator,
         );
 
-        $row   = $rowGenerator->generate($gridConfiguration, [], 1, 1, []);
+        $row   = $rowGenerator->generate($gridDefinition, [], 1, 1, []);
         $cells = iterator_to_array($row->getCells());
 
         self::assertCount(1, $cells);
@@ -126,12 +126,12 @@ final class RowGeneratorTest extends TestCase
 
     public function testGenerateBuildsRowAttributes(): void
     {
-        $rowConfiguration = new RowConfiguration(
+        $rowDefinition = new RowDefinition(
             null,
             KeyValueCollection::createEmpty(),
             new KeyValueCollection(['class' => 'row-{{ _loop.index }}']),
         );
-        $gridConfiguration = $this->createGridConfiguration([], $rowConfiguration);
+        $gridDefinition = $this->createGridDefinition([], $rowDefinition);
 
         $templateRenderer = $this->createMock(TemplateRendererInterface::class);
         $templateRenderer
@@ -146,28 +146,28 @@ final class RowGeneratorTest extends TestCase
             $this->rowLinkGenerator,
         );
 
-        $row = $rowGenerator->generate($gridConfiguration, [], 1, 3, []);
+        $row = $rowGenerator->generate($gridDefinition, [], 1, 3, []);
 
         self::assertSame(['class' => 'row-1'], $row->getAttributes());
     }
 
     public function testGenerateWithNoAttributesReturnsEmptyAttributes(): void
     {
-        $gridConfiguration = $this->createGridConfiguration();
+        $gridDefinition = $this->createGridDefinition();
 
-        $row = $this->rowGenerator->generate($gridConfiguration, [], 1, 1, []);
+        $row = $this->rowGenerator->generate($gridDefinition, [], 1, 1, []);
 
         self::assertSame([], $row->getAttributes());
     }
 
     public function testGenerateCustomRowVariablesAreRendered(): void
     {
-        $rowConfiguration = new RowConfiguration(
+        $rowDefinition = new RowDefinition(
             null,
             new KeyValueCollection(['label' => 'Item: {{ _item.name }}']),
             KeyValueCollection::createEmpty(),
         );
-        $gridConfiguration = $this->createGridConfiguration([], $rowConfiguration);
+        $gridDefinition = $this->createGridDefinition([], $rowDefinition);
 
         $templateRenderer = $this->createMock(TemplateRendererInterface::class);
         $templateRenderer
@@ -182,6 +182,6 @@ final class RowGeneratorTest extends TestCase
             $this->rowLinkGenerator,
         );
 
-        $rowGenerator->generate($gridConfiguration, ['name' => 'Alice'], 1, 1, []);
+        $rowGenerator->generate($gridDefinition, ['name' => 'Alice'], 1, 1, []);
     }
 }

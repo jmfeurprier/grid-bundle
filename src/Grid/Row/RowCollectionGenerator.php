@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Jmf\Grid\Grid\Row;
 
-use Jmf\Grid\Configuration\Grid\GridConfiguration;
+use Jmf\Grid\Grid\GridDefinition;
 use Jmf\Grid\Exception\UnexpectedValueTypeException;
 use Jmf\TemplateRendering\Exception\TemplateRenderingException;
 
@@ -23,7 +23,7 @@ readonly class RowCollectionGenerator
      * @throws UnexpectedValueTypeException
      */
     public function generate(
-        GridConfiguration $gridConfiguration,
+        GridDefinition $gridDefinition,
         array $items,
         array $arguments,
     ): RowCollection {
@@ -33,7 +33,7 @@ readonly class RowCollectionGenerator
 
         foreach ($items as $item) {
             $rows[] = $this->gridRowGenerator->generate(
-                $gridConfiguration,
+                $gridDefinition,
                 $item,
                 $rowIndex,
                 $rowCount,

@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace Jmf\Grid\Grid\Row;
 
-use Jmf\Grid\Configuration\Column\ColumnConfiguration;
-use Jmf\Grid\Configuration\Grid\GridConfiguration;
+use Jmf\Grid\Grid\Column\ColumnDefinition;
+use Jmf\Grid\Grid\GridDefinition;
 use Jmf\Grid\Exception\UnexpectedValueTypeException;
 use Jmf\TemplateRendering\Exception\TemplateRenderingException;
 use Jmf\TemplateRendering\TemplateRendererInterface;
@@ -28,14 +28,14 @@ readonly class RowGenerator
      * @throws UnexpectedValueTypeException
      */
     public function generate(
-        GridConfiguration $gridConfiguration,
+        GridDefinition $gridDefinition,
         array | object $item,
         int $rowIndex,
         int $rowCount,
         array $arguments,
     ): Row {
         $rowVariables = $this->buildRowVariables(
-            $gridConfiguration,
+            $gridDefinition,
             $item,
             $rowIndex,
             $rowCount,
@@ -43,9 +43,9 @@ readonly class RowGenerator
         );
 
         return new Row(
-            $this->buildRowCells($gridConfiguration, $item, $rowVariables),
-            $this->buildRowLink($gridConfiguration, $rowVariables),
-            $this->buildRowAttributes($gridConfiguration, $rowVariables),
+            $this->buildRowCells($gridDefinition, $item, $rowVariables),
+            $this->buildRowLink($gridDefinition, $rowVariables),
+            $this->buildRowAttributes($gridDefinition, $rowVariables),
         );
     }
 
@@ -58,7 +58,7 @@ readonly class RowGenerator
      * @throws TemplateRenderingException
      */
     private function buildRowVariables(
-        GridConfiguration $gridConfiguration,
+        GridDefinition $gridDefinition,
         array | object $item,
         int $rowIndex,
         int $rowCount,
@@ -71,11 +71,11 @@ readonly class RowGenerator
 
         $rowVariables = array_merge(
             $arguments,
-            $gridConfiguration->getGridVariables()->all(),
+            $gridDefinition->getGridVariables()->all(),
             $reservedVariables,
         );
 
-        foreach ($gridConfiguration->getRowConfiguration()->getVariables()->all() as $key => $value) {
+        foreach ($gridDefinition->getRowDefinition()->getVariables()->all() as $key => $value) {
             Assert::stringNotEmpty($key);
             Assert::stringNotEmpty($value);
 
@@ -119,12 +119,12 @@ readonly class RowGenerator
      * @throws TemplateRenderingException
      */
     private function buildRowAttributes(
-        GridConfiguration $gridConfiguration,
+        GridDefinition $gridDefinition,
         array $rowVariables,
     ): array {
         $attributes = [];
 
-        foreach ($gridConfiguration->getRowConfiguration()->getAttributes()->all() as $key => $value) {
+        foreach ($gridDefinition->getRowDefinition()->getAttributes()->all() as $key => $value) {
             Assert::stringNotEmpty($key);
             Assert::string($value);
 
@@ -144,15 +144,15 @@ readonly class RowGenerator
      * @throws UnexpectedValueTypeException
      */
     private function buildRowCells(
-        GridConfiguration $gridConfiguration,
+        GridDefinition $gridDefinition,
         array | object $item,
         array $rowVariables,
     ): iterable {
         $cells = [];
 
-        foreach ($gridConfiguration->getColumnConfigurations() as $columnConfiguration) {
+        foreach ($gridDefinition->getColumnDefinitions() as $columnDefinition) {
             $cells[] = $this->buildCell(
-                $columnConfiguration,
+                $columnDefinition,
                 $item,
                 $rowVariables,
             );
@@ -169,12 +169,12 @@ readonly class RowGenerator
      * @throws UnexpectedValueTypeException
      */
     private function buildCell(
-        ColumnConfiguration $columnConfiguration,
+        ColumnDefinition $columnDefinition,
         array | object $item,
         array $rowVariables,
     ): RowCell {
         return $this->gridRowCellGenerator->generate(
-            $columnConfiguration,
+            $columnDefinition,
             $item,
             $rowVariables,
         );
@@ -186,11 +186,11 @@ readonly class RowGenerator
      * @throws TemplateRenderingException
      */
     private function buildRowLink(
-        GridConfiguration $gridConfiguration,
+        GridDefinition $gridDefinition,
         array $rowVariables,
     ): ?string {
         return $this->gridRowLinkGenerator->generate(
-            $gridConfiguration,
+            $gridDefinition,
             $rowVariables,
         );
     }

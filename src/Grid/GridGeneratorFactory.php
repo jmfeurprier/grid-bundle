@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Jmf\Grid\Grid;
 
-use Jmf\Grid\Configuration\Grid\GridConfigurationCollectionLoader;
+use Jmf\Grid\Grid\GridDefinitionCollectionLoader;
 use Jmf\Grid\Exception\GridWithoutColumnException;
 use Jmf\Grid\Grid\Column\ColumnCollectionGenerator;
 use Jmf\Grid\Grid\Footer\FooterGenerator;
@@ -18,7 +18,7 @@ readonly class GridGeneratorFactory
      * @param array<string, mixed> $gridConfigs
      */
     public function __construct(
-        private GridConfigurationCollectionLoader $gridConfigurationCollectionLoader,
+        private GridDefinitionCollectionLoader $gridDefinitionCollectionLoader,
         private array $gridConfigs,
         private ColumnCollectionGenerator $columnCollectionGenerator,
         private RowCollectionGenerator $rowCollectionGenerator,
@@ -34,7 +34,7 @@ readonly class GridGeneratorFactory
     public function create(): GridGenerator
     {
         return new GridGenerator(
-            $this->gridConfigurationCollectionLoader->load($this->gridConfigs),
+            $this->gridDefinitionCollectionLoader->load($this->gridConfigs),
             $this->columnCollectionGenerator,
             $this->rowCollectionGenerator,
             $this->footerGenerator,

@@ -4,9 +4,9 @@ declare(strict_types=1);
 
 namespace Jmf\Grid\Tests\Grid\Row;
 
-use Jmf\Grid\Configuration\Grid\GridConfiguration;
-use Jmf\Grid\Configuration\KeyValueCollection;
-use Jmf\Grid\Configuration\Row\RowConfiguration;
+use Jmf\Grid\Grid\GridDefinition;
+use Jmf\Grid\Grid\KeyValueCollection;
+use Jmf\Grid\Grid\Row\RowDefinition;
 use Jmf\Grid\Grid\Row\RowLinkGenerator;
 use Jmf\TemplateRendering\TemplateRendererInterface;
 use PHPUnit\Framework\TestCase;
@@ -16,21 +16,21 @@ final class RowLinkGeneratorTest extends TestCase
     /**
      * @param string[] $arguments
      */
-    private function createGridConfiguration(
+    private function createGridDefinition(
         ?string $link,
         array $arguments = [],
-    ): GridConfiguration {
-        return new GridConfiguration(
+    ): GridDefinition {
+        return new GridDefinition(
             id:                   'test',
             arguments:            $arguments,
             gridVariables:        KeyValueCollection::createEmpty(),
-            columnConfigurations: [],
-            rowConfiguration:     new RowConfiguration(
+            columnDefinitions: [],
+            rowDefinition:     new RowDefinition(
                                       $link,
                                       KeyValueCollection::createEmpty(),
                                       KeyValueCollection::createEmpty(),
                                   ),
-            footerConfigurations: [],
+            footerDefinitions: [],
         );
     }
 
@@ -39,9 +39,9 @@ final class RowLinkGeneratorTest extends TestCase
         $generator         = new RowLinkGenerator(
             $this->createStub(TemplateRendererInterface::class),
         );
-        $gridConfiguration = $this->createGridConfiguration(null);
+        $gridDefinition = $this->createGridDefinition(null);
 
-        $result = $generator->generate($gridConfiguration, []);
+        $result = $generator->generate($gridDefinition, []);
 
         self::assertNull($result);
     }
@@ -57,9 +57,9 @@ final class RowLinkGeneratorTest extends TestCase
         ;
 
         $generator         = new RowLinkGenerator($renderer);
-        $gridConfiguration = $this->createGridConfiguration('/items/{{ _item.id }}');
+        $gridDefinition = $this->createGridDefinition('/items/{{ _item.id }}');
 
-        $result = $generator->generate($gridConfiguration, ['_item' => ['id' => 42]]);
+        $result = $generator->generate($gridDefinition, ['_item' => ['id' => 42]]);
 
         self::assertSame('/items/42', $result);
     }
@@ -89,9 +89,9 @@ final class RowLinkGeneratorTest extends TestCase
         ;
 
         $generator         = new RowLinkGenerator($renderer);
-        $gridConfiguration = $this->createGridConfiguration('/items/{{ _item.id }}');
+        $gridDefinition = $this->createGridDefinition('/items/{{ _item.id }}');
 
-        $generator->generate($gridConfiguration, $rowVariables);
+        $generator->generate($gridDefinition, $rowVariables);
     }
 
     public function testRowVariablesTakePriorityOverNothingElse(): void
@@ -109,8 +109,8 @@ final class RowLinkGeneratorTest extends TestCase
         ;
 
         $generator         = new RowLinkGenerator($renderer);
-        $gridConfiguration = $this->createGridConfiguration('/link');
+        $gridDefinition = $this->createGridDefinition('/link');
 
-        $generator->generate($gridConfiguration, $rowVariables);
+        $generator->generate($gridDefinition, $rowVariables);
     }
 }

@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Jmf\Grid\Grid\Row;
 
-use Jmf\Grid\Configuration\Column\ColumnConfiguration;
+use Jmf\Grid\Grid\Column\ColumnDefinition;
 use Jmf\Grid\Exception\UnexpectedValueTypeException;
 use Jmf\TemplateRendering\Exception\TemplateRenderingException;
 use Jmf\TemplateRendering\TemplateInterface;
@@ -29,13 +29,13 @@ readonly class RowCellGenerator
      * @throws UnexpectedValueTypeException
      */
     public function generate(
-        ColumnConfiguration $columnConfiguration,
+        ColumnDefinition $columnDefinition,
         array | object $item,
         array $rowVariables,
     ): RowCell {
         return new RowCell(
-            $this->getCellValue($columnConfiguration, $item, $rowVariables),
-            $this->getCellParameters($columnConfiguration),
+            $this->getCellValue($columnDefinition, $item, $rowVariables),
+            $this->getCellParameters($columnDefinition),
         );
     }
 
@@ -47,18 +47,18 @@ readonly class RowCellGenerator
      * @throws UnexpectedValueTypeException
      */
     private function getCellValue(
-        ColumnConfiguration $columnConfiguration,
+        ColumnDefinition $columnDefinition,
         array | object $item,
         array $rowVariables,
     ): string {
         $value  = null;
-        $source = $columnConfiguration->getSource();
+        $source = $columnDefinition->getSource();
 
         if (null !== $source) {
             $value = $this->propertyAccessor->getValue($item, $source);
         }
 
-        $template = $columnConfiguration->getTemplate();
+        $template = $columnDefinition->getTemplate();
 
         if ($template instanceof TemplateInterface) {
             $context = array_merge(
@@ -101,12 +101,12 @@ readonly class RowCellGenerator
     /**
      * @return array<string, mixed>
      */
-    private function getCellParameters(ColumnConfiguration $columnConfiguration): array
+    private function getCellParameters(ColumnDefinition $columnDefinition): array
     {
         $parameters = [];
 
-        if (null !== $columnConfiguration->getAlign()) {
-            $parameters['align'] = $columnConfiguration->getAlign();
+        if (null !== $columnDefinition->getAlign()) {
+            $parameters['align'] = $columnDefinition->getAlign();
         }
 
         return $parameters;

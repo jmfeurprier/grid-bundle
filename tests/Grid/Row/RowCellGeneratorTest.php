@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Jmf\Grid\Tests\Grid\Row;
 
-use Jmf\Grid\Configuration\Column\ColumnConfiguration;
+use Jmf\Grid\Grid\Column\ColumnDefinition;
 use Jmf\Grid\Exception\UnexpectedValueTypeException;
 use Jmf\Grid\Grid\Row\RowCellGenerator;
 use Jmf\TemplateRendering\StringTemplate;
@@ -18,7 +18,7 @@ final class RowCellGeneratorTest extends TestCase
 {
     public function testGenerateWithArrayItemAndSource(): void
     {
-        $columnConfig = new ColumnConfiguration(align: null, label: null, source: '[name]', template: null);
+        $columnConfig = new ColumnDefinition(align: null, label: null, source: '[name]', template: null);
 
         $cell = $this->createRowCellGenerator()->generate($columnConfig, ['name' => 'Alice'], []);
 
@@ -30,7 +30,7 @@ final class RowCellGeneratorTest extends TestCase
         $item         = new class {
             public string $name = 'Bob';
         };
-        $columnConfig = new ColumnConfiguration(align: null, label: null, source: 'name', template: null);
+        $columnConfig = new ColumnDefinition(align: null, label: null, source: 'name', template: null);
 
         $cell = $this->createRowCellGenerator()->generate($columnConfig, $item, []);
 
@@ -39,7 +39,7 @@ final class RowCellGeneratorTest extends TestCase
 
     public function testGenerateWithNoSourceReturnsEmptyString(): void
     {
-        $columnConfig = new ColumnConfiguration(align: null, label: null, source: null, template: null);
+        $columnConfig = new ColumnDefinition(align: null, label: null, source: null, template: null);
 
         $cell = $this->createRowCellGenerator()->generate($columnConfig, [], []);
 
@@ -48,7 +48,7 @@ final class RowCellGeneratorTest extends TestCase
 
     public function testGenerateWithMissingArrayKeyReturnsEmptyString(): void
     {
-        $columnConfig = new ColumnConfiguration(align: null, label: null, source: '[missing]', template: null);
+        $columnConfig = new ColumnDefinition(align: null, label: null, source: '[missing]', template: null);
 
         $cell = $this->createRowCellGenerator()->generate($columnConfig, [], []);
 
@@ -57,7 +57,7 @@ final class RowCellGeneratorTest extends TestCase
 
     public function testGenerateWithIntegerValueConvertsToString(): void
     {
-        $columnConfig = new ColumnConfiguration(align: null, label: null, source: '[count]', template: null);
+        $columnConfig = new ColumnDefinition(align: null, label: null, source: '[count]', template: null);
 
         $cell = $this->createRowCellGenerator()->generate($columnConfig, ['count' => 42], []);
 
@@ -66,7 +66,7 @@ final class RowCellGeneratorTest extends TestCase
 
     public function testGenerateWithBoolValueConvertsToString(): void
     {
-        $columnConfig = new ColumnConfiguration(align: null, label: null, source: '[active]', template: null);
+        $columnConfig = new ColumnDefinition(align: null, label: null, source: '[active]', template: null);
 
         $cell = $this->createRowCellGenerator()->generate($columnConfig, ['active' => true], []);
 
@@ -82,7 +82,7 @@ final class RowCellGeneratorTest extends TestCase
             }
         };
 
-        $columnConfig = new ColumnConfiguration(align: null, label: null, source: '[obj]', template: null);
+        $columnConfig = new ColumnDefinition(align: null, label: null, source: '[obj]', template: null);
 
         $cell = $this->createRowCellGenerator()->generate($columnConfig, ['obj' => $stringable], []);
 
@@ -91,7 +91,7 @@ final class RowCellGeneratorTest extends TestCase
 
     public function testGenerateWithNullValueReturnsEmptyString(): void
     {
-        $columnConfig = new ColumnConfiguration(align: null, label: null, source: '[val]', template: null);
+        $columnConfig = new ColumnDefinition(align: null, label: null, source: '[val]', template: null);
 
         $cell = $this->createRowCellGenerator()->generate($columnConfig, ['val' => null], []);
 
@@ -100,7 +100,7 @@ final class RowCellGeneratorTest extends TestCase
 
     public function testGenerateTrimsValue(): void
     {
-        $columnConfig = new ColumnConfiguration(align: null, label: null, source: '[name]', template: null);
+        $columnConfig = new ColumnDefinition(align: null, label: null, source: '[name]', template: null);
 
         $cell = $this->createRowCellGenerator()->generate($columnConfig, ['name' => '  Alice  '], []);
 
@@ -109,7 +109,7 @@ final class RowCellGeneratorTest extends TestCase
 
     public function testGenerateWithNonStringableObjectThrowsException(): void
     {
-        $columnConfig = new ColumnConfiguration(align: null, label: null, source: '[obj]', template: null);
+        $columnConfig = new ColumnDefinition(align: null, label: null, source: '[obj]', template: null);
 
         $this->expectException(UnexpectedValueTypeException::class);
 
@@ -118,7 +118,7 @@ final class RowCellGeneratorTest extends TestCase
 
     public function testGenerateWithAlignSetsParameter(): void
     {
-        $columnConfig = new ColumnConfiguration(align: 'right', label: null, source: null, template: null);
+        $columnConfig = new ColumnDefinition(align: 'right', label: null, source: null, template: null);
 
         $cell = $this->createRowCellGenerator()->generate($columnConfig, [], []);
 
@@ -127,7 +127,7 @@ final class RowCellGeneratorTest extends TestCase
 
     public function testGenerateWithNoAlignReturnsEmptyParameters(): void
     {
-        $columnConfig = new ColumnConfiguration(align: null, label: null, source: null, template: null);
+        $columnConfig = new ColumnDefinition(align: null, label: null, source: null, template: null);
 
         $cell = $this->createRowCellGenerator()->generate($columnConfig, [], []);
 
@@ -137,7 +137,7 @@ final class RowCellGeneratorTest extends TestCase
     public function testGenerateWithTemplate(): void
     {
         $template     = new StringTemplate('{{ _value|upper }}');
-        $columnConfig = new ColumnConfiguration(align: null, label: null, source: '[name]', template: $template);
+        $columnConfig = new ColumnDefinition(align: null, label: null, source: '[name]', template: $template);
 
         $renderer = $this->createMock(TemplateRendererInterface::class);
         $renderer
@@ -155,7 +155,7 @@ final class RowCellGeneratorTest extends TestCase
     public function testGenerateWithTemplateReceivesSourceValueAsUnderscoreValue(): void
     {
         $template     = new StringTemplate('{{ _value }}');
-        $columnConfig = new ColumnConfiguration(align: null, label: null, source: '[name]', template: $template);
+        $columnConfig = new ColumnDefinition(align: null, label: null, source: '[name]', template: $template);
 
         $renderer = $this->createMock(TemplateRendererInterface::class);
         $renderer
@@ -176,7 +176,7 @@ final class RowCellGeneratorTest extends TestCase
     public function testGenerateWithTemplateReceivesRowVariables(): void
     {
         $template     = new StringTemplate('{{ currency }}');
-        $columnConfig = new ColumnConfiguration(align: null, label: null, source: null, template: $template);
+        $columnConfig = new ColumnDefinition(align: null, label: null, source: null, template: $template);
 
         $renderer = $this->createMock(TemplateRendererInterface::class);
         $renderer

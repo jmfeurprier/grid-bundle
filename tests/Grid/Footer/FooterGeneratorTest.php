@@ -4,10 +4,10 @@ declare(strict_types=1);
 
 namespace Jmf\Grid\Tests\Grid\Footer;
 
-use Jmf\Grid\Configuration\Footer\FooterConfiguration;
-use Jmf\Grid\Configuration\Grid\GridConfiguration;
-use Jmf\Grid\Configuration\KeyValueCollection;
-use Jmf\Grid\Configuration\Row\RowConfiguration;
+use Jmf\Grid\Grid\Footer\FooterDefinition;
+use Jmf\Grid\Grid\GridDefinition;
+use Jmf\Grid\Grid\KeyValueCollection;
+use Jmf\Grid\Grid\Row\RowDefinition;
 use Jmf\Grid\Grid\Footer\FooterGenerator;
 use Jmf\TemplateRendering\StringTemplate;
 use Jmf\TemplateRendering\TemplateRendererInterface;
@@ -26,11 +26,11 @@ final class FooterGeneratorTest extends TestCase
         );
     }
 
-    public function testGenerateWithNoFooterConfigurations(): void
+    public function testGenerateWithNoFooterDefinitions(): void
     {
-        $gridConfiguration = $this->createGridConfiguration([]);
+        $gridDefinition = $this->createGridDefinition([]);
 
-        $footer = $this->footerGenerator->generate($gridConfiguration, [], []);
+        $footer = $this->footerGenerator->generate($gridDefinition, [], []);
         $rows   = iterator_to_array($footer->getRows());
 
         self::assertSame([], $rows);
@@ -38,13 +38,13 @@ final class FooterGeneratorTest extends TestCase
 
     public function testGenerateWithStaticValue(): void
     {
-        $gridConfiguration = $this->createGridConfiguration(
+        $gridDefinition = $this->createGridDefinition(
             [
-                [new FooterConfiguration(align: null, template: null, merge: null, value: 'Total', presetId: null)],
+                [new FooterDefinition(align: null, template: null, merge: null, value: 'Total', presetId: null)],
             ],
         );
 
-        $footer = $this->footerGenerator->generate($gridConfiguration, [], []);
+        $footer = $this->footerGenerator->generate($gridDefinition, [], []);
         $rows   = iterator_to_array($footer->getRows());
 
         self::assertCount(1, $rows);
@@ -58,13 +58,13 @@ final class FooterGeneratorTest extends TestCase
 
     public function testGenerateWithAlignAddsClassAttribute(): void
     {
-        $gridConfiguration = $this->createGridConfiguration(
+        $gridDefinition = $this->createGridDefinition(
             [
-                [new FooterConfiguration(align: 'right', template: null, merge: null, value: 'Total', presetId: null)],
+                [new FooterDefinition(align: 'right', template: null, merge: null, value: 'Total', presetId: null)],
             ],
         );
 
-        $footer = $this->footerGenerator->generate($gridConfiguration, [], []);
+        $footer = $this->footerGenerator->generate($gridDefinition, [], []);
         $cells  = iterator_to_array(iterator_to_array($footer->getRows())[0]->getCells());
 
         self::assertSame(['class' => 'text-right'], $cells[0]->getAttributes());
@@ -72,13 +72,13 @@ final class FooterGeneratorTest extends TestCase
 
     public function testGenerateWithMergeGreaterThanOneAddsColspan(): void
     {
-        $gridConfiguration = $this->createGridConfiguration(
+        $gridDefinition = $this->createGridDefinition(
             [
-                [new FooterConfiguration(align: null, template: null, merge: 3, value: 'Total', presetId: null)],
+                [new FooterDefinition(align: null, template: null, merge: 3, value: 'Total', presetId: null)],
             ],
         );
 
-        $footer = $this->footerGenerator->generate($gridConfiguration, [], []);
+        $footer = $this->footerGenerator->generate($gridDefinition, [], []);
         $cells  = iterator_to_array(iterator_to_array($footer->getRows())[0]->getCells());
 
         self::assertSame(['colspan' => 3], $cells[0]->getAttributes());
@@ -86,13 +86,13 @@ final class FooterGeneratorTest extends TestCase
 
     public function testGenerateWithMergeOfOneOmitsColspan(): void
     {
-        $gridConfiguration = $this->createGridConfiguration(
+        $gridDefinition = $this->createGridDefinition(
             [
-                [new FooterConfiguration(align: null, template: null, merge: 1, value: 'Total', presetId: null)],
+                [new FooterDefinition(align: null, template: null, merge: 1, value: 'Total', presetId: null)],
             ],
         );
 
-        $footer = $this->footerGenerator->generate($gridConfiguration, [], []);
+        $footer = $this->footerGenerator->generate($gridDefinition, [], []);
         $cells  = iterator_to_array(iterator_to_array($footer->getRows())[0]->getCells());
 
         self::assertSame([], $cells[0]->getAttributes());
@@ -100,13 +100,13 @@ final class FooterGeneratorTest extends TestCase
 
     public function testGenerateWithAlignAndMerge(): void
     {
-        $gridConfiguration = $this->createGridConfiguration(
+        $gridDefinition = $this->createGridDefinition(
             [
-                [new FooterConfiguration(align: 'center', template: null, merge: 2, value: 'Total', presetId: null)],
+                [new FooterDefinition(align: 'center', template: null, merge: 2, value: 'Total', presetId: null)],
             ],
         );
 
-        $footer = $this->footerGenerator->generate($gridConfiguration, [], []);
+        $footer = $this->footerGenerator->generate($gridDefinition, [], []);
         $cells  = iterator_to_array(iterator_to_array($footer->getRows())[0]->getCells());
 
         self::assertSame(
@@ -121,9 +121,9 @@ final class FooterGeneratorTest extends TestCase
     public function testGenerateWithTemplate(): void
     {
         $template          = new StringTemplate('{{ _items|length }}');
-        $gridConfiguration = $this->createGridConfiguration(
+        $gridDefinition = $this->createGridDefinition(
             [
-                [new FooterConfiguration(align: null, template: $template, merge: null, value: null, presetId: null)],
+                [new FooterDefinition(align: null, template: $template, merge: null, value: null, presetId: null)],
             ],
         );
 
@@ -135,7 +135,7 @@ final class FooterGeneratorTest extends TestCase
             ->willReturn('42')
         ;
 
-        $footer = (new FooterGenerator($templateRenderer))->generate($gridConfiguration, [], []);
+        $footer = (new FooterGenerator($templateRenderer))->generate($gridDefinition, [], []);
         $cells  = iterator_to_array(iterator_to_array($footer->getRows())[0]->getCells());
 
         self::assertSame('42', $cells[0]->getValue());
@@ -144,9 +144,9 @@ final class FooterGeneratorTest extends TestCase
     public function testGenerateWithTemplatePassesArgumentsToContext(): void
     {
         $template          = new StringTemplate('{{ currency }}');
-        $gridConfiguration = $this->createGridConfiguration(
+        $gridDefinition = $this->createGridDefinition(
             [
-                [new FooterConfiguration(align: null, template: $template, merge: null, value: null, presetId: null)],
+                [new FooterDefinition(align: null, template: $template, merge: null, value: null, presetId: null)],
             ],
         );
 
@@ -164,7 +164,7 @@ final class FooterGeneratorTest extends TestCase
             ->willReturn('EUR')
         ;
 
-        $footer = (new FooterGenerator($templateRenderer))->generate($gridConfiguration, [], ['currency' => 'EUR']);
+        $footer = (new FooterGenerator($templateRenderer))->generate($gridDefinition, [], ['currency' => 'EUR']);
         $cells  = iterator_to_array(iterator_to_array($footer->getRows())[0]->getCells());
 
         self::assertSame('EUR', $cells[0]->getValue());
@@ -172,13 +172,13 @@ final class FooterGeneratorTest extends TestCase
 
     public function testGenerateWithStaticValueTrimmed(): void
     {
-        $gridConfiguration = $this->createGridConfiguration(
+        $gridDefinition = $this->createGridDefinition(
             [
-                [new FooterConfiguration(align: null, template: null, merge: null, value: '  Total  ', presetId: null)],
+                [new FooterDefinition(align: null, template: null, merge: null, value: '  Total  ', presetId: null)],
             ],
         );
 
-        $footer = $this->footerGenerator->generate($gridConfiguration, [], []);
+        $footer = $this->footerGenerator->generate($gridDefinition, [], []);
         $cells  = iterator_to_array(iterator_to_array($footer->getRows())[0]->getCells());
 
         self::assertSame('Total', $cells[0]->getValue());
@@ -186,14 +186,14 @@ final class FooterGeneratorTest extends TestCase
 
     public function testGenerateWithMultipleRows(): void
     {
-        $gridConfiguration = $this->createGridConfiguration(
+        $gridDefinition = $this->createGridDefinition(
             [
-                [new FooterConfiguration(align: null, template: null, merge: null, value: 'Subtotal', presetId: null)],
-                [new FooterConfiguration(align: null, template: null, merge: null, value: 'Total', presetId: null)],
+                [new FooterDefinition(align: null, template: null, merge: null, value: 'Subtotal', presetId: null)],
+                [new FooterDefinition(align: null, template: null, merge: null, value: 'Total', presetId: null)],
             ],
         );
 
-        $footer = $this->footerGenerator->generate($gridConfiguration, [], []);
+        $footer = $this->footerGenerator->generate($gridDefinition, [], []);
         $rows   = iterator_to_array($footer->getRows());
 
         self::assertCount(2, $rows);
@@ -203,18 +203,18 @@ final class FooterGeneratorTest extends TestCase
 
     public function testGenerateWithMultipleCellsInRow(): void
     {
-        $gridConfiguration = $this->createGridConfiguration(
+        $gridDefinition = $this->createGridDefinition(
             [
                 [
-                    new FooterConfiguration(align: null, template: null, merge: null, value: 'Label', presetId: null),
-                    new FooterConfiguration(
+                    new FooterDefinition(align: null, template: null, merge: null, value: 'Label', presetId: null),
+                    new FooterDefinition(
                         align: 'right', template: null, merge: null, value: '100.00', presetId: null,
                     ),
                 ],
             ],
         );
 
-        $footer = $this->footerGenerator->generate($gridConfiguration, [], []);
+        $footer = $this->footerGenerator->generate($gridDefinition, [], []);
         $cells  = iterator_to_array(iterator_to_array($footer->getRows())[0]->getCells());
 
         self::assertCount(2, $cells);
@@ -224,17 +224,17 @@ final class FooterGeneratorTest extends TestCase
     }
 
     /**
-     * @param FooterConfiguration[][] $footerConfigurations
+     * @param FooterDefinition[][] $footerDefinitions
      */
-    private function createGridConfiguration(iterable $footerConfigurations): GridConfiguration
+    private function createGridDefinition(iterable $footerDefinitions): GridDefinition
     {
-        return new GridConfiguration(
+        return new GridDefinition(
             id:                   'test',
             arguments:            [],
             gridVariables:        KeyValueCollection::createEmpty(),
-            columnConfigurations: [],
-            rowConfiguration:     RowConfiguration::createEmpty(),
-            footerConfigurations: $footerConfigurations,
+            columnDefinitions: [],
+            rowDefinition:     RowDefinition::createEmpty(),
+            footerDefinitions: $footerDefinitions,
         );
     }
 }

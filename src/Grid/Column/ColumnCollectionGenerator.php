@@ -4,17 +4,17 @@ declare(strict_types=1);
 
 namespace Jmf\Grid\Grid\Column;
 
-use Jmf\Grid\Configuration\Column\ColumnConfiguration;
-use Jmf\Grid\Configuration\Grid\GridConfiguration;
+use Jmf\Grid\Grid\Column\ColumnDefinition;
+use Jmf\Grid\Grid\GridDefinition;
 
 readonly class ColumnCollectionGenerator
 {
-    public function generate(GridConfiguration $gridConfiguration): ColumnCollection
+    public function generate(GridDefinition $gridDefinition): ColumnCollection
     {
         $columns = [];
 
-        foreach ($gridConfiguration->getColumnConfigurations() as $columnConfiguration) {
-            $columns[] = $this->generateColumn($columnConfiguration);
+        foreach ($gridDefinition->getColumnDefinitions() as $columnDefinition) {
+            $columns[] = $this->generateColumn($columnDefinition);
         }
 
         return new ColumnCollection(
@@ -23,11 +23,11 @@ readonly class ColumnCollectionGenerator
     }
 
     private function generateColumn(
-        ColumnConfiguration $columnConfiguration,
+        ColumnDefinition $columnDefinition,
     ): Column {
         return new Column(
-            $columnConfiguration->getLabel(),
-            $columnConfiguration->getAlign(),
+            $columnDefinition->getLabel(),
+            $columnDefinition->getAlign(),
         );
     }
 }

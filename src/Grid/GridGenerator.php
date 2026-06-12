@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace Jmf\Grid\Grid;
 
-use Jmf\Grid\Configuration\Grid\GridConfiguration;
-use Jmf\Grid\Configuration\Grid\GridConfigurationCollection;
+use Jmf\Grid\Grid\GridDefinition;
+use Jmf\Grid\Grid\GridDefinitionCollection;
 use Jmf\Grid\Exception\GridNotFoundException;
 use Jmf\Grid\Exception\GridWithoutColumnException;
 use Jmf\Grid\Exception\MissingGridArgumentException;
@@ -23,7 +23,7 @@ use Jmf\TemplateRendering\Exception\TemplateRenderingException;
 readonly class GridGenerator
 {
     public function __construct(
-        private GridConfigurationCollection $gridConfigurationCollection,
+        private GridDefinitionCollection $gridDefinitionCollection,
         private ColumnCollectionGenerator $columnCollectionGenerator,
         private RowCollectionGenerator $rowCollectionGenerator,
         private FooterGenerator $footerGenerator,
@@ -48,18 +48,18 @@ readonly class GridGenerator
         array $items,
         array $arguments,
     ): Grid {
-        $gridConfiguration = $this->gridConfigurationCollection->get($gridId);
+        $gridDefinition = $this->gridDefinitionCollection->get($gridId);
 
         $this->validateArguments(
             $gridId,
             $arguments,
-            $gridConfiguration,
+            $gridDefinition,
         );
 
         return new Grid(
-            $this->generateColumns($gridConfiguration),
-            $this->generateRows($gridConfiguration, $items, $arguments),
-            $this->generateFooter($gridConfiguration, $items, $arguments),
+            $this->generateColumns($gridDefinition),
+            $this->generateRows($gridDefinition, $items, $arguments),
+            $this->generateFooter($gridDefinition, $items, $arguments),
         );
     }
 
@@ -72,9 +72,9 @@ readonly class GridGenerator
     private function validateArguments(
         string $gridId,
         array $arguments,
-        GridConfiguration $gridConfiguration,
+        GridDefinition $gridDefinition,
     ): void {
-        foreach ($gridConfiguration->getArguments() as $argument) {
+        foreach ($gridDefinition->getArguments() as $argument) {
             if (!array_key_exists($argument, $arguments)) {
                 throw new MissingGridArgumentException(
                     $gridId,
@@ -84,10 +84,10 @@ readonly class GridGenerator
         }
     }
 
-    private function generateColumns(GridConfiguration $gridConfiguration): ColumnCollection
+    private function generateColumns(GridDefinition $gridDefinition): ColumnCollection
     {
         return $this->columnCollectionGenerator->generate(
-            $gridConfiguration,
+            $gridDefinition,
         );
     }
 
@@ -99,12 +99,12 @@ readonly class GridGenerator
      * @throws UnexpectedValueTypeException
      */
     private function generateRows(
-        GridConfiguration $gridConfiguration,
+        GridDefinition $gridDefinition,
         array $items,
         array $arguments,
     ): RowCollection {
         return $this->rowCollectionGenerator->generate(
-            $gridConfiguration,
+            $gridDefinition,
             $items,
             $arguments,
         );
@@ -117,12 +117,12 @@ readonly class GridGenerator
      * @throws TemplateRenderingException
      */
     private function generateFooter(
-        GridConfiguration $gridConfiguration,
+        GridDefinition $gridDefinition,
         array $items,
         array $arguments,
     ): Footer {
         return $this->footerGenerator->generate(
-            $gridConfiguration,
+            $gridDefinition,
             $items,
             $arguments,
         );

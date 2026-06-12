@@ -4,10 +4,10 @@ declare(strict_types=1);
 
 namespace Jmf\Grid\Tests\Grid;
 
-use Jmf\Grid\Configuration\Grid\GridConfiguration;
-use Jmf\Grid\Configuration\Grid\GridConfigurationCollection;
-use Jmf\Grid\Configuration\KeyValueCollection;
-use Jmf\Grid\Configuration\Row\RowConfiguration;
+use Jmf\Grid\Grid\GridDefinition;
+use Jmf\Grid\Grid\GridDefinitionCollection;
+use Jmf\Grid\Grid\KeyValueCollection;
+use Jmf\Grid\Grid\Row\RowDefinition;
 use Jmf\Grid\Exception\GridNotFoundException;
 use Jmf\Grid\Exception\MissingGridArgumentException;
 use Jmf\Grid\Grid\Column\ColumnCollection;
@@ -44,7 +44,7 @@ final class GridGeneratorTest extends TestCase
 
     public function testGenerateReturnsGrid(): void
     {
-        $gridConfig    = $this->createGridConfiguration('myGrid');
+        $gridConfig    = $this->createGridDefinition('myGrid');
         $gridGenerator = $this->createGridGenerator($gridConfig);
 
         $result = $gridGenerator->generate('myGrid', [], []);
@@ -65,7 +65,7 @@ final class GridGeneratorTest extends TestCase
 
     public function testGenerateThrowsMissingGridArgumentException(): void
     {
-        $gridConfig    = $this->createGridConfiguration('myGrid', ['locale']);
+        $gridConfig    = $this->createGridDefinition('myGrid', ['locale']);
         $gridGenerator = $this->createGridGenerator($gridConfig);
 
         $this->expectException(MissingGridArgumentException::class);
@@ -75,7 +75,7 @@ final class GridGeneratorTest extends TestCase
 
     public function testGenerateWithAllRequiredArgumentsSucceeds(): void
     {
-        $gridConfig    = $this->createGridConfiguration('myGrid', ['locale']);
+        $gridConfig    = $this->createGridDefinition('myGrid', ['locale']);
         $gridGenerator = $this->createGridGenerator($gridConfig);
 
         $result = $gridGenerator->generate('myGrid', [], ['locale' => 'fr']);
@@ -87,24 +87,24 @@ final class GridGeneratorTest extends TestCase
      * @param non-empty-string $id
      * @param string[]         $requiredArguments
      */
-    private function createGridConfiguration(
+    private function createGridDefinition(
         string $id,
         array $requiredArguments = [],
-    ): GridConfiguration {
-        return new GridConfiguration(
+    ): GridDefinition {
+        return new GridDefinition(
             id:                   $id,
             arguments:            $requiredArguments,
             gridVariables:        KeyValueCollection::createEmpty(),
-            columnConfigurations: [],
-            rowConfiguration:     RowConfiguration::createEmpty(),
-            footerConfigurations: [],
+            columnDefinitions: [],
+            rowDefinition:     RowDefinition::createEmpty(),
+            footerDefinitions: [],
         );
     }
 
-    private function createGridGenerator(GridConfiguration ...$configs): GridGenerator
+    private function createGridGenerator(GridDefinition ...$configs): GridGenerator
     {
         return new GridGenerator(
-            new GridConfigurationCollection($configs),
+            new GridDefinitionCollection($configs),
             $this->columnCollectionGenerator,
             $this->rowCollectionGenerator,
             $this->footerGenerator,

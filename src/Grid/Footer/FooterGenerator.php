@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace Jmf\Grid\Grid\Footer;
 
-use Jmf\Grid\Configuration\Footer\FooterConfiguration;
-use Jmf\Grid\Configuration\Grid\GridConfiguration;
+use Jmf\Grid\Grid\Footer\FooterDefinition;
+use Jmf\Grid\Grid\GridDefinition;
 use Jmf\TemplateRendering\Exception\TemplateRenderingException;
 use Jmf\TemplateRendering\TemplateInterface;
 use Jmf\TemplateRendering\TemplateRendererInterface;
@@ -24,19 +24,19 @@ readonly class FooterGenerator
      * @throws TemplateRenderingException
      */
     public function generate(
-        GridConfiguration $gridConfiguration,
+        GridDefinition $gridDefinition,
         iterable $items,
         array $arguments,
     ): Footer {
         $rows = [];
 
-        foreach ($gridConfiguration->getFooterConfigurations() as $footerRowConfigurations) {
+        foreach ($gridDefinition->getFooterDefinitions() as $footerRowDefinitions) {
             $cells = [];
 
-            foreach ($footerRowConfigurations as $footerColumnConfiguration) {
+            foreach ($footerRowDefinitions as $footerColumnDefinition) {
                 $cells[] = new FooterCell(
-                    $this->buildValue($footerColumnConfiguration, $items, $arguments),
-                    $this->buildAttributes($footerColumnConfiguration),
+                    $this->buildValue($footerColumnDefinition, $items, $arguments),
+                    $this->buildAttributes($footerColumnDefinition),
                 );
             }
 
@@ -49,21 +49,21 @@ readonly class FooterGenerator
     /**
      * @return array<string, mixed>
      */
-    private function buildAttributes(FooterConfiguration $footerConfiguration): array
+    private function buildAttributes(FooterDefinition $footerDefinition): array
     {
         $attributes = [];
         $classes    = [];
 
         // @todo Too "bootstrapy". Move to dedicated field in FooterCell.
-        if (null !== $footerConfiguration->getAlign()) {
-            $classes[] = "text-{$footerConfiguration->getAlign()}";
+        if (null !== $footerDefinition->getAlign()) {
+            $classes[] = "text-{$footerDefinition->getAlign()}";
         }
 
         if ([] !== $classes) {
             $attributes['class'] = implode(' ', $classes);
         }
 
-        $merge = $footerConfiguration->getMerge() ?? 1;
+        $merge = $footerDefinition->getMerge() ?? 1;
 
         if ($merge > 1) {
             $attributes['colspan'] = $merge;
@@ -79,15 +79,15 @@ readonly class FooterGenerator
      * @throws TemplateRenderingException
      */
     private function buildValue(
-        FooterConfiguration $footerConfiguration,
+        FooterDefinition $footerDefinition,
         iterable $items,
         array $arguments,
     ): string {
         $value = '';
 
-        if (null !== $footerConfiguration->getValue()) {
-            $value = $footerConfiguration->getValue();
-        } elseif ($footerConfiguration->getTemplate() instanceof TemplateInterface) {
+        if (null !== $footerDefinition->getValue()) {
+            $value = $footerDefinition->getValue();
+        } elseif ($footerDefinition->getTemplate() instanceof TemplateInterface) {
             $context = array_merge(
                 $arguments,
                 [
@@ -96,7 +96,7 @@ readonly class FooterGenerator
             );
 
             $value = $this->templateRenderer->render(
-                $footerConfiguration->getTemplate(),
+                $footerDefinition->getTemplate(),
                 $context,
             );
         }

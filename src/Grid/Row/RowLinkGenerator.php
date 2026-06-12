@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Jmf\Grid\Grid\Row;
 
-use Jmf\Grid\Configuration\Grid\GridConfiguration;
+use Jmf\Grid\Grid\GridDefinition;
 use Jmf\TemplateRendering\Exception\TemplateRenderingException;
 use Jmf\TemplateRendering\TemplateRendererInterface;
 
@@ -21,10 +21,10 @@ readonly class RowLinkGenerator
      * @throws TemplateRenderingException
      */
     public function generate(
-        GridConfiguration $gridConfiguration,
+        GridDefinition $gridDefinition,
         array $rowVariables,
     ): ?string {
-        $link = $gridConfiguration->getRowConfiguration()->getLink();
+        $link = $gridDefinition->getRowDefinition()->getLink();
 
         if (null === $link) {
             return null;
