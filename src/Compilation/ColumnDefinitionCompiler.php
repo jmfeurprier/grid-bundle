@@ -92,7 +92,7 @@ readonly class ColumnDefinitionCompiler
 
         Assert::string($template);
 
-        // @todo
+        // @todo Support more template types?
         return new StringTemplate($template);
     }
 

@@ -64,7 +64,7 @@ readonly class FooterDefinitionCompiler
 
         Assert::stringNotEmpty($template);
 
-        // @todo
+        // @todo Support more template types?
         return new StringTemplate($template);
     }
 
