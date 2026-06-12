@@ -11,7 +11,6 @@ use Jmf\RenderingPreset\Preset\Preset;
 use Jmf\RenderingPreset\Preset\PresetRepositoryInterface;
 use Jmf\RenderingPreset\Preset\Property\PresetPropertyCollection;
 use Override;
-use PHPUnit\Framework\Attributes\AllowMockObjectsWithoutExpectations;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 
@@ -42,12 +41,11 @@ final class PresetApplierTest extends TestCase
         self::assertSame($subject, $result);
     }
 
-    #[AllowMockObjectsWithoutExpectations]
     public function testApplyWithPresetIdFetchesPresetAndAppliesIt(): void
     {
         $preset = new Preset('myPreset', 'preset.source', null, new PresetPropertyCollection([]));
 
-        $this->presetRepository->method('get')->with('myPreset')->willReturn($preset);
+        $this->presetRepository->expects(self::once())->method('get')->with('myPreset')->willReturn($preset);
 
         $columnConfiguration = new ColumnConfiguration(
             align:    null,
@@ -64,12 +62,11 @@ final class PresetApplierTest extends TestCase
         self::assertNull($result->getPresetId());
     }
 
-    #[AllowMockObjectsWithoutExpectations]
     public function testApplyPreservesOwnValuesOverPresetValues(): void
     {
         $preset = new Preset('myPreset', 'preset.source', null, new PresetPropertyCollection([]));
 
-        $this->presetRepository->method('get')->with('myPreset')->willReturn($preset);
+        $this->presetRepository->expects(self::once())->method('get')->with('myPreset')->willReturn($preset);
 
         $columnConfiguration = new ColumnConfiguration(
             align:    null,
