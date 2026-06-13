@@ -13,7 +13,6 @@ use Jmf\TemplateRendering\TemplateRendererInterface;
 use Stringable;
 use Symfony\Component\PropertyAccess\PropertyAccessorInterface;
 
-// @todo Rewrite without Twig dependency and local cache.
 readonly class RowCellGenerator
 {
     public function __construct(
@@ -98,6 +97,4 @@ readonly class RowCellGenerator
 
         throw new UnexpectedValueTypeException(get_debug_type($value));
     }
-
-
 }
