@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Jmf\Grid\Tests\Model\Grid;
+namespace Jmf\Grid\Tests\Definition;
 
 use Jmf\Grid\Definition\ColumnDefinition;
 use Jmf\Grid\Definition\GridDefinition;

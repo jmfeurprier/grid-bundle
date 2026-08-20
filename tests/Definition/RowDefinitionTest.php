@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Jmf\Grid\Tests\Model\Row;
+namespace Jmf\Grid\Tests\Definition;
 
 use Jmf\Grid\Definition\KeyValueCollection;
 use Jmf\Grid\Definition\RowDefinition;
