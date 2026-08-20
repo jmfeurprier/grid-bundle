@@ -20,7 +20,6 @@ final class ColumnDefinitionTest extends TestCase
             label:    'def',
             source:   'ghi',
             template: new StringTemplate('jkl'),
-            presetId: null,
         );
 
         $preset = new Preset(
@@ -46,7 +45,6 @@ final class ColumnDefinitionTest extends TestCase
             label:    null,
             source:   null,
             template: null,
-            presetId: null,
         );
 
         $preset = new Preset(
@@ -77,7 +75,6 @@ final class ColumnDefinitionTest extends TestCase
             label:    'def',
             source:   'ghi',
             template: new StringTemplate('jkl'),
-            presetId: null,
         );
 
         $preset = new Preset(
